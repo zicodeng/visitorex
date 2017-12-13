@@ -131,7 +131,7 @@ var invalidCredentials = "Invalid credentials"
 func (ctx *HandlerContext) SessionsHandler(w http.ResponseWriter, r *http.Request) {
 	// Method must be POST.
 	if r.Method != "POST" {
-		http.Error(w, "expect POST method only", http.StatusMethodNotAllowed)
+		http.Error(w, "Expect POST method only", http.StatusMethodNotAllowed)
 		return
 	}
 
