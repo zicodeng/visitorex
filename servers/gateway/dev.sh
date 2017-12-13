@@ -10,10 +10,12 @@ export SESSION_KEY="hello world"
 
 export REDIS_ADDR=192.168.99.100:6379
 export MONGO_ADDR=192.168.99.100:27017
+export MQ_ADDR=192.168.99.100:5672
 export DB_NAME="app"
 
 export REDIS_CONTAINER=redis-server
 export MONGO_CONTAINER=mongo-server
+export MQ_CONTAINER=rabbitmq-server
 
 docker system prune -f
 
@@ -38,5 +40,17 @@ docker run \
 --name $MONGO_CONTAINER \
 -p 27017:27017 \
 mongo
+
+if [ "$(docker ps -aq --filter name=$MQ_CONTAINER)" ]; then
+    docker rm -f $MQ_CONTAINER
+fi
+
+# Run RabbitMQ Docker container.
+docker run \
+-d \
+-p 5672:5672 \
+--name $MQ_CONTAINER \
+--hostname $MQ_CONTAINER \
+rabbitmq
 
 go run main.go
