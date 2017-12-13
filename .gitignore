@@ -1,0 +1,10 @@
+node_modules
+dist
+tls
+coverage
+coverage.out
+.DS_Store
+.vscode
+.idea
+npm-debug.log
+gateway.exe
