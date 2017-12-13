@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/go-redis/redis"
+	"github.com/streadway/amqp"
 	"github.com/zicodeng/visitorex/servers/gateway/handlers"
 	"github.com/zicodeng/visitorex/servers/gateway/models/admins"
 	"github.com/zicodeng/visitorex/servers/gateway/sessions"
@@ -53,6 +54,11 @@ func main() {
 		mongoAddr = ":27017"
 	}
 
+	mqAddr := os.Getenv("MQ_ADDR")
+	if len(mqAddr) == 0 {
+		mqAddr = ":5672"
+	}
+
 	// Create a shared Redis client.
 	redisClient := redis.NewClient(&redis.Options{
 		Addr: redisAddr,
@@ -76,6 +82,10 @@ func main() {
 	// Initialize notifier.
 	notifier := handlers.NewNotifier()
 
+	// Connect to RabbitMQ server
+	// and continously listen to messages from queue.
+	go listenToMQ(mqAddr, notifier)
+
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/v1/admins", ctx.AdminsHandler)
@@ -90,4 +100,58 @@ func main() {
 
 	log.Printf("Server is listening on https://%s\n", serverAddr)
 	log.Fatal(http.ListenAndServeTLS(serverAddr, TLSCert, TLSKey, corsMux))
+}
+
+const maxConnRetries = 5
+const qName = "NewVisitor"
+
+func listenToMQ(addr string, notifier *handlers.Notifier) {
+	conn, err := connectToMQ(addr)
+	if err != nil {
+		log.Fatalf("error connecting to MQ server: %s", err)
+	}
+	log.Printf("connected to MQ server")
+	defer conn.Close()
+
+	ch, err := conn.Channel()
+	if err != nil {
+		log.Fatalf("error opening channel: %v", err)
+	}
+	log.Println("created MQ channel")
+	defer ch.Close()
+
+	q, err := ch.QueueDeclare(qName, false, false, false, false, nil)
+	if err != nil {
+		log.Fatalf("error declaring queue: %v", err)
+	}
+	log.Println("declared MQ queue")
+
+	messages, err := ch.Consume(q.Name, "", true, false, false, false, nil)
+	if err != nil {
+		log.Fatalf("error listening to queue: %v", err)
+	}
+	log.Println("listening for new MQ messages...")
+
+	for msg := range messages {
+		// Load messages received from RabbitMQ's eventQ channel to
+		// notifier's eventQ channel, so that messages will be
+		// broadcasted to all clients throught websocket.
+		notifier.Notify(msg.Body)
+	}
+}
+
+func connectToMQ(addr string) (*amqp.Connection, error) {
+	mqURL := "amqp://" + addr
+	var conn *amqp.Connection
+	var err error
+	for i := 1; i <= maxConnRetries; i++ {
+		conn, err = amqp.Dial(mqURL)
+		if err == nil {
+			return conn, nil
+		}
+		log.Printf("error connecting to MQ server at %s: %s", mqURL, err)
+		log.Printf("will attempt another connection in %d seconds", i*2)
+		time.Sleep(time.Duration(i*2) * time.Second)
+	}
+	return nil, err
 }
