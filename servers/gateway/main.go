@@ -124,13 +124,13 @@ func listenToMQ(addr string, notifier *handlers.Notifier) {
 	if err != nil {
 		log.Fatalf("error declaring queue: %v", err)
 	}
-	log.Println("declared MQ queue")
+	log.Printf("declared MQ queue: %v\n", qName)
 
 	messages, err := ch.Consume(q.Name, "", true, false, false, false, nil)
 	if err != nil {
 		log.Fatalf("error listening to queue: %v", err)
 	}
-	log.Println("listening for new MQ messages...")
+	log.Printf("listening for new MQ messages from %v...\n", qName)
 
 	for msg := range messages {
 		// Load messages received from RabbitMQ's eventQ channel to
