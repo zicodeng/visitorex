@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"github.com/go-redis/redis"
 	"github.com/streadway/amqp"
 	"github.com/zicodeng/visitorex/servers/gateway/handlers"
@@ -82,6 +83,11 @@ func main() {
 	// Initialize notifier.
 	notifier := handlers.NewNotifier()
 
+	pubsub := redisClient.Subscribe("Microservices")
+	serviceList := handlers.NewServiceList()
+	go listenForServices(pubsub, serviceList)
+	go removeCrashedServices(serviceList)
+
 	// Connect to RabbitMQ server
 	// and continously listen to messages from queue.
 	go listenToMQ(mqAddr, notifier)
@@ -154,4 +160,83 @@ func connectToMQ(addr string) (*amqp.Connection, error) {
 		time.Sleep(time.Duration(i*2) * time.Second)
 	}
 	return nil, err
+}
+
+type receivedService struct {
+	Name        string
+	PathPattern string
+	Address     string
+	Heartbeat   int
+}
+
+// Constantly listen for "Microservices" Redis channel.
+func listenForServices(pubsub *redis.PubSub, serviceList *handlers.ServiceList) {
+	log.Println("listening for microservices")
+	for {
+		time.Sleep(time.Second)
+
+		msg, err := pubsub.ReceiveMessage()
+		if err != nil {
+			log.Println(err)
+		}
+		svc := &receivedService{}
+		err = json.Unmarshal([]byte(msg.Payload), svc)
+		if err != nil {
+			log.Printf("error unmarshalling received microservice JSON to struct: %v", err)
+		}
+		serviceList.Mx.Lock()
+		_, hasSvc := serviceList.Services[svc.Name]
+		// If this microservice is already in our list...
+		if hasSvc {
+			// Check if this specific microservice instance exists in our list by its unique address...
+			_, hasInstance := serviceList.Services[svc.Name].Instances[svc.Address]
+			if hasInstance {
+				// If this microservice instance is in our list,
+				// update its lastHeartbeat time field.
+				serviceList.Services[svc.Name].Instances[svc.Address].LastHeartbeat = time.Now()
+			} else {
+				// If not, add this instance to our list.
+				log.Println("new microservice instance found")
+				serviceList.Services[svc.Name].Instances[svc.Address] = handlers.NewServiceInstance(svc.Address, time.Now())
+			}
+
+		} else {
+			// If this microservice is not in our list,
+			// create a new instance of that microservice
+			// and add to the list.
+			log.Println("new microservice found")
+			instances := make(map[string]*handlers.ServiceInstance)
+			instances[svc.Address] = handlers.NewServiceInstance(svc.Address, time.Now())
+			serviceList.Services[svc.Name] = handlers.NewService(svc.Name, svc.PathPattern, svc.Heartbeat, instances)
+		}
+		serviceList.Mx.Unlock()
+	}
+}
+
+// Periodically looks for service instances
+// for which we haven't received a heartbeat in a while,
+// and remove those instances from your list
+func removeCrashedServices(serviceList *handlers.ServiceList) {
+	for {
+		time.Sleep(time.Second * 10)
+
+		serviceList.Mx.Lock()
+		for svcName := range serviceList.Services {
+			svc := serviceList.Services[svcName]
+			for addr, instance := range svc.Instances {
+				if time.Now().Sub(instance.LastHeartbeat).Seconds() > float64(svc.Heartbeat)+10 {
+					log.Println("crashed microservice instance removed")
+					// Remove the crashed microservice instance from the service list.
+					delete(svc.Instances, addr)
+					// Remove the entire microservice from the service list
+					// if it has no instance running.
+					if len(svc.Instances) == 0 {
+						log.Println("crashed microservice removed")
+						delete(serviceList.Services, svcName)
+					}
+				}
+			}
+		}
+		serviceList.Mx.Unlock()
+	}
 }
