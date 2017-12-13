@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/go-redis/redis"
+	"github.com/zicodeng/visitorex/servers/gateway/handlers"
 	"github.com/zicodeng/visitorex/servers/gateway/sessions"
 	"log"
 	"net/http"
@@ -52,6 +53,8 @@ func main() {
 
 	mux := http.NewServeMux()
 
+	corsMux := handlers.NewCORSHandler(mux)
+
 	log.Printf("Server is listening on https://%s\n", serverAddr)
-	log.Fatal(http.ListenAndServeTLS(serverAddr, TLSCert, TLSKey, mux))
+	log.Fatal(http.ListenAndServeTLS(serverAddr, TLSCert, TLSKey, corsMux))
 }
