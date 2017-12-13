@@ -28,7 +28,4 @@ type Store interface {
 
 	// Delete deletes the admin with the given ID.
 	Delete(adminID bson.ObjectId) error
-
-	// ConvertToUsers converts all keys(Admin IDs) in a given map to a slice of Admin.
-	ConvertToUsers(userIDs map[bson.ObjectId]bool) ([]*Admin, error)
 }
