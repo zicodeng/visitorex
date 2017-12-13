@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"github.com/zicodeng/visitorex/servers/gateway/models/admins"
 	"github.com/zicodeng/visitorex/servers/gateway/sessions"
 )
 
@@ -11,11 +12,12 @@ type HandlerContext struct {
 	// The type is an Store interface
 	// rather than an actual Store implementation.
 	SessionStore sessions.Store
+	AdminStore   admins.Store
 }
 
 // NewHandlerContext constructs a new HanderContext,
 // ensuring that the dependencies are valid values.
-func NewHandlerContext(signingKey string, sessionStore sessions.Store) *HandlerContext {
+func NewHandlerContext(signingKey string, sessionStore sessions.Store, adminStore admins.Store) *HandlerContext {
 
 	if len(signingKey) == 0 {
 		panic("signing key has length of zero")
@@ -25,5 +27,9 @@ func NewHandlerContext(signingKey string, sessionStore sessions.Store) *HandlerC
 		panic("nil session store")
 	}
 
-	return &HandlerContext{signingKey, sessionStore}
+	if adminStore == nil {
+		panic("nil admin store")
+	}
+
+	return &HandlerContext{signingKey, sessionStore, adminStore}
 }
