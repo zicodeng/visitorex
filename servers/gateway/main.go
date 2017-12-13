@@ -104,7 +104,7 @@ func main() {
 
 	corsMux := handlers.NewCORSHandler(mux)
 
-	log.Printf("Server is listening on https://%s\n", serverAddr)
+	log.Printf("server is listening on https://%s\n", serverAddr)
 	log.Fatal(http.ListenAndServeTLS(serverAddr, TLSCert, TLSKey, corsMux))
 }
 
