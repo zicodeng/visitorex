@@ -73,6 +73,9 @@ func main() {
 	// Initialize HandlerContext.
 	ctx := handlers.NewHandlerContext(sessionKey, sessionStore, adminStore)
 
+	// Initialize notifier.
+	notifier := handlers.NewNotifier()
+
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/v1/admins", ctx.AdminsHandler)
@@ -80,6 +83,8 @@ func main() {
 
 	mux.HandleFunc("/v1/sessions", ctx.SessionsHandler)
 	mux.HandleFunc("/v1/sessions/mine", ctx.SessionsMineHandler)
+
+	mux.Handle("/v1/ws", ctx.NewWebSocketsHandler(notifier))
 
 	corsMux := handlers.NewCORSHandler(mux)
 
