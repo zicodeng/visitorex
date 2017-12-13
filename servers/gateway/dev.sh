@@ -15,6 +15,8 @@ export DB_NAME="app"
 export REDIS_CONTAINER=redis-server
 export MONGO_CONTAINER=mongo-server
 
+docker system prune -f
+
 if [ "$(docker ps -aq --filter name=$REDIS_CONTAINER)" ]; then
     docker rm -f $REDIS_CONTAINER
 fi
