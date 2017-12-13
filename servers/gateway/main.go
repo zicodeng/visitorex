@@ -75,6 +75,12 @@ func main() {
 
 	mux := http.NewServeMux()
 
+	mux.HandleFunc("/v1/admins", ctx.AdminsHandler)
+	mux.HandleFunc("/v1/admins/me", ctx.AdminsMeHandler)
+
+	mux.HandleFunc("/v1/sessions", ctx.SessionsHandler)
+	mux.HandleFunc("/v1/sessions/mine", ctx.SessionsMineHandler)
+
 	corsMux := handlers.NewCORSHandler(mux)
 
 	log.Printf("Server is listening on https://%s\n", serverAddr)
