@@ -53,21 +53,21 @@ func main() {
 		mongoAddr = ":27017"
 	}
 
-	// Shared Redis client.
+	// Create a shared Redis client.
 	redisClient := redis.NewClient(&redis.Options{
 		Addr: redisAddr,
 	})
 
-	// Create a Mongo session.
+	// Create a shared Mongo session.
 	mongoSession, err := mgo.Dial(mongoAddr)
 	if err != nil {
 		log.Fatalf("error dialing mongo: %v", err)
 	}
 
-	// Redis store for session state.
+	// Initialize Redis store for session state.
 	sessionStore := sessions.NewRedisStore(redisClient, time.Hour)
 
-	// Mongo store for admin.
+	// Initialize Mongo store for admins.
 	adminStore := admins.NewMongoStore(mongoSession, dbName, "admins")
 
 	// Initialize HandlerContext.
