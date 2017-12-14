@@ -102,7 +102,11 @@ func main() {
 
 	mux.Handle("/v1/ws", ctx.NewWebSocketsHandler(notifier))
 
-	corsMux := handlers.NewCORSHandler(mux)
+	// Chained middlewares.
+	// Wraps mux inside DSDHandler.
+	dsdMux := handlers.NewDSDHandler(mux, serviceList, ctx)
+	// Wraps mux inside CORSHandler.
+	corsMux := handlers.NewCORSHandler(dsdMux)
 
 	log.Printf("server is listening on https://%s\n", serverAddr)
 	log.Fatal(http.ListenAndServeTLS(serverAddr, TLSCert, TLSKey, corsMux))
