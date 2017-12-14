@@ -23,7 +23,7 @@ const redisAddr = process.env.REDIS_ADDR || 'localhost';
 
 const amqp = require('amqplib');
 // Queue name needs to be the same queue name that our gateway is listening to.
-const qName = 'NewVisitor';
+const qName = 'Visitor';
 const mqAddr = process.env.MQ_ADDR || 'localhost:5672';
 const mqURL = `amqp://${mqAddr}`;
 

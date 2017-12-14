@@ -113,7 +113,7 @@ func main() {
 }
 
 const maxConnRetries = 5
-const qName = "NewVisitor"
+const qName = "Visitor"
 
 func listenToMQ(addr string, notifier *handlers.Notifier) {
 	conn, err := connectToMQ(addr)
