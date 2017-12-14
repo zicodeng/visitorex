@@ -68,7 +68,7 @@ func main() {
 	// Create a shared Mongo session.
 	mongoSession, err := mgo.Dial(mongoAddr)
 	if err != nil {
-		log.Fatalf("error dialing mongo: %v", err)
+		log.Fatalf("Error dialing mongo: %v", err)
 	}
 
 	// Initialize Redis store for session state.
@@ -108,7 +108,7 @@ func main() {
 	// Wraps mux inside CORSHandler.
 	corsMux := handlers.NewCORSHandler(dsdMux)
 
-	log.Printf("server is listening on https://%s\n", serverAddr)
+	log.Printf("Server is listening on https://%s\n", serverAddr)
 	log.Fatal(http.ListenAndServeTLS(serverAddr, TLSCert, TLSKey, corsMux))
 }
 
@@ -118,29 +118,29 @@ const qName = "NewVisitor"
 func listenToMQ(addr string, notifier *handlers.Notifier) {
 	conn, err := connectToMQ(addr)
 	if err != nil {
-		log.Fatalf("error connecting to MQ server: %s", err)
+		log.Fatalf("Error connecting to MQ server: %s", err)
 	}
-	log.Printf("connected to MQ server")
+	log.Printf("Connected to MQ server")
 	defer conn.Close()
 
 	ch, err := conn.Channel()
 	if err != nil {
-		log.Fatalf("error opening channel: %v", err)
+		log.Fatalf("Error opening channel: %v", err)
 	}
-	log.Println("created MQ channel")
+	log.Println("Created MQ channel")
 	defer ch.Close()
 
 	q, err := ch.QueueDeclare(qName, false, false, false, false, nil)
 	if err != nil {
-		log.Fatalf("error declaring queue: %v", err)
+		log.Fatalf("Error declaring queue: %v", err)
 	}
-	log.Printf("declared MQ queue: %v\n", qName)
+	log.Printf("Declared MQ queue: %v\n", qName)
 
 	messages, err := ch.Consume(q.Name, "", true, false, false, false, nil)
 	if err != nil {
-		log.Fatalf("error listening to queue: %v", err)
+		log.Fatalf("Error listening to queue: %v", err)
 	}
-	log.Printf("listening for new MQ messages from %v...\n", qName)
+	log.Printf("Listening for new MQ messages from %v...\n", qName)
 
 	for msg := range messages {
 		// Load messages received from RabbitMQ's eventQ channel to
@@ -159,8 +159,8 @@ func connectToMQ(addr string) (*amqp.Connection, error) {
 		if err == nil {
 			return conn, nil
 		}
-		log.Printf("error connecting to MQ server at %s: %s", mqURL, err)
-		log.Printf("will attempt another connection in %d seconds", i*2)
+		log.Printf("Error connecting to MQ server at %s: %s", mqURL, err)
+		log.Printf("Will attempt another connection in %d seconds", i*2)
 		time.Sleep(time.Duration(i*2) * time.Second)
 	}
 	return nil, err
@@ -175,7 +175,7 @@ type receivedService struct {
 
 // Constantly listen for "Microservices" Redis channel.
 func listenForServices(pubsub *redis.PubSub, serviceList *handlers.ServiceList) {
-	log.Println("listening for microservices")
+	log.Println("Listening for microservices")
 	for {
 		time.Sleep(time.Second)
 
@@ -186,7 +186,7 @@ func listenForServices(pubsub *redis.PubSub, serviceList *handlers.ServiceList) 
 		svc := &receivedService{}
 		err = json.Unmarshal([]byte(msg.Payload), svc)
 		if err != nil {
-			log.Printf("error unmarshalling received microservice JSON to struct: %v", err)
+			log.Printf("Error unmarshalling received microservice JSON to struct: %v", err)
 		}
 		serviceList.Mx.Lock()
 		_, hasSvc := serviceList.Services[svc.Name]
@@ -200,7 +200,7 @@ func listenForServices(pubsub *redis.PubSub, serviceList *handlers.ServiceList) 
 				serviceList.Services[svc.Name].Instances[svc.Address].LastHeartbeat = time.Now()
 			} else {
 				// If not, add this instance to our list.
-				log.Println("new microservice instance found")
+				log.Println("New microservice instance found")
 				serviceList.Services[svc.Name].Instances[svc.Address] = handlers.NewServiceInstance(svc.Address, time.Now())
 			}
 
@@ -208,7 +208,7 @@ func listenForServices(pubsub *redis.PubSub, serviceList *handlers.ServiceList) 
 			// If this microservice is not in our list,
 			// create a new instance of that microservice
 			// and add to the list.
-			log.Println("new microservice found")
+			log.Println("New microservice found")
 			instances := make(map[string]*handlers.ServiceInstance)
 			instances[svc.Address] = handlers.NewServiceInstance(svc.Address, time.Now())
 			serviceList.Services[svc.Name] = handlers.NewService(svc.Name, svc.PathPattern, svc.Heartbeat, instances)
@@ -229,13 +229,13 @@ func removeCrashedServices(serviceList *handlers.ServiceList) {
 			svc := serviceList.Services[svcName]
 			for addr, instance := range svc.Instances {
 				if time.Now().Sub(instance.LastHeartbeat).Seconds() > float64(svc.Heartbeat)+10 {
-					log.Println("crashed microservice instance removed")
+					log.Println("Crashed microservice instance removed")
 					// Remove the crashed microservice instance from the service list.
 					delete(svc.Instances, addr)
 					// Remove the entire microservice from the service list
 					// if it has no instance running.
 					if len(svc.Instances) == 0 {
-						log.Println("crashed microservice removed")
+						log.Println("Dangling microservice removed")
 						delete(serviceList.Services, svcName)
 					}
 				}

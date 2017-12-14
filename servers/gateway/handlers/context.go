@@ -20,15 +20,15 @@ type HandlerContext struct {
 func NewHandlerContext(signingKey string, sessionStore sessions.Store, adminStore admins.Store) *HandlerContext {
 
 	if len(signingKey) == 0 {
-		panic("signing key has length of zero")
+		panic("Signing key has length of zero")
 	}
 
 	if sessionStore == nil {
-		panic("nil session store")
+		panic("Nil session store")
 	}
 
 	if adminStore == nil {
-		panic("nil admin store")
+		panic("Nil admin store")
 	}
 
 	return &HandlerContext{signingKey, sessionStore, adminStore}

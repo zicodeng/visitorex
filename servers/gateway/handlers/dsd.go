@@ -80,7 +80,7 @@ func (dsdh *DSDHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if admin != nil {
 		userJSON, err := json.Marshal(admin)
 		if err != nil {
-			log.Printf("error marshaling admin: %v", err)
+			log.Printf("Error marshaling admin: %v", err)
 		}
 		r.Header.Add("X-User", string(userJSON))
 	} else {
