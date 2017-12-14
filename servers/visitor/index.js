@@ -72,12 +72,12 @@ const mqURL = `amqp://${mqAddr}`;
         });
 
         // Connect to RabbitMQ.
-        let connection = await amqp.connect(mqURL);
-        let mqChannel = await connection.createChannel();
+        const connection = await amqp.connect(mqURL);
+        const mqChannel = await connection.createChannel();
         // Durable queue writes messages to disk.
         // So even our MQ server dies,
         // the information is saved on disk and not lost.
-        let qConf = await mqChannel.assertQueue(qName, { durable: false });
+        const qConf = await mqChannel.assertQueue(qName, { durable: false });
         app.set('mqChannel', mqChannel);
         app.set('qName', qName);
 
