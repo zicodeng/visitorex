@@ -8,11 +8,11 @@ import (
 // HandlerContext will be a receiver on any of our HTTP
 // handler functions that need access to globals.
 type HandlerContext struct {
-	SigningKey string
+	signingKey string
 	// The type is an Store interface
 	// rather than an actual Store implementation.
-	SessionStore sessions.Store
-	AdminStore   admins.Store
+	sessionStore sessions.Store
+	adminStore   admins.Store
 }
 
 // NewHandlerContext constructs a new HanderContext,

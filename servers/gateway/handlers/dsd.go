@@ -206,7 +206,7 @@ func newServiceProxy(addrs []string) *httputil.ReverseProxy {
 
 func (dsdh *DSDHandler) getCurrentUser(r *http.Request) *admins.Admin {
 	sessionState := &SessionState{}
-	_, err := sessions.GetState(r, dsdh.ctx.SigningKey, dsdh.ctx.SessionStore, sessionState)
+	_, err := sessions.GetState(r, dsdh.ctx.signingKey, dsdh.ctx.sessionStore, sessionState)
 	if err != nil {
 		return nil
 	}

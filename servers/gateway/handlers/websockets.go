@@ -36,7 +36,7 @@ func (wsh *WebSocketsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 	// if we get an error when retrieving the session state,
 	// respond with an http.StatusUnauthorized.
 	sessionState := &SessionState{}
-	_, err := sessions.GetState(r, wsh.ctx.SigningKey, wsh.ctx.SessionStore, sessionState)
+	_, err := sessions.GetState(r, wsh.ctx.signingKey, wsh.ctx.sessionStore, sessionState)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error getting session state: %v", err), http.StatusUnauthorized)
 		return

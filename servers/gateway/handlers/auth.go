@@ -32,21 +32,21 @@ func (ctx *HandlerContext) AdminsHandler(w http.ResponseWriter, r *http.Request)
 		}
 
 		// Ensure there isn't already a admin in the admin store with the same email address.
-		_, err = ctx.AdminStore.GetByEmail(newAdmin.Email)
+		_, err = ctx.adminStore.GetByEmail(newAdmin.Email)
 		if err == nil {
 			http.Error(w, "Admin with the same email already exists", http.StatusBadRequest)
 			return
 		}
 
 		// Ensure there isn't already a admin in the admin store with the same admin name.
-		_, err = ctx.AdminStore.GetByUserName(newAdmin.UserName)
+		_, err = ctx.adminStore.GetByUserName(newAdmin.UserName)
 		if err == nil {
 			http.Error(w, "Admin with the same username already exists", http.StatusBadRequest)
 			return
 		}
 
 		// Insert the new admin into the admin store.
-		admin, err := ctx.AdminStore.Insert(newAdmin)
+		admin, err := ctx.adminStore.Insert(newAdmin)
 		if err != nil {
 			http.Error(w, fmt.Sprintf("Error inserting new admin: %v", err), http.StatusInternalServerError)
 			return
@@ -64,7 +64,7 @@ func (ctx *HandlerContext) AdminsHandler(w http.ResponseWriter, r *http.Request)
 func (ctx *HandlerContext) AdminsMeHandler(w http.ResponseWriter, r *http.Request) {
 	// Get session state from session store.
 	sessionState := &SessionState{}
-	sessionID, err := sessions.GetState(r, ctx.SigningKey, ctx.SessionStore, sessionState)
+	sessionID, err := sessions.GetState(r, ctx.signingKey, ctx.sessionStore, sessionState)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error getting session state: %v", err), http.StatusUnauthorized)
 		return
@@ -97,14 +97,14 @@ func (ctx *HandlerContext) AdminsMeHandler(w http.ResponseWriter, r *http.Reques
 		sessionState.Admin.LastName = updates.LastName
 
 		// Update session store.
-		err = ctx.SessionStore.Save(sessionID, sessionState)
+		err = ctx.sessionStore.Save(sessionID, sessionState)
 		if err != nil {
 			http.Error(w, fmt.Sprintf("Error saving updated session state to session store: %v", err), http.StatusInternalServerError)
 			return
 		}
 
 		// Update admin store.
-		err = ctx.AdminStore.Update(sessionState.Admin.ID, updates)
+		err = ctx.adminStore.Update(sessionState.Admin.ID, updates)
 		if err != nil {
 			http.Error(w, fmt.Sprintf("Error updating admin store: %v", err), http.StatusInternalServerError)
 			return
@@ -143,10 +143,10 @@ func (ctx *HandlerContext) SessionsHandler(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	// Get the admin with the provided email from the AdminStore.
+	// Get the admin with the provided email from the adminStore.
 	// If not found, respond with an http.StatusUnauthorized error
 	// and the message "Invalid credentials".
-	admin, err := ctx.AdminStore.GetByEmail(credentials.Email)
+	admin, err := ctx.adminStore.GetByEmail(credentials.Email)
 	if err != nil {
 		http.Error(w, invalidCredentials, http.StatusUnauthorized)
 		return
@@ -175,14 +175,14 @@ func (ctx *HandlerContext) SessionsMineHandler(w http.ResponseWriter, r *http.Re
 
 	// Get session state from session store.
 	sessionState := &SessionState{}
-	_, err := sessions.GetState(r, ctx.SigningKey, ctx.SessionStore, sessionState)
+	_, err := sessions.GetState(r, ctx.signingKey, ctx.sessionStore, sessionState)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error getting session state: %v", err), http.StatusUnauthorized)
 		return
 	}
 
 	// End the current session.
-	_, err = sessions.EndSession(r, ctx.SigningKey, ctx.SessionStore)
+	_, err = sessions.EndSession(r, ctx.signingKey, ctx.sessionStore)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error ending session: %v", err), http.StatusInternalServerError)
 		return
@@ -199,7 +199,7 @@ func beginNewSession(ctx *HandlerContext, admin *admins.Admin, w http.ResponseWr
 		Admin:     admin,
 	}
 
-	_, err := sessions.BeginSession(ctx.SigningKey, ctx.SessionStore, sessionState, w)
+	_, err := sessions.BeginSession(ctx.signingKey, ctx.sessionStore, sessionState, w)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error beginning session: %v", err), http.StatusInternalServerError)
 		return
