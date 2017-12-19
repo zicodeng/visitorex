@@ -23,7 +23,7 @@ const redisAddr = process.env.REDIS_ADDR || 'localhost';
 
 const amqp = require('amqplib');
 // Queue name needs to be the same queue name that our gateway is listening to.
-const qName = 'Visitor';
+const visitorQueue = 'VisitorQueue';
 const mqAddr = process.env.MQ_ADDR || 'localhost:5672';
 const mqURL = `amqp://${mqAddr}`;
 
@@ -73,13 +73,13 @@ const mqURL = `amqp://${mqAddr}`;
 
         // Connect to RabbitMQ.
         const connection = await amqp.connect(mqURL);
-        const mqChannel = await connection.createChannel();
+        const MQChannel = await connection.createChannel();
         // Durable queue writes messages to disk.
         // So even our MQ server dies,
         // the information is saved on disk and not lost.
-        const qConf = await mqChannel.assertQueue(qName, { durable: false });
-        app.set('mqChannel', mqChannel);
-        app.set('qName', qName);
+        const qConf = await MQChannel.assertQueue(visitorQueue, { durable: false });
+        app.set('MQChannel', MQChannel);
+        app.set('visitorQueue', visitorQueue);
 
         app.listen(portNum, host, () => {
             console.log(`Server is listening at http://${serverAddr}`);

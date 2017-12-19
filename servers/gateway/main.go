@@ -115,7 +115,7 @@ func main() {
 }
 
 const maxConnRetries = 5
-const qName = "Visitor"
+const visitorQueue = "VisitorQueue"
 
 func listenToMQ(addr string, notifier *handlers.Notifier) {
 	conn, err := connectToMQ(addr)
@@ -132,17 +132,17 @@ func listenToMQ(addr string, notifier *handlers.Notifier) {
 	log.Println("Created MQ channel")
 	defer ch.Close()
 
-	q, err := ch.QueueDeclare(qName, false, false, false, false, nil)
+	q, err := ch.QueueDeclare(visitorQueue, false, false, false, false, nil)
 	if err != nil {
 		log.Fatalf("Error declaring queue: %v", err)
 	}
-	log.Printf("Declared MQ queue: %v\n", qName)
+	log.Printf("Declared MQ queue: %v\n", visitorQueue)
 
 	messages, err := ch.Consume(q.Name, "", true, false, false, false, nil)
 	if err != nil {
 		log.Fatalf("Error listening to queue: %v", err)
 	}
-	log.Printf("Listening for new MQ messages from %v...\n", qName)
+	log.Printf("Listening for new MQ messages from %v...\n", visitorQueue)
 
 	for msg := range messages {
 		// Load messages received from RabbitMQ's eventQ channel to

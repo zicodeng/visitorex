@@ -1,7 +1,7 @@
 module.exports = {
     sendToVisitorQueue: (req, message) => {
-        const mqChannel = req.app.get('mqChannel');
-        const qName = req.app.get('qName');
-        mqChannel.sendToQueue(qName, Buffer.from(JSON.stringify(message)));
+        const MQChannel = req.app.get('MQChannel');
+        const visitorQueue = req.app.get('visitorQueue');
+        MQChannel.sendToQueue(visitorQueue, Buffer.from(JSON.stringify(message)));
     }
 };
