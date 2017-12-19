@@ -14,6 +14,8 @@ import (
 	"time"
 )
 
+var svcChannel = "Microservices"
+
 // main is the main entry point for the server.
 func main() {
 
@@ -83,7 +85,7 @@ func main() {
 	// Initialize notifier.
 	notifier := handlers.NewNotifier()
 
-	pubsub := redisClient.Subscribe("Microservices")
+	pubsub := redisClient.Subscribe(svcChannel)
 	serviceList := handlers.NewServiceList()
 	go listenForServices(pubsub, serviceList)
 	go removeCrashedServices(serviceList)
@@ -166,55 +168,45 @@ func connectToMQ(addr string) (*amqp.Connection, error) {
 	return nil, err
 }
 
-type receivedService struct {
-	Name        string
-	PathPattern string
-	Address     string
-	Heartbeat   int
-}
-
 // Constantly listen for "Microservices" Redis channel.
 func listenForServices(pubsub *redis.PubSub, serviceList *handlers.ServiceList) {
 	log.Println("Listening for microservices")
 	for {
-		time.Sleep(time.Second)
-
-		msg, err := pubsub.ReceiveMessage()
+		msg, err := receivePubSubMessage(pubsub)
+		// If there is still an error receiving message even after retries,
+		// return this function.
 		if err != nil {
 			log.Println(err)
+			return
 		}
-		svc := &receivedService{}
+		svc := &handlers.ReceivedService{}
 		err = json.Unmarshal([]byte(msg.Payload), svc)
 		if err != nil {
 			log.Printf("Error unmarshalling received microservice JSON to struct: %v", err)
 		}
-		serviceList.Mx.Lock()
-		_, hasSvc := serviceList.Services[svc.Name]
-		// If this microservice is already in our list...
-		if hasSvc {
-			// Check if this specific microservice instance exists in our list by its unique address...
-			_, hasInstance := serviceList.Services[svc.Name].Instances[svc.Address]
-			if hasInstance {
-				// If this microservice instance is in our list,
-				// update its lastHeartbeat time field.
-				serviceList.Services[svc.Name].Instances[svc.Address].LastHeartbeat = time.Now()
-			} else {
-				// If not, add this instance to our list.
-				log.Println("New microservice instance found")
-				serviceList.Services[svc.Name].Instances[svc.Address] = handlers.NewServiceInstance(svc.Address, time.Now())
-			}
-
-		} else {
-			// If this microservice is not in our list,
-			// create a new instance of that microservice
-			// and add to the list.
-			log.Println("New microservice found")
-			instances := make(map[string]*handlers.ServiceInstance)
-			instances[svc.Address] = handlers.NewServiceInstance(svc.Address, time.Now())
-			serviceList.Services[svc.Name] = handlers.NewService(svc.Name, svc.PathPattern, svc.Heartbeat, instances)
-		}
-		serviceList.Mx.Unlock()
+		serviceList.Register(svc)
 	}
+}
+
+var maxReceiveMessageRetries = 5
+
+// If there is an error receiving Redis Pub/Sub messages,
+// that's probably because the Redis server is no longer reachable.
+// If that's the case, try to receive the message again for a max number of retries.
+func receivePubSubMessage(pubsub *redis.PubSub) (*redis.Message, error) {
+	var msg *redis.Message
+	var err error
+	for i := 0; i < maxReceiveMessageRetries; i++ {
+		// pubsub.ReceiveMessage() will block until there is a message to receive.
+		msg, err = pubsub.ReceiveMessage()
+		if err == nil {
+			return msg, nil
+		}
+		log.Printf("Error receiving message from Redis Pub/Sub: %s", err)
+		log.Printf("Will try again in %d seconds", i*2)
+		time.Sleep(time.Duration(i*2) * time.Second)
+	}
+	return nil, err
 }
 
 // Periodically looks for service instances
@@ -223,24 +215,6 @@ func listenForServices(pubsub *redis.PubSub, serviceList *handlers.ServiceList) 
 func removeCrashedServices(serviceList *handlers.ServiceList) {
 	for {
 		time.Sleep(time.Second * 10)
-
-		serviceList.Mx.Lock()
-		for svcName := range serviceList.Services {
-			svc := serviceList.Services[svcName]
-			for addr, instance := range svc.Instances {
-				if time.Now().Sub(instance.LastHeartbeat).Seconds() > float64(svc.Heartbeat)+10 {
-					log.Println("Crashed microservice instance removed")
-					// Remove the crashed microservice instance from the service list.
-					delete(svc.Instances, addr)
-					// Remove the entire microservice from the service list
-					// if it has no instance running.
-					if len(svc.Instances) == 0 {
-						log.Println("Dangling microservice removed")
-						delete(serviceList.Services, svcName)
-					}
-				}
-			}
-		}
-		serviceList.Mx.Unlock()
+		serviceList.Remove()
 	}
 }
