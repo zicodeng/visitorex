@@ -16,7 +16,7 @@ if (!dbName) {
     console.log('Please set DB_NAME environment variable');
     process.exit(1);
 }
-const mongoURL = `mongodb://${mongoAddr}/${dbName}`;
+const mongoURL = `mongodb://${mongoAddr}`;
 const OfficeStore = require('./models/offices/office-store');
 const VisitorStore = require('./models/visitors/visitor-store');
 
@@ -35,7 +35,8 @@ const OfficeHandler = require('./handlers/office');
 (async () => {
     try {
         // Guarantee our MongoDB is started before clients can make any connections.
-        const db = await mongodb.MongoClient.connect(mongoURL);
+        const client = await mongodb.MongoClient.connect(mongoURL);
+        const db = client.db(dbName);
 
         // Publish this microservice information to Redis Pub/Sub.
         const publisher = redis.createClient({

@@ -4,7 +4,7 @@ const mongodb = require('mongodb');
 
 class OfficeStore {
     constructor(db, colName) {
-        this.colName = db.collection(colName);
+        this.collection = db.collection(colName);
     }
 
     // insert() creates a new office in MongoDB.
