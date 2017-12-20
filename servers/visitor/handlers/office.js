@@ -39,12 +39,24 @@ const OfficeHandler = (officeStore, visitorStore) => {
 
     // Create a new office.
     router.post('/v1/offices', (req, res) => {
-        const name = req.body.name.trim();
-        const addr = req.body.addr.trim();
+        let name = req.body.name;
+        let addr = req.body.addr;
         if (!name || !addr) {
-            res.set('Content-Type', 'text/plain');
-            res.status(400)
+            res
+                .set('Content-Type', 'text/plain')
+                .status(400)
                 .send('No office name or address found in the request body');
+            return;
+        }
+
+        name = name.trim();
+        addr = addr.trim();
+
+        if (!name || !addr) {
+            res
+                .set('Content-Type', 'text/plain')
+                .status(400)
+                .send('Office name or address has length of zero');
             return;
         }
 
@@ -85,22 +97,34 @@ const OfficeHandler = (officeStore, visitorStore) => {
     router.post('/v1/offices/:officeID', (req, res) => {
         const officeID = new mongodb.ObjectID(req.params.officeID);
         if (!officeID) {
-            res.set('Content-Type', 'text/plain');
             res
+                .set('Content-Type', 'text/plain')
                 .status(400)
-                .send('No office ID found in params');
+                .send('No office ID found in request params');
             return;
         }
 
-        const name = req.body.name.trim();
-        const company = req.body.company.trim();
-        const toSee = req.body.toSee.trim();
+        let name = req.body.name;
+        let company = req.body.company;
+        let toSee = req.body.toSee;
 
         if (!name || !company || !toSee) {
-            res.set('Content-Type', 'text/plain');
             res
+                .set('Content-Type', 'text/plain')
                 .status(400)
                 .send('No visitor name, company, or toSee found in the request body');
+            return;
+        }
+
+        name = name.trim();
+        company = company.trim();
+        toSee = toSee.trim();
+
+        if (!name || !company || !toSee) {
+            res
+                .set('Content-Type', 'text/plain')
+                .status(400)
+                .send('Visitor name, company, or toSee has length of zero');
             return;
         }
 
@@ -142,17 +166,18 @@ const OfficeHandler = (officeStore, visitorStore) => {
             .get(officeID)
             .then(office => {
                 if (!office) {
-                    res.set('Content-Type', 'text/plain');
                     res
+                        .set('Content-Type', 'text/plain')
                         .status(400)
                         .send('No such office found');
                     throw breakSignal;
                 }
+
                 // If the current user isn't the creator,
                 // respond with the status code 403 (Forbidden).
                 if (!office.creator || office.creator.id !== user.id) {
-                    res.set('Content-Type', 'text/plain');
                     res
+                        .set('Content-Type', 'text/plain')
                         .status(403)
                         .send('Only office creator can modify this office');
                     throw breakSignal;
@@ -160,13 +185,24 @@ const OfficeHandler = (officeStore, visitorStore) => {
                 return;
             })
             .then(() => {
-                const name = req.body.name.trim();
-                const addr = req.body.addr.trim();
+                let name = req.body.name;
+                let addr = req.body.addr;
                 if (!name || !addr) {
-                    res.set('Content-Type', 'text/plain');
                     res
+                        .set('Content-Type', 'text/plain')
                         .status(400)
                         .send('No office name or address found in the request body');
+                    return;
+                }
+
+                name = name.trim();
+                addr = addr.trim();
+
+                if (!name || !addr) {
+                    res
+                        .set('Content-Type', 'text/plain')
+                        .status(400)
+                        .send('Office name or address has length of zero');
                     return;
                 }
 
@@ -203,13 +239,16 @@ const OfficeHandler = (officeStore, visitorStore) => {
             .get(officeID)
             .then(office => {
                 if (!office) {
-                    res.set('Content-Type', 'text/plain');
-                    res.status(400).send('No such office found');
+                    res
+                        .set('Content-Type', 'text/plain')
+                        .status(400)
+                        .send('No such office found');
                     throw breakSignal;
                 }
+
                 if (!office.creator || office.creator.id !== user.id) {
-                    res.set('Content-Type', 'text/plain');
                     res
+                        .set('Content-Type', 'text/plain')
                         .status(403)
                         .send('Only office creator can delete this office');
                     throw breakSignal;
@@ -223,12 +262,16 @@ const OfficeHandler = (officeStore, visitorStore) => {
                 officeStore.delete(officeID);
             })
             .then(() => {
-                res.set('Content-Type', 'text/plain');
-                res.status(200).send('Office deleted');
+                res
+                    .set('Content-Type', 'text/plain')
+                    .status(200)
+                    .send('Office deleted');
+
                 const message = {
                     type: messageType.officeDelete,
                     officeID: officeID
                 };
+
                 MQ.sendToVisitorQueue(req, message)
             })
             .catch(err => {
