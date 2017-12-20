@@ -1,7 +1,6 @@
 // @ts-check
 'use strict';
 
-const mongodb = require('mongodb');
 const express = require('express');
 
 const Office = require('./../models/offices/office');
@@ -90,7 +89,6 @@ const OfficeHandler = (officeStore, visitorStore) => {
                 .send('No office ID found in request resource path');
             return;
         }
-        officeID = new mongodb.ObjectID(officeID);
 
         visitorStore
             .getAll(officeID)
@@ -112,7 +110,6 @@ const OfficeHandler = (officeStore, visitorStore) => {
                 .send('No office ID found in request resource path');
             return;
         }
-        officeID = new mongodb.ObjectID(officeID);
 
         let name = req.body.name;
         let company = req.body.company;
@@ -180,7 +177,6 @@ const OfficeHandler = (officeStore, visitorStore) => {
                 .send('No office ID found in request resource path');
             return;
         }
-        officeID = new mongodb.ObjectID(officeID);
 
         officeStore
             .get(officeID)
@@ -263,7 +259,6 @@ const OfficeHandler = (officeStore, visitorStore) => {
                 .send('No office ID found in request resource path');
             return;
         }
-        officeID = new mongodb.ObjectID(officeID);
 
         officeStore
             .get(officeID)

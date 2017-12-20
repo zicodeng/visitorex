@@ -15,6 +15,7 @@ class OfficeStore {
 
     // get() retrieves one office from MongoDB for a given office ID.
     get(id) {
+        id = new mongodb.ObjectID(id);
         return this.collection.findOne({ _id: id });
     }
 
@@ -26,6 +27,7 @@ class OfficeStore {
     // update() updates a office for a given office ID.
     // It returns the updated office.
     update(id, updates) {
+        id = new mongodb.ObjectID(id);
         let updateDoc = {
             $set: updates
         };
@@ -38,6 +40,7 @@ class OfficeStore {
 
     // delete() deletes a office for a given office ID.
     delete(id) {
+        id = new mongodb.ObjectID(id);
         return this.collection.deleteOne({ _id: id });
     }
 }

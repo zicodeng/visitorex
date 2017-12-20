@@ -15,17 +15,20 @@ class VisitorStore {
 
     // get() retrieves one visitor from MongoDB for a given visitor ID.
     get(id) {
+        id = new mongodb.ObjectID(id);
         return this.collection.findOne({ _id: id });
     }
 
     // getAll() retrieves all visitors from MongoDB for a given office ID.
     getAll(officeID) {
+        officeID = new mongodb.ObjectID(officeID);
         return this.collection.find({ officeID: officeID }).toArray();
     }
 
     // update() updates a visitor for a given visitor ID.
     // It returns the updated visitor.
     update(id, updates) {
+        id = new mongodb.ObjectID(id);
         let updateDoc = {
             $set: updates
         };
@@ -38,11 +41,13 @@ class VisitorStore {
 
     // delete() deletes a visitor for a given visitor ID.
     delete(id) {
+        id = new mongodb.ObjectID(id);
         return this.collection.deleteOne({ _id: id });
     }
 
     // deleteAll() deletes all visitors for a given office ID.
     deleteAll(officeID) {
+        officeID = new mongodb.ObjectID(officeID);
         return this.collection.deleteMany({ officeID: officeID });
     }
 }
