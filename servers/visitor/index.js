@@ -46,7 +46,7 @@ const OfficeHandler = require('./handlers/office');
         const heartBeat = 10;
         const visitorMicroservice = {
             name: 'Visitor',
-            pathPattern: '/v1/visitors/?',
+            pathPattern: '/v1/offices/?',
             address: serverAddr,
             heartbeat: heartBeat
         };
