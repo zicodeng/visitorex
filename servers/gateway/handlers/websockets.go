@@ -5,7 +5,6 @@ import (
 	"github.com/zicodeng/visitorex/servers/gateway/sessions"
 	"log"
 	"net/http"
-	"sync"
 
 	"github.com/gorilla/websocket"
 )
@@ -53,23 +52,15 @@ func (wsh *WebSocketsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 	// and represent a different client.
 	// So whenever we receive a new request, and ServeHTTP is called,
 	// we need to add that request as a new client to our Notifier's clients field.
-	go wsh.notifier.AddClient(conn)
+	wsh.notifier.AddClient(conn)
 }
 
 // Notifier is an object that handles WebSocket notifications.
 type Notifier struct {
-	// slice and channels are reference type.
-	// We need to initialize it somehow
-	// otherwise their zero value is nil,
-	// and we might get nil pointer reference error.
-	clients []*websocket.Conn
-	eventQ  chan []byte
-	// Add a mutex or other channels to
-	// protect the "clients" slice from concurrent use.
-	// Our NewNotifier() doesn't need to initialize mx field
-	// and we are still able to use it,
-	// because we are just using zero values for whatever in the Mutex struct fields.
-	mx sync.Mutex
+	clients       []*websocket.Conn
+	eventQ        chan []byte
+	addClientQ    chan *websocket.Conn
+	removeClientQ chan *websocket.Conn
 }
 
 // NewNotifier constructs a new Notifier.
@@ -87,13 +78,7 @@ func NewNotifier() *Notifier {
 
 // AddClient adds a new client to the Notifier.
 func (n *Notifier) AddClient(client *websocket.Conn) {
-	// Add the client to the "clients" slice
-	// but since this can be called from multiple
-	// goroutines, make sure you protect the "clients"
-	// slice while you add a new connection to it!
-	n.mx.Lock()
-	n.clients = append(n.clients, client)
-	n.mx.Unlock()
+	n.addClientQ <- client
 
 	// Process incoming control messages from the client.
 	// Once this client is added to the list, it will constantly
@@ -103,16 +88,9 @@ func (n *Notifier) AddClient(client *websocket.Conn) {
 	// remove it from the list.
 	for {
 		if _, _, err := client.NextReader(); err != nil {
-			client.Close()
 			// Remove it from the list
-			for i, c := range n.clients {
-				if c == client {
-					n.mx.Lock()
-					n.clients = append(n.clients[:i], n.clients[i+1:]...)
-					n.mx.Unlock()
-				}
-			}
-			break
+			n.removeClientQ <- client
+			return
 		}
 	}
 }
@@ -126,25 +104,31 @@ func (n *Notifier) Notify(event []byte) {
 
 // Start starts the notification loop.
 func (n *Notifier) start() {
-	// Start a never-ending loop that reads
-	// new events out of the "n.eventQ" and broadcasts
-	// them to all WebSocket clients.
-	for msg := range n.eventQ {
-		n.mx.Lock()
-		// Loop through all the existing clients,
-		// and send messages to all of them.
-		for i, c := range n.clients {
-			// If we encounter an error writing messages out,
-			// it means this connection is lost,
-			// and we need to remove it from the list.
-			if err := c.WriteMessage(websocket.TextMessage, msg); err != nil {
-				c.Close()
-				n.mx.Lock()
-				n.clients = append(n.clients[:i], n.clients[i+1:]...)
-				n.mx.Unlock()
-				log.Println(err)
+	for {
+		select {
+		case event := <-n.eventQ:
+			// Loop through all the existing clients,
+			// and send messages to all of them.
+			for _, client := range n.clients {
+				if err := client.WriteMessage(websocket.TextMessage, event); err != nil {
+					n.removeClientQ <- client
+				}
 			}
+
+		case clientToAdd := <-n.addClientQ:
+			n.clients = append(n.clients, clientToAdd)
+
+		case clientToRemove := <-n.removeClientQ:
+			clientToRemove.Close()
+			newClients := make([]*websocket.Conn, 0, len(n.clients)-1)
+			for _, client := range n.clients {
+				if client != clientToRemove {
+					newClients = append(newClients, client)
+				}
+			}
+			n.clients = newClients
+
+		default:
 		}
-		n.mx.Unlock()
 	}
 }
