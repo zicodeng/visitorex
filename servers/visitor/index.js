@@ -83,7 +83,9 @@ const OfficeHandler = require('./handlers/office');
         // Durable queue writes messages to disk.
         // So even our MQ server dies,
         // the information is saved on disk and not lost.
-        const qConf = await MQChannel.assertQueue(visitorQueue, { durable: false });
+        const qConf = await MQChannel.assertQueue(visitorQueue, {
+            durable: false
+        });
         app.set('MQChannel', MQChannel);
         app.set('visitorQueue', visitorQueue);
 
@@ -91,12 +93,12 @@ const OfficeHandler = require('./handlers/office');
         const collections = {
             offices: 'offices',
             visitors: 'visitors'
-        }
-        const officeStore = new OfficeStore(db, collections.offices)
-        const visitorStore = new VisitorStore(db, collections.visitors)
+        };
+        const officeStore = new OfficeStore(db, collections.offices);
+        const visitorStore = new VisitorStore(db, collections.visitors);
 
         // API resource handlers
-        app.use(OfficeHandler(officeStore, visitorStore))
+        app.use(OfficeHandler(officeStore, visitorStore));
 
         app.listen(portNum, host, () => {
             console.log(`Server is listening on http://${serverAddr}`);

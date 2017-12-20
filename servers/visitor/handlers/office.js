@@ -14,7 +14,7 @@ const OfficeHandler = (officeStore, visitorStore) => {
         throw new Error('No office and/or visitor store found');
     }
 
-    const breakSignal = Utils.breakSignal
+    const breakSignal = Utils.breakSignal;
 
     const messageType = {
         officeNew: 'OfficeNew',
@@ -27,7 +27,8 @@ const OfficeHandler = (officeStore, visitorStore) => {
 
     // Respond with the list of all offices.
     router.get('/v1/offices', (req, res) => {
-        officeStore.getAll()
+        officeStore
+            .getAll()
             .then(offices => {
                 offices = Utils.convertToID(offices);
                 res.json(offices);
@@ -83,7 +84,7 @@ const OfficeHandler = (officeStore, visitorStore) => {
 
     // Respond with all visitors posted to the specified office.
     router.get('/v1/offices/:officeID', (req, res) => {
-        let officeID = req.params.officeID
+        let officeID = req.params.officeID;
         if (!officeID) {
             res
                 .set('Content-Type', 'text/plain')
@@ -104,7 +105,7 @@ const OfficeHandler = (officeStore, visitorStore) => {
                         .send('No such office found');
                     throw breakSignal;
                 }
-                return visitorStore.getAll(officeID)
+                return visitorStore.getAll(officeID);
             })
             .then(visitors => {
                 visitors = Utils.convertToID(visitors);
@@ -117,7 +118,7 @@ const OfficeHandler = (officeStore, visitorStore) => {
 
     // Create a new visitor in this office.
     router.post('/v1/offices/:officeID', (req, res) => {
-        let officeID = req.params.officeID
+        let officeID = req.params.officeID;
         if (!officeID) {
             res
                 .set('Content-Type', 'text/plain')
@@ -134,7 +135,9 @@ const OfficeHandler = (officeStore, visitorStore) => {
             res
                 .set('Content-Type', 'text/plain')
                 .status(400)
-                .send('No visitor name, company, or toSee found in the request body');
+                .send(
+                    'No visitor name, company, or toSee found in the request body'
+                );
             return;
         }
 
@@ -176,7 +179,7 @@ const OfficeHandler = (officeStore, visitorStore) => {
                         .send('No such office found');
                     throw breakSignal;
                 }
-                return visitorStore.insert(visitor)
+                return visitorStore.insert(visitor);
             })
             .then(newVisitor => {
                 newVisitor = Utils.convertToID(newVisitor);
@@ -197,7 +200,7 @@ const OfficeHandler = (officeStore, visitorStore) => {
         const userJSON = req.get('X-User');
         const user = JSON.parse(userJSON);
 
-        let officeID = req.params.officeID
+        let officeID = req.params.officeID;
         if (!officeID) {
             res
                 .set('Content-Type', 'text/plain')
@@ -235,7 +238,9 @@ const OfficeHandler = (officeStore, visitorStore) => {
                     res
                         .set('Content-Type', 'text/plain')
                         .status(400)
-                        .send('No office name or address found in the request body');
+                        .send(
+                            'No office name or address found in the request body'
+                        );
                     return;
                 }
 
@@ -280,7 +285,7 @@ const OfficeHandler = (officeStore, visitorStore) => {
         const userJSON = req.get('X-User');
         const user = JSON.parse(userJSON);
 
-        let officeID = req.params.officeID
+        let officeID = req.params.officeID;
         if (!officeID) {
             res
                 .set('Content-Type', 'text/plain')
@@ -316,14 +321,12 @@ const OfficeHandler = (officeStore, visitorStore) => {
                 officeStore.delete(officeID);
             })
             .then(() => {
-                res
-                    .set('Content-Type', 'text/plain')
-                    .send('Office deleted');
+                res.set('Content-Type', 'text/plain').send('Office deleted');
                 const message = {
                     type: messageType.officeDelete,
                     officeID: officeID
                 };
-                MQ.sendToVisitorQueue(req, message)
+                MQ.sendToVisitorQueue(req, message);
             })
             .catch(err => {
                 if (err !== breakSignal) {
