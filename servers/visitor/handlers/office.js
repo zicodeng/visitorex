@@ -82,7 +82,16 @@ const OfficeHandler = (officeStore, visitorStore) => {
 
     // Respond with all visitors posted to the specified office.
     router.get('/v1/offices/:officeID', (req, res) => {
-        const officeID = new mongodb.ObjectID(req.params.officeID);
+        let officeID = req.params.officeID
+        if (!officeID) {
+            res
+                .set('Content-Type', 'text/plain')
+                .status(400)
+                .send('No office ID found in request resource path');
+            return;
+        }
+        officeID = new mongodb.ObjectID(officeID);
+
         visitorStore
             .getAll(officeID)
             .then(visitors => {
@@ -95,14 +104,15 @@ const OfficeHandler = (officeStore, visitorStore) => {
 
     // Create a new visitor in this office.
     router.post('/v1/offices/:officeID', (req, res) => {
-        const officeID = new mongodb.ObjectID(req.params.officeID);
+        let officeID = req.params.officeID
         if (!officeID) {
             res
                 .set('Content-Type', 'text/plain')
                 .status(400)
-                .send('No office ID found in request params');
+                .send('No office ID found in request resource path');
             return;
         }
+        officeID = new mongodb.ObjectID(officeID);
 
         let name = req.body.name;
         let company = req.body.company;
@@ -161,7 +171,17 @@ const OfficeHandler = (officeStore, visitorStore) => {
     router.patch('/v1/offices/:officeID', (req, res) => {
         const userJSON = req.get('X-User');
         const user = JSON.parse(userJSON);
-        const officeID = new mongodb.ObjectID(req.params.officeID);
+
+        let officeID = req.params.officeID
+        if (!officeID) {
+            res
+                .set('Content-Type', 'text/plain')
+                .status(400)
+                .send('No office ID found in request resource path');
+            return;
+        }
+        officeID = new mongodb.ObjectID(officeID);
+
         officeStore
             .get(officeID)
             .then(office => {
@@ -234,7 +254,17 @@ const OfficeHandler = (officeStore, visitorStore) => {
     router.delete('/v1/offices/:officeID', (req, res) => {
         const userJSON = req.get('X-User');
         const user = JSON.parse(userJSON);
-        const officeID = new mongodb.ObjectID(req.params.officeID);
+
+        let officeID = req.params.officeID
+        if (!officeID) {
+            res
+                .set('Content-Type', 'text/plain')
+                .status(400)
+                .send('No office ID found in request resource path');
+            return;
+        }
+        officeID = new mongodb.ObjectID(officeID);
+
         officeStore
             .get(officeID)
             .then(office => {
@@ -264,7 +294,6 @@ const OfficeHandler = (officeStore, visitorStore) => {
             .then(() => {
                 res
                     .set('Content-Type', 'text/plain')
-                    .status(200)
                     .send('Office deleted');
 
                 const message = {
