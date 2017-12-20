@@ -319,12 +319,10 @@ const OfficeHandler = (officeStore, visitorStore) => {
                 res
                     .set('Content-Type', 'text/plain')
                     .send('Office deleted');
-
                 const message = {
                     type: messageType.officeDelete,
                     officeID: officeID
                 };
-
                 MQ.sendToVisitorQueue(req, message)
             })
             .catch(err => {
