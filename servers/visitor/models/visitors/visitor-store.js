@@ -21,7 +21,6 @@ class VisitorStore {
 
     // getAll() retrieves all visitors from MongoDB for a given office ID.
     getAll(officeID) {
-        officeID = new mongodb.ObjectID(officeID);
         return this.collection.find({ officeID: officeID }).toArray();
     }
 

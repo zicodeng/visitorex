@@ -89,6 +89,8 @@ const OfficeHandler = (officeStore, visitorStore) => {
                 .send('No office ID found in request resource path');
             return;
         }
+        // Note that we did not convert office ID to bson objectID.
+        // It is just a string stored in MongoDB.
 
         officeStore
             .get(officeID)
