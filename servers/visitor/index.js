@@ -40,7 +40,7 @@ const mqURL = `amqp://${mqAddr}`;
         const heartBeat = 10;
         const visitorMicroservice = {
             name: 'Visitor',
-            pathPattern: '/v1/(visitors)/?',
+            pathPattern: '/v1/visitors/?',
             address: serverAddr,
             heartbeat: heartBeat
         };
@@ -50,7 +50,7 @@ const mqURL = `amqp://${mqAddr}`;
                 redisChannel,
                 JSON.stringify(visitorMicroservice)
             );
-        }, 1000 * heartBeat);
+        }, heartBeat * sec);
 
         // Add global middlewares.
         app.use(morgan(process.env.LOG_FORMAT || 'dev'));
