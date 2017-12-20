@@ -90,8 +90,18 @@ const OfficeHandler = (officeStore, visitorStore) => {
             return;
         }
 
-        visitorStore
-            .getAll(officeID)
+        officeStore
+            .get(officeID)
+            .then(office => {
+                if (!office) {
+                    res
+                        .set('Content-Type', 'text/plain')
+                        .status(400)
+                        .send('No such office found');
+                    throw breakSignal;
+                }
+                return visitorStore.getAll(officeID)
+            })
             .then(visitors => {
                 res.json(visitors);
             })
