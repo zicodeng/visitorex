@@ -99,7 +99,7 @@ const OfficeHandler = require('./handlers/office');
         app.use(OfficeHandler(officeStore, visitorStore))
 
         app.listen(portNum, host, () => {
-            console.log(`Server is listening at http://${serverAddr}`);
+            console.log(`Server is listening on http://${serverAddr}`);
         });
     } catch (err) {
         console.log(err);
