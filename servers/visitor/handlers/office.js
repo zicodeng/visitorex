@@ -149,8 +149,20 @@ const OfficeHandler = (officeStore, visitorStore) => {
             visitTime
         );
 
-        visitorStore
-            .insert(visitor)
+        officeStore
+            .get(officeID)
+            .then(office => {
+                // Make sure this office exists in our database first
+                // before insert any visitor.
+                if (!office) {
+                    res
+                        .set('Content-Type', 'text/plain')
+                        .status(400)
+                        .send('No such office found');
+                    throw breakSignal;
+                }
+                return visitorStore.insert(visitor)
+            })
             .then(newVisitor => {
                 res.json(newVisitor);
                 const message = {
