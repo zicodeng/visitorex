@@ -29,6 +29,7 @@ const OfficeHandler = (officeStore, visitorStore) => {
     router.get('/v1/offices', (req, res) => {
         officeStore.getAll()
             .then(offices => {
+                offices = Utils.convertToID(offices);
                 res.json(offices);
             })
             .catch(err => {
@@ -67,6 +68,7 @@ const OfficeHandler = (officeStore, visitorStore) => {
         officeStore
             .insert(office)
             .then(office => {
+                office = Utils.convertToID(office);
                 res.json(office);
                 const message = {
                     type: messageType.officeNew,
@@ -105,6 +107,7 @@ const OfficeHandler = (officeStore, visitorStore) => {
                 return visitorStore.getAll(officeID)
             })
             .then(visitors => {
+                visitors = Utils.convertToID(visitors);
                 res.json(visitors);
             })
             .catch(err => {
@@ -176,6 +179,7 @@ const OfficeHandler = (officeStore, visitorStore) => {
                 return visitorStore.insert(visitor)
             })
             .then(newVisitor => {
+                newVisitor = Utils.convertToID(newVisitor);
                 res.json(newVisitor);
                 const message = {
                     type: messageType.visitorNew,
@@ -255,6 +259,7 @@ const OfficeHandler = (officeStore, visitorStore) => {
                 return officeStore.update(officeID, updates);
             })
             .then(updatedOffice => {
+                updatedOffice = Utils.convertToID(updatedOffice);
                 res.json(updatedOffice);
                 const message = {
                     type: messageType.officeUpdate,
