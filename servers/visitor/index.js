@@ -17,6 +17,8 @@ if (!dbName) {
     process.exit(1);
 }
 const mongoURL = `mongodb://${mongoAddr}/${dbName}`;
+const OfficeStore = require('./models/offices/office-store');
+const VisitorStore = require('./models/visitors/visitor-store');
 
 const redis = require('redis');
 const redisAddr = process.env.REDIS_ADDR || 'localhost';
@@ -26,6 +28,9 @@ const amqp = require('amqplib');
 const visitorQueue = 'VisitorQueue';
 const mqAddr = process.env.MQ_ADDR || 'localhost:5672';
 const mqURL = `amqp://${mqAddr}`;
+
+// Handlers
+const OfficeHandler = require('./handlers/office');
 
 (async () => {
     try {
@@ -80,6 +85,17 @@ const mqURL = `amqp://${mqAddr}`;
         const qConf = await MQChannel.assertQueue(visitorQueue, { durable: false });
         app.set('MQChannel', MQChannel);
         app.set('visitorQueue', visitorQueue);
+
+        // Initialize Mongo store.
+        const collections = {
+            offices: 'offices',
+            visitors: 'visitors'
+        }
+        const officeStore = new OfficeStore(db, collections.offices)
+        const visitorStore = new VisitorStore(db, collections.visitors)
+
+        // API resource handlers
+        app.use(OfficeHandler(officeStore, visitorStore))
 
         app.listen(portNum, host, () => {
             console.log(`Server is listening at http://${serverAddr}`);
