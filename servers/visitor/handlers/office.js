@@ -39,20 +39,12 @@ const OfficeHandler = (officeStore, visitorStore) => {
 
     // Create a new office.
     router.post('/v1/offices', (req, res) => {
-        const name = req.body.name;
-        const addr = req.body.addr;
+        const name = req.body.name.trim();
+        const addr = req.body.addr.trim();
         if (!name || !addr) {
             res.set('Content-Type', 'text/plain');
             res.status(400)
                 .send('No office name or address found in the request body');
-            return;
-        }
-
-        if (!name.length || !addr.length) {
-            res.set('Content-Type', 'text/plain');
-            res
-                .status(400)
-                .send('Office name or address has length of zero');
             return;
         }
 
@@ -100,23 +92,15 @@ const OfficeHandler = (officeStore, visitorStore) => {
             return;
         }
 
-        const name = req.body.name;
-        const company = req.body.company;
-        const toSee = req.body.toSee;
+        const name = req.body.name.trim();
+        const company = req.body.company.trim();
+        const toSee = req.body.toSee.trim();
 
         if (!name || !company || !toSee) {
             res.set('Content-Type', 'text/plain');
             res
                 .status(400)
                 .send('No visitor name, company, or toSee found in the request body');
-            return;
-        }
-
-        if (!name.length || !company.lengh || !toSee.length) {
-            res.set('Content-Type', 'text/plain');
-            res
-                .status(400)
-                .send('Visitor name, company, or toSee has length of zero');
             return;
         }
 
@@ -159,7 +143,9 @@ const OfficeHandler = (officeStore, visitorStore) => {
             .then(office => {
                 if (!office) {
                     res.set('Content-Type', 'text/plain');
-                    res.status(400).send('No such office found');
+                    res
+                        .status(400)
+                        .send('No such office found');
                     throw breakSignal;
                 }
                 // If the current user isn't the creator,
@@ -174,14 +160,22 @@ const OfficeHandler = (officeStore, visitorStore) => {
                 return;
             })
             .then(() => {
+                const name = req.body.name.trim();
+                const addr = req.body.addr.trim();
+                if (!name || !addr) {
+                    res.set('Content-Type', 'text/plain');
+                    res
+                        .status(400)
+                        .send('No office name or address found in the request body');
+                    return;
+                }
+
                 // Update office name and address.
-                const updates = {};
-                if (req.body.name) {
-                    updates.name = req.body.name;
-                }
-                if (req.body.addr) {
-                    updates.addr = req.body.addr;
-                }
+                const updates = {
+                    name: name,
+                    addr: addr
+                };
+
                 return officeStore.update(officeID, updates);
             })
             .then(updatedOffice => {
