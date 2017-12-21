@@ -1,6 +1,7 @@
 'use strict';
 
 const mongodb = require('mongodb');
+const Trie = require('./../../indexes/trie');
 
 class VisitorStore {
     constructor(db, colName) {
@@ -53,6 +54,20 @@ class VisitorStore {
     deleteAll(officeID) {
         officeID = new mongodb.ObjectID(officeID);
         return this.collection.deleteMany({ officeID: officeID });
+    }
+
+    // Insert all existing visitors into the Trie on server start-up.
+    async index() {
+        const visitorTrie = new Trie();
+        const visitors = await this.getAll();
+        visitors.forEach(visitor => {
+            visitorTrie.insert(visitor.firstName, visitor._id);
+            visitorTrie.insert(visitor.lastName, visitor._id);
+            visitorTrie.insert(visitor.company, visitor._id);
+            visitorTrie.insert(visitor.toSee, visitor._id);
+            visitorTrie.insert(visitor.date, visitor._id);
+        });
+        return visitorTrie;
     }
 }
 
