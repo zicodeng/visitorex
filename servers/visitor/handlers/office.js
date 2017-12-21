@@ -127,29 +127,33 @@ const OfficeHandler = (officeStore, visitorStore) => {
             return;
         }
 
-        let name = req.body.name;
+        let firstName = req.body.firstName;
+        let lastName = req.body.lastName;
         let company = req.body.company;
         let toSee = req.body.toSee;
 
-        if (!name || !company || !toSee) {
+        if (!firstName || !lastName || !company || !toSee) {
             res
                 .set('Content-Type', 'text/plain')
                 .status(400)
                 .send(
-                    'No visitor name, company, or toSee found in the request body'
+                    'No visitor firstName, lastName, company, or toSee found in the request body'
                 );
             return;
         }
 
-        name = name.trim();
+        firstName = firstName.trim();
+        lastName = lastName.trim();
         company = company.trim();
         toSee = toSee.trim();
 
-        if (!name || !company || !toSee) {
+        if (!firstName || !lastName || !company || !toSee) {
             res
                 .set('Content-Type', 'text/plain')
                 .status(400)
-                .send('Visitor name, company, or toSee has length of zero');
+                .send(
+                    'Visitor firstName, lastName, company, or toSee has length of zero'
+                );
             return;
         }
 
@@ -160,7 +164,8 @@ const OfficeHandler = (officeStore, visitorStore) => {
 
         const visitor = new Visitor(
             officeID,
-            name,
+            firstName,
+            lastName,
             company,
             toSee,
             visitDate,

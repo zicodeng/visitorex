@@ -1,9 +1,10 @@
 'use strict';
 
 class Visitor {
-    constructor(officeID, name, company, toSee, date, timeIn) {
+    constructor(officeID, firstName, lastName, company, toSee, date, timeIn) {
         this.officeID = officeID;
-        this.name = name;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.company = company;
         this.toSee = toSee;
         this.date = date;
