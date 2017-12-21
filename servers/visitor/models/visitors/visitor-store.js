@@ -20,6 +20,12 @@ class VisitorStore {
         return this.collection.findOne({ _id: id });
     }
 
+    // Retrieves one visitor from MongoDB for a given visitor ID and office ID.
+    getByOfficeID(visitorID, officeID) {
+        visitorID = new mongodb.ObjectID(visitorID);
+        return this.collection.findOne({ _id: visitorID, officeID: officeID });
+    }
+
     // getAll(officeID) retrieves all visitors from MongoDB for a given office ID.
     getAll(officeID) {
         return this.collection.find({ officeID: officeID }).toArray();
@@ -68,6 +74,18 @@ class VisitorStore {
             visitorTrie.insert(visitor.date, visitor._id);
         });
         return visitorTrie;
+    }
+
+    // Given a list of visitor IDs, convert them to visitor objects for a given office ID.
+    async convertToVisitors(visitorIDs, officeID) {
+        const results = [];
+        for (let visitorID of visitorIDs) {
+            const visitor = await this.getByOfficeID(visitorID, officeID);
+            if (visitor) {
+                results.push(visitor);
+            }
+        }
+        return results;
     }
 }
 

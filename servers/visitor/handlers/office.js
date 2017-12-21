@@ -348,6 +348,33 @@ const OfficeHandler = (officeStore, visitorStore, visitorTrie) => {
             });
     });
 
+    // Search visitors in this office.
+    router.get('/v1/offices/:officeID/search', (req, res) => {
+        const officeID = req.params.officeID;
+        if (!officeID) {
+            res
+                .set('Content-Type', 'text/plain')
+                .status(400)
+                .send('No office ID found in request resource path');
+            return;
+        }
+
+        const q = req.query.q;
+        if (!q) {
+            res
+                .set('Content-Type', 'text/plain')
+                .status(400)
+                .send('No query string named q found in request');
+            return;
+        }
+
+        const limit = 25;
+        const visitorIDs = visitorTrie.search(limit, q);
+        visitorStore.convertToVisitors(visitorIDs, officeID).then(visitors => {
+            res.json(visitors);
+        });
+    });
+
     return router;
 };
 
