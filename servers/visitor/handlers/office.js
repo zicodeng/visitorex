@@ -86,7 +86,7 @@ const OfficeHandler = (officeStore, visitorStore, visitorTrie) => {
 
     // Respond with all visitors posted to the specified office.
     router.get('/v1/offices/:officeID', (req, res) => {
-        let officeID = req.params.officeID;
+        const officeID = req.params.officeID;
         if (!officeID) {
             res
                 .set('Content-Type', 'text/plain')
@@ -120,7 +120,7 @@ const OfficeHandler = (officeStore, visitorStore, visitorTrie) => {
 
     // Create a new visitor in this office.
     router.post('/v1/offices/:officeID', (req, res) => {
-        let officeID = req.params.officeID;
+        const officeID = req.params.officeID;
         if (!officeID) {
             res
                 .set('Content-Type', 'text/plain')
@@ -213,7 +213,7 @@ const OfficeHandler = (officeStore, visitorStore, visitorTrie) => {
         const userJSON = req.get('X-User');
         const user = JSON.parse(userJSON);
 
-        let officeID = req.params.officeID;
+        const officeID = req.params.officeID;
         if (!officeID) {
             res
                 .set('Content-Type', 'text/plain')
@@ -298,7 +298,7 @@ const OfficeHandler = (officeStore, visitorStore, visitorTrie) => {
         const userJSON = req.get('X-User');
         const user = JSON.parse(userJSON);
 
-        let officeID = req.params.officeID;
+        const officeID = req.params.officeID;
         if (!officeID) {
             res
                 .set('Content-Type', 'text/plain')
