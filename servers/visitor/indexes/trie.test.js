@@ -95,6 +95,80 @@ describe('Trie Search', () => {
     });
 });
 
+describe('Trie Multi-Token Search', () => {
+    const cases = [
+        {
+            name: 'Two tokens',
+            keys: ['do', 'dog', 'dope', 'door', 'desk', 'cat', 'cold'],
+            tokens: 'do co',
+            limit: 20,
+            expectedResultCount: 5
+        },
+        {
+            name: 'Three tokens',
+            keys: [
+                'do',
+                'dog',
+                'dope',
+                'door',
+                'desk',
+                'cat',
+                'cold',
+                'love',
+                'lonely'
+            ],
+            tokens: 'do co lo',
+            limit: 20,
+            expectedResultCount: 7
+        },
+        {
+            name: 'Three tokens with limit',
+            keys: [
+                'do',
+                'dog',
+                'dope',
+                'door',
+                'desk',
+                'cat',
+                'cold',
+                'love',
+                'lonely'
+            ],
+            tokens: 'do co lo',
+            limit: 5,
+            expectedResultCount: 5
+        }
+    ];
+
+    beforeEach(() => {
+        // Create a new Trie each time.
+        trie = new Trie();
+    });
+
+    cases.forEach(c => {
+        test(c.name, () => {
+            c.keys.forEach(key => {
+                trie.insert(key, new mongodb.ObjectID());
+            });
+            const results = trie.search(c.limit, c.tokens);
+            expect(results.size).toBe(c.expectedResultCount);
+        });
+    });
+
+    test('All tokens point to the same value', () => {
+        const keys = ['zico', 'deng', 'zicodeng', 'ziked'];
+        const tokens = 'zico deng zicodeng ziked';
+        const limit = 20;
+        const expectedResultCount = 1;
+        const userID = new mongodb.ObjectID();
+        keys.forEach(key => {
+            trie.insert(key, userID);
+        });
+        const results = trie.search(limit, tokens);
+        expect(results.size).toBe(expectedResultCount);
+    });
+});
+
 const values = [
     new mongodb.ObjectID(),
     new mongodb.ObjectID(),

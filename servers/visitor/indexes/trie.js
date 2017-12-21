@@ -12,33 +12,40 @@ class Trie {
         this.root.insert(key, userID);
     }
 
-    // Retrieves a limited number of values
-    // that match a given prefix string from the trie.
-    search(limit, prefix) {
+    // Retrieves a limited number of values that match any token from the trie.
+    search(limit, tokens) {
         // results is a set that only contains unique user IDs.
         const results = new Set();
 
-        prefix = prefix.toLowerCase().trim();
-        if (!prefix) {
+        tokens = tokens.toLowerCase().trim();
+        if (!tokens) {
             return results;
         }
 
-        let curNode = this.root;
+        // Find all prefixes we want to search by splitting the requested tokens.
+        // Each token represents a prefix.
+        const prefixes = tokens.split(/\s+/);
 
-        for (let char of prefix) {
-            // If there is no child associated with that character,
-            // no keys start with the prefix, so return an empty set.
-            if (!curNode.children.has(char)) {
-                return results;
+        // Search each prefix in the list and populate results.
+        prefixes.forEach(prefix => {
+            let curNode = this.root;
+
+            for (let char of prefix) {
+                // If there is no child associated with that character,
+                // no keys start with the prefix, so return an empty set.
+                if (!curNode.children.has(char)) {
+                    return results;
+                }
+                curNode = curNode.children.get(char);
             }
-            curNode = curNode.children.get(char);
-        }
 
-        // Child node now points to the branch containing all keys
-        // that start with the prefix.
-        // Recurse down the branch,
-        // gathering the keys and values, and return them.
-        curNode.search(limit, results);
+            // Child node now points to the branch containing all keys
+            // that start with the prefix.
+            // Recurse down the branch,
+            // gathering the keys and values, and return them.
+            curNode.search(limit, results);
+        });
+
         return results;
     }
 
