@@ -9,9 +9,11 @@ const Visitor = require('./../models/visitors/visitor');
 const Utils = require('./utils');
 const MQ = require('./message-queue');
 
-const OfficeHandler = (officeStore, visitorStore) => {
-    if (!officeStore || !visitorStore) {
-        throw new Error('No office and/or visitor store found');
+const OfficeHandler = (officeStore, visitorStore, visitorTrie) => {
+    if (!officeStore || !visitorStore || !visitorTrie) {
+        throw new Error(
+            'No office store, visitor store, or visitor Trie found'
+        );
     }
 
     const breakSignal = Utils.breakSignal;
@@ -187,6 +189,12 @@ const OfficeHandler = (officeStore, visitorStore) => {
                 return visitorStore.insert(visitor);
             })
             .then(newVisitor => {
+                visitorTrie.insert(newVisitor.firstName, newVisitor._id);
+                visitorTrie.insert(newVisitor.lastName, newVisitor._id);
+                visitorTrie.insert(newVisitor.company, newVisitor._id);
+                visitorTrie.insert(newVisitor.toSee, newVisitor._id);
+                visitorTrie.insert(newVisitor.date, newVisitor._id);
+
                 newVisitor = Utils.convertToID(newVisitor);
                 res.json(newVisitor);
                 const message = {

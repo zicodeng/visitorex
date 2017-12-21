@@ -32,6 +32,9 @@ const mqURL = `amqp://${mqAddr}`;
 // Handlers
 const OfficeHandler = require('./handlers/office');
 
+// Trie
+const Trie = require('./indexes/trie');
+
 (async () => {
     try {
         // Guarantee our MongoDB is started before clients can make any connections.
@@ -97,8 +100,19 @@ const OfficeHandler = require('./handlers/office');
         const officeStore = new OfficeStore(db, collections.offices);
         const visitorStore = new VisitorStore(db, collections.visitors);
 
+        // Insert all existing visitors into the Trie on server start up.
+        const visitorTrie = new Trie();
+        const visitors = await visitorStore.getAll();
+        visitors.forEach(visitor => {
+            visitorTrie.insert(visitor.firstName, visitor._id);
+            visitorTrie.insert(visitor.lastName, visitor._id);
+            visitorTrie.insert(visitor.company, visitor._id);
+            visitorTrie.insert(visitor.toSee, visitor._id);
+            visitorTrie.insert(visitor.date, visitor._id);
+        });
+
         // API resource handlers
-        app.use(OfficeHandler(officeStore, visitorStore));
+        app.use(OfficeHandler(officeStore, visitorStore, visitorTrie));
 
         app.listen(portNum, host, () => {
             console.log(`Server is listening on http://${serverAddr}`);
