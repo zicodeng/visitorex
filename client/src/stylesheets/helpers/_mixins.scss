@@ -1,0 +1,16 @@
+@import 'compass';
+
+@mixin abs-pos($top: auto, $right: auto, $bottom: auto, $left: auto) {
+    position: absolute;
+    top: $top;
+    right: $right;
+    bottom: $bottom;
+    left: $left;
+}
+
+// Responsive media query
+@mixin respond-to($breakpoint) {
+    @media screen and (min-width: $breakpoint) {
+        @content;
+    }
+}
