@@ -19,10 +19,10 @@ const OfficeHandler = (officeStore, visitorStore, visitorTrie) => {
     const breakSignal = Utils.breakSignal;
 
     const messageType = {
-        officeNew: 'OfficeNew',
-        officeUpdate: 'OfficeUpdate',
-        officeDelete: 'OfficeDelete',
-        visitorNew: 'VisitorNew'
+        newOffice: 'NEW_OFFICE',
+        updateOffice: 'UPDATE_OFFICE',
+        deleteOffice: 'DELETE_OFFICE',
+        newVisitor: 'NEW_VISITOR'
     };
 
     const router = express.Router();
@@ -74,7 +74,7 @@ const OfficeHandler = (officeStore, visitorStore, visitorTrie) => {
                 office = Utils.convertToID(office);
                 res.json(office);
                 const message = {
-                    type: messageType.officeNew,
+                    type: messageType.newOffice,
                     payload: office
                 };
                 MQ.sendToVisitorQueue(req, message);
@@ -198,7 +198,7 @@ const OfficeHandler = (officeStore, visitorStore, visitorTrie) => {
                 newVisitor = Utils.convertToID(newVisitor);
                 res.json(newVisitor);
                 const message = {
-                    type: messageType.visitorNew,
+                    type: messageType.newVisitor,
                     visitor: newVisitor
                 };
                 MQ.sendToVisitorQueue(req, message);
@@ -280,7 +280,7 @@ const OfficeHandler = (officeStore, visitorStore, visitorTrie) => {
                 updatedOffice = Utils.convertToID(updatedOffice);
                 res.json(updatedOffice);
                 const message = {
-                    type: messageType.officeUpdate,
+                    type: messageType.updateOffice,
                     office: updatedOffice
                 };
                 MQ.sendToVisitorQueue(req, message);
@@ -336,7 +336,7 @@ const OfficeHandler = (officeStore, visitorStore, visitorTrie) => {
             .then(() => {
                 res.set('Content-Type', 'text/plain').send('Office deleted');
                 const message = {
-                    type: messageType.officeDelete,
+                    type: messageType.deleteOffice,
                     officeID: officeID
                 };
                 MQ.sendToVisitorQueue(req, message);
