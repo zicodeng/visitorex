@@ -70,7 +70,7 @@ module.exports = {
                             loader: 'sass-loader',
                             options: {
                                 includePaths: [
-                                    path.resolve(__dirname, './src/sass'),
+                                    path.resolve(__dirname, './src/stylesheets'),
                                     path.resolve(
                                         __dirname,
                                         './node_modules/compass-mixins/lib',
