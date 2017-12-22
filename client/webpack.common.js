@@ -8,19 +8,18 @@ var path = require('path');
 module.exports = {
     entry: {
         index: './src/index.tsx',
-        app: './src/app.tsx'
     },
 
     output: {
         filename: '[name]-bundle.min.js',
-        path: path.resolve(__dirname, 'dist')
+        path: path.resolve(__dirname, 'dist'),
     },
 
     context: __dirname, // to automatically find tsconfig.json
 
     resolve: {
         extensions: ['.js', '.json', '.ts', '.tsx', '.scss', '.css'],
-        modules: ['node_modules', 'src', 'assets']
+        modules: ['node_modules', 'src', 'assets'],
     },
 
     module: {
@@ -34,25 +33,25 @@ module.exports = {
                         loader: 'thread-loader',
                         options: {
                             // There should be 1 cpu for the fork-ts-checker-webpack-plugin.
-                            workers: require('os').cpus().length - 1
-                        }
+                            workers: require('os').cpus().length - 1,
+                        },
                     },
                     {
                         loader: 'babel-loader',
                         options: {
                             presets: ['es2015', 'react'],
-                            cacheDirectory: true
-                        }
+                            cacheDirectory: true,
+                        },
                     },
                     {
                         loader: 'ts-loader',
                         options: {
                             // IMPORTANT! Use happyPackMode mode to speed-up
                             // compilation and reduce errors reported to webpack.
-                            happyPackMode: true
-                        }
-                    }
-                ]
+                            happyPackMode: true,
+                        },
+                    },
+                ],
             },
             {
                 test: /\.css$|\.scss$/,
@@ -61,19 +60,11 @@ module.exports = {
                     use: [
                         { loader: 'cache-loader' },
                         {
-                            loader: 'thread-loader',
-                            options: {
-                                workers: 3,
-                                workerParallelJobs: 2,
-                                poolParallelJobs: 10
-                            }
-                        },
-                        {
                             loader: 'css-loader',
                             options: {
                                 sourceMap: true,
-                                minimize: true
-                            }
+                                minimize: true,
+                            },
                         },
                         {
                             loader: 'sass-loader',
@@ -82,15 +73,15 @@ module.exports = {
                                     path.resolve(__dirname, './src/sass'),
                                     path.resolve(
                                         __dirname,
-                                        './node_modules/compass-mixins/lib'
-                                    )
+                                        './node_modules/compass-mixins/lib',
+                                    ),
                                 ],
-                                sourceMap: true
-                            }
-                        }
+                                sourceMap: true,
+                            },
+                        },
                     ],
-                    fallback: 'style-loader'
-                })
+                    fallback: 'style-loader',
+                }),
             },
             {
                 test: /\.(png|jpg|gif)$/,
@@ -98,37 +89,32 @@ module.exports = {
                     {
                         loader: 'url-loader',
                         options: {
-                            limit: 8192
-                        }
-                    }
-                ]
-            }
-        ]
+                            limit: 8192,
+                        },
+                    },
+                ],
+            },
+        ],
     },
 
     plugins: [
         new webpack.optimize.CommonsChunkPlugin({
             name: 'commons',
-            filename: 'commons.min.js'
+            filename: 'commons.min.js',
         }),
         new ForkTsCheckerWebpackPlugin({
             checkSyntacticErrors: true,
-            watch: ['./src']
+            watch: ['./src'],
         }),
         new HtmlWebpackPlugin({
             filename: 'index.html',
-            template: './src/templates/index.html',
-            chunks: ['commons', 'index']
-        }),
-        new HtmlWebpackPlugin({
-            filename: 'app.html',
-            template: './src/templates/app.html',
-            chunks: ['commons', 'app']
+            template: './src/index.html',
+            chunks: ['commons', 'index'],
         }),
         new ExtractTextPlugin({
             filename: '[name]-style.min.css',
             disable: process.env.NODE_ENV === 'development',
-            allChunks: true
-        })
-    ]
+            allChunks: true,
+        }),
+    ],
 };

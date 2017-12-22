@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack-dev-server -d --color --config webpack.dev.js",
+		"build": "webpack --color --progress --config webpack.prod.js",
     "format": "prettier --write $FILE",
     "format:all": "prettier --write src/**/*"
   },
