@@ -3,6 +3,7 @@ dist
 tls
 coverage
 coverage.out
+.cache-loader
 .DS_Store
 .vscode
 .idea
