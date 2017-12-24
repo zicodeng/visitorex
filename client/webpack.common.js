@@ -7,7 +7,7 @@ var path = require('path');
 
 module.exports = {
     entry: {
-        index: './src/index.tsx',
+        app: './src/app.tsx',
     },
 
     output: {
@@ -70,7 +70,10 @@ module.exports = {
                             loader: 'sass-loader',
                             options: {
                                 includePaths: [
-                                    path.resolve(__dirname, './src/stylesheets'),
+                                    path.resolve(
+                                        __dirname,
+                                        './src/stylesheets',
+                                    ),
                                     path.resolve(
                                         __dirname,
                                         './node_modules/compass-mixins/lib',
@@ -109,7 +112,7 @@ module.exports = {
         new HtmlWebpackPlugin({
             filename: 'index.html',
             template: './src/index.html',
-            chunks: ['commons', 'index'],
+            chunks: ['commons', 'app'],
         }),
         new ExtractTextPlugin({
             filename: '[name]-style.min.css',
