@@ -1,1 +1,13 @@
 @import 'shared';
+@import 'components/material-form';
+
+main {
+    justify-content: center;
+    align-items: center;
+    padding: 100px 0;
+}
+
+.check-in-form {
+    width: 70%;
+    max-width: 600px;
+}
