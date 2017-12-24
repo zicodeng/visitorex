@@ -16,7 +16,7 @@ class CheckIn extends React.Component<any, any> {
     public render() {
         return (
             <main>
-                <div className="check-in-form ">
+                <div className="check-in-form">
                     <div className="material-form material-form__background-card" />
                     <form className="material-form">
                         <h1 className="title">ExtraHop Visitor Check-In</h1>
