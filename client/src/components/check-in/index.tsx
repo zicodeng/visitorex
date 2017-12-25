@@ -1,6 +1,13 @@
 import * as React from 'react';
 
 import { fetchOffices } from 'components/check-in/actions/office-actions';
+import MaterialForm, {
+    formTypes,
+    Input,
+    InputRefVal,
+    Form,
+    createBgForm,
+} from 'components/material-form';
 
 import 'components/check-in/style';
 
@@ -14,98 +21,73 @@ class CheckIn extends React.Component<any, any> {
     }
 
     public render() {
-        return (
-            <main>
-                <div className="check-in-form">
-                    <div className="material-form material-form__background-card" />
-                    <form className="material-form">
-                        <h1 className="title">ExtraHop Visitor Check-In</h1>
-                        <div
-                            id="office-dropdown"
-                            className="input-container input-container__dropdown"
-                        >
-                            <input
-                                type="text"
-                                ref="office"
-                                onFocus={e => this.handleFocusInputOffice()}
-                                onBlur={e => this.handleBlurInputOffice()}
-                                required
-                            />
-                            <label htmlFor="office">Office</label>
-                            <div className="bar" />
-                            {this.renderOptions()}
-                        </div>
-                        <div className="input-container">
-                            <input type="text" ref="firstName" required />
-                            <label htmlFor="first-name">First Name</label>
-                            <div className="bar" />
-                        </div>
-                        <div className="input-container">
-                            <input type="text" ref="lastName" required />
-                            <label htmlFor="last-name">Last Name</label>
-                            <div className="bar" />
-                        </div>
-                        <div className="input-container">
-                            <input type="text" ref="toSee" required />
-                            <label htmlFor="to-see">To See</label>
-                            <div className="bar" />
-                        </div>
-                        <div className="input-container">
-                            <input type="text" ref="company" required />
-                            <label htmlFor="company">Company</label>
-                            <div className="bar" />
-                        </div>
-                        <div className="btn-container">
-                            <button>
-                                <span>Go</span>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </main>
-        );
+        return <main>{this.renderCheckinForm()}</main>;
     }
 
     public componentWillMount() {
         fetchOffices();
     }
 
-    private renderOptions = (): JSX.Element | null => {
+    private renderCheckinForm = () => {
+        const forms: Form[] = [createBgForm(), this.createCheckinForm()];
+        return (
+            <div className="visitor-checkin-form">
+                <MaterialForm forms={forms} />
+            </div>
+        );
+    };
+
+    private createCheckinForm = () => {
         const offices = ['Global Headquarters (Seattle)', 'EMEA Headquarters'];
-        const showOfficeDropdown = this.state.showOfficeDropdown;
-        if (!showOfficeDropdown) {
-            return null;
-        }
-        const li = offices.map((office, i) => {
-            return (
-                <li key={i} onClick={e => this.handleClickOption(offices, i)}>
-                    {office}
-                </li>
-            );
-        });
+        const checkinInputs: Input[] = [
+            {
+                type: 'text',
+                ref: 'office',
+                isRequired: true,
+                label: 'Office',
+                options: offices,
+            },
+            {
+                type: 'text',
+                ref: 'firstName',
+                isRequired: true,
+                label: 'First Name',
+            },
+            {
+                type: 'text',
+                ref: 'lastName',
+                isRequired: true,
+                label: 'Last Name',
+            },
+            {
+                type: 'text',
+                ref: 'toSee',
+                isRequired: true,
+                label: 'To See',
+            },
+            {
+                type: 'text',
+                ref: 'company',
+                isRequired: true,
+                label: 'Company',
+            },
+        ];
 
-        return <ul className="options">{li}</ul>;
+        const checkinForm: Form = {
+            type: formTypes.basic,
+            submitAction: inputRefVals => this.submitCheckinForm(inputRefVals),
+            title: 'EXTRAHOP VISITOR',
+            inputs: checkinInputs,
+            btn: 'CHECK IN',
+        };
+
+        return checkinForm;
     };
 
-    private handleClickOption = (offices, i): void => {
-        // Display selected option on office input box.
-        this.refs.office['value'] = offices[i];
-    };
-
-    private handleFocusInputOffice = (): void => {
-        this.setState({
-            showOfficeDropdown: true,
-        });
-    };
-
-    private handleBlurInputOffice = (): void => {
-        // Delay firing onBlur event
-        // so that our onClick event can be fired.
-        setTimeout(() => {
-            this.setState({
-                showOfficeDropdown: false,
-            });
-        }, 150);
+    private submitCheckinForm = (inputRefVals: InputRefVal[]): boolean => {
+        console.log('Check-in submit');
+        console.log(inputRefVals);
+        return false;
     };
 }
 
