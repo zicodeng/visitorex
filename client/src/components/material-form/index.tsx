@@ -9,23 +9,22 @@ export const formTypes = {
 };
 
 export interface Input {
-    type: string; // Needs to be valid HTML input type.
+    // Needs to be valid HTML input type.
+    type: string;
     ref: string;
+    // The name of field for this input in returned form data.
+    // If not specified, ref will be used instead.
+    field?: string;
     isRequired: boolean;
     label: string;
     options?: string[];
-}
-
-export interface InputRefVal {
-    ref: string;
-    val: string;
 }
 
 export interface Form {
     type?: string;
     // An action expects to return a boolean indicating
     // whether this submit action is successful or failed.
-    submitAction?: (inputRefVals: InputRefVal[]) => boolean;
+    submitAction?: (formData) => boolean;
     title?: string;
     inputs?: Input[];
     btn?: string;
@@ -228,29 +227,25 @@ class MaterialForm extends React.Component<MaterialFormProps, any> {
 
     private handleSubmitForm = (
         e: React.FormEvent<HTMLFormElement>,
-        submitAction: (inputRefVals: InputRefVal[]) => void,
+        submitAction: (formData) => void,
     ): void => {
         e.preventDefault();
-        const inputRefVals: InputRefVal[] = [];
+        const formData = {};
         const currentType = this.state.isAlt ? formTypes.alt : formTypes.basic;
         this.props.forms.forEach(form => {
             if (form.inputs && form.type === currentType) {
                 form.inputs.forEach(input => {
                     const ref = input.ref;
                     const val = this.refs[ref]['value'];
+                    const field = input.field ? input.field : ref;
                     if (val) {
-                        const inputRefVal: InputRefVal = {
-                            ref: ref,
-                            val: val,
-                        };
-                        inputRefVals.push(inputRefVal);
+                        formData[field] = val;
                     }
                 });
             }
         });
 
-        if (submitAction(inputRefVals)) {
-            console.log('yesss');
+        if (submitAction(formData)) {
             this.clearForm();
         }
     };
