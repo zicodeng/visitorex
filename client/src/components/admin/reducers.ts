@@ -33,7 +33,6 @@ const adminReducers = (state = initState, action) => {
         default:
             break;
     }
-
     return state;
 };
 
