@@ -26,8 +26,8 @@
                     top: 40px;
                     right: -70px;
                     box-shadow: none;
-                    @include transform(scale(15));
-                    transition: transform 0.3s ease;
+                    @include transform(scale(20));
+                    transition: transform 0.5s ease;
                     &:before {
                         content: '';
                     }
@@ -214,6 +214,13 @@
                 }
             }
         }
+    }
+    .error {
+        position: relative;
+        color: $color-fail;
+        text-align: center;
+        font-size: $font-size-md;
+        margin-top: 30px;
     }
 
     &__bg-card {

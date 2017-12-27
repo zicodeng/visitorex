@@ -1,24 +1,39 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 
+import * as adminActions from 'components/admin/actions';
+import * as materialFormActions from 'components/material-form/actions';
 import MaterialForm, {
-    formTypes,
+    FORM_TYPES,
     Input,
-    InputRefVal,
     Form,
     createBgForm,
 } from 'components/material-form';
 
 import 'components/admin/style';
 
-class Admin extends React.Component<{}, {}> {
+export interface NewAdmin {
+    userName: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+    passwordConf: string;
+}
+
+export interface AdminCredentials {
+    email: string;
+    password: string;
+}
+
+@connect(store => {
+    return {
+        admin: store.admin,
+    };
+})
+class Admin extends React.Component<any, {}> {
     constructor(props, context) {
         super(props, context);
-
-        this.state = {
-            isSignup: false,
-            signinError: '',
-            signupError: '',
-        };
     }
 
     public render() {
@@ -43,20 +58,22 @@ class Admin extends React.Component<{}, {}> {
             {
                 type: 'email',
                 ref: 'signinEmail',
+                field: 'email',
                 isRequired: true,
                 label: 'Email',
             },
             {
                 type: 'password',
                 ref: 'signinPassword',
+                field: 'password',
                 isRequired: true,
                 label: 'Password',
             },
         ];
 
         const signinForm: Form = {
-            type: formTypes.basic,
-            submitAction: inputRefVals => this.submitSigninForm(inputRefVals),
+            type: FORM_TYPES.BASIC,
+            submitAction: formData => this.submitSigninForm(formData),
             title: 'EXTRAHOP ADMIN',
             inputs: signinInputs,
             btn: 'SIGN IN',
@@ -88,26 +105,28 @@ class Admin extends React.Component<{}, {}> {
             {
                 type: 'email',
                 ref: 'signupEmail',
+                field: 'email',
                 isRequired: true,
                 label: 'Email',
             },
             {
                 type: 'password',
                 ref: 'signupPassword',
+                field: 'password',
                 isRequired: true,
                 label: 'Password',
             },
             {
                 type: 'password',
-                ref: 'signupPasswordConf',
+                ref: 'passwordConf',
                 isRequired: true,
                 label: 'Confirm Your Password',
             },
         ];
 
         const signupForm: Form = {
-            type: formTypes.alt,
-            submitAction: inputRefVals => this.submitSignupForm(inputRefVals),
+            type: FORM_TYPES.ALT,
+            submitAction: formData => this.submitSignupForm(formData),
             title: 'NEW ADMIN',
             inputs: signupInputs,
             btn: 'SIGN UP',
@@ -116,16 +135,12 @@ class Admin extends React.Component<{}, {}> {
         return signupForm;
     };
 
-    private submitSigninForm = (inputRefVals: InputRefVal[]): boolean => {
-        console.log('submit sign in');
-        console.log(inputRefVals);
-        return true;
+    private submitSigninForm = formData => {
+        this.props.dispatch(adminActions.signIn(formData, FORM_TYPES.BASIC));
     };
 
-    private submitSignupForm = (inputRefVals: InputRefVal[]): boolean => {
-        console.log('submit sign up');
-        console.log(inputRefVals);
-        return true;
+    private submitSignupForm = formData => {
+        this.props.dispatch(adminActions.signUp(formData, FORM_TYPES.ALT));
     };
 }
 

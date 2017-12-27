@@ -1,19 +1,25 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 
 import 'components/material-form/style';
 
-export const formTypes = {
-    alt: 'material-form material-form__alt',
-    bgCard: 'material-form material-form__bg-card',
-    basic: 'material-form',
+export const FORM_TYPES = {
+    ALT: 'material-form material-form__alt',
+    BG_CARD: 'material-form material-form__bg-card',
+    BASIC: 'material-form',
 };
+
+export interface FormError {
+    message: string;
+    type: string; // Form type this error belongs to.
+}
 
 export interface Input {
     // Needs to be valid HTML input type.
     type: string;
     ref: string;
-    // The name of field for this input in returned form data.
-    // If not specified, ref will be used instead.
+    // The field name for this input in returned form data object.
+    // If not specified, ref will be used by default.
     field?: string;
     isRequired: boolean;
     label: string;
@@ -24,7 +30,7 @@ export interface Form {
     type?: string;
     // An action expects to return a boolean indicating
     // whether this submit action is successful or failed.
-    submitAction?: (formData) => boolean;
+    submitAction?: (formData) => void;
     title?: string;
     inputs?: Input[];
     btn?: string;
@@ -32,16 +38,17 @@ export interface Form {
 
 export const createBgForm = (): Form => {
     const bgForm: Form = {
-        type: formTypes.bgCard,
+        type: FORM_TYPES.BG_CARD,
     };
     return bgForm;
 };
 
-interface MaterialFormProps {
-    forms: Form[];
-}
-
-class MaterialForm extends React.Component<MaterialFormProps, any> {
+@connect(store => {
+    return {
+        materialForm: store.materialForm,
+    };
+})
+class MaterialForm extends React.Component<any, any> {
     constructor(props, context) {
         super(props, context);
 
@@ -67,12 +74,21 @@ class MaterialForm extends React.Component<MaterialFormProps, any> {
         );
     }
 
+    public componentDidUpdate(): void {
+        // If there is no error,
+        // it implies that this form submission is successful,
+        // clear the form.
+        if (!this.props.materialForm.error.message) {
+            this.clearForm();
+        }
+    }
+
     private renderForm = (form: Form, i: number): JSX.Element | null => {
         const type = form.type;
         if (!type) {
             return null;
         }
-        if (type === formTypes.bgCard) {
+        if (type === FORM_TYPES.BG_CARD) {
             return <div key={i} className={type} />;
         }
 
@@ -80,7 +96,10 @@ class MaterialForm extends React.Component<MaterialFormProps, any> {
         const title = form.title;
         const inputs = form.inputs;
         const btn = form.btn;
-        const inputTotal = type === formTypes.alt && inputs ? inputs.length : 0;
+        const inputTotal =
+            type === FORM_TYPES.ALT && inputs ? inputs.length : 0;
+        const errorMsg = this.props.materialForm.error.message;
+        const errorType = this.props.materialForm.error.type;
         return (
             <form
                 key={i}
@@ -91,10 +110,13 @@ class MaterialForm extends React.Component<MaterialFormProps, any> {
                         : undefined
                 }
             >
-                {type === formTypes.alt ? this.renderToggle() : null}
+                {type === FORM_TYPES.ALT ? this.renderToggle() : null}
                 {title ? this.renderTitle(type, title) : null}
                 {inputs ? this.renderInputs(type, inputs) : null}
                 {btn ? this.renderBtn(btn, inputTotal) : null}
+                {errorMsg && errorType === form.type
+                    ? this.renderError(errorMsg)
+                    : null}
             </form>
         );
     };
@@ -124,7 +146,7 @@ class MaterialForm extends React.Component<MaterialFormProps, any> {
         return (
             <h1 className="title">
                 {title}{' '}
-                {type === formTypes.alt ? (
+                {type === FORM_TYPES.ALT ? (
                     <div className="close" onClick={e => this.closeAltForm()} />
                 ) : null}
             </h1>
@@ -150,7 +172,7 @@ class MaterialForm extends React.Component<MaterialFormProps, any> {
                             : 'input-container'
                     }
                     style={
-                        this.state.isAlt && formType === formTypes.alt
+                        this.state.isAlt && formType === FORM_TYPES.ALT
                             ? { transitionDelay: `${(i + 3) / 10.0}s` }
                             : undefined
                     }
@@ -193,6 +215,10 @@ class MaterialForm extends React.Component<MaterialFormProps, any> {
         );
     };
 
+    private renderError = (error): JSX.Element => {
+        return <p className="error">{error}</p>;
+    };
+
     private handleFocusInput = (): void => {
         this.setState({
             showDropdown: true,
@@ -230,8 +256,11 @@ class MaterialForm extends React.Component<MaterialFormProps, any> {
         submitAction: (formData) => void,
     ): void => {
         e.preventDefault();
+
         const formData = {};
-        const currentType = this.state.isAlt ? formTypes.alt : formTypes.basic;
+        const currentType = this.state.isAlt
+            ? FORM_TYPES.ALT
+            : FORM_TYPES.BASIC;
         this.props.forms.forEach(form => {
             if (form.inputs && form.type === currentType) {
                 form.inputs.forEach(input => {
@@ -245,9 +274,7 @@ class MaterialForm extends React.Component<MaterialFormProps, any> {
             }
         });
 
-        if (submitAction(formData)) {
-            this.clearForm();
-        }
+        submitAction(formData);
     };
 
     private clearForm = (): void => {

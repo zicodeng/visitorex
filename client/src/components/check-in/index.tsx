@@ -2,9 +2,8 @@ import * as React from 'react';
 
 import { fetchOffices } from 'components/check-in/actions/office-actions';
 import MaterialForm, {
-    formTypes,
+    FORM_TYPES,
     Input,
-    InputRefVal,
     Form,
     createBgForm,
 } from 'components/material-form';
@@ -74,7 +73,7 @@ class CheckIn extends React.Component<any, any> {
         ];
 
         const checkinForm: Form = {
-            type: formTypes.basic,
+            type: FORM_TYPES.BASIC,
             submitAction: inputRefVals => this.submitCheckinForm(inputRefVals),
             title: 'EXTRAHOP VISITOR',
             inputs: checkinInputs,
@@ -84,9 +83,9 @@ class CheckIn extends React.Component<any, any> {
         return checkinForm;
     };
 
-    private submitCheckinForm = (inputRefVals: InputRefVal[]): boolean => {
+    private submitCheckinForm = (formData): boolean => {
         console.log('Check-in submit');
-        console.log(inputRefVals);
+        console.log(formData);
         return false;
     };
 }
