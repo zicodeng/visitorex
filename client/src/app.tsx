@@ -6,8 +6,9 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import store from 'components/store';
 
 // Routes
-import CheckIn from 'components/check-in';
 import Admin from 'components/admin';
+import CheckIn from 'components/check-in';
+import Dashboard from 'components/dashboard';
 import NotFound from 'components/not-found';
 
 class App extends React.Component<any, any> {
@@ -17,6 +18,7 @@ class App extends React.Component<any, any> {
                 <Switch>
                     <Route exact path="/" component={CheckIn} />
                     <Route exact path="/admin" component={Admin} />
+                    <Route exact path="/dashboard" component={Dashboard} />
                     <Route component={NotFound} />
                 </Switch>
             </BrowserRouter>
