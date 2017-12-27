@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { fetchOffices } from 'components/check-in/actions/office-actions';
+import { fetchOffices } from 'components/check-in/actions';
 import MaterialForm, {
     FORM_TYPES,
     Input,
