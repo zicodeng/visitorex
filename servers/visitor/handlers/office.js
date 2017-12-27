@@ -107,14 +107,16 @@ const OfficeHandler = (officeStore, visitorStore, visitorTrie) => {
                         .send('No such office found');
                     throw breakSignal;
                 }
-                return visitorStore.getAll(officeID);
+                return visitorStore.getAllByOfficeID(officeID);
             })
             .then(visitors => {
                 visitors = Utils.convertToID(visitors);
                 res.json(visitors);
             })
             .catch(err => {
-                console.log(err);
+                if (err !== breakSignal) {
+                    console.log(err);
+                }
             });
     });
 

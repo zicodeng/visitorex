@@ -26,8 +26,9 @@ class VisitorStore {
         return this.collection.findOne({ _id: visitorID, officeID: officeID });
     }
 
-    // getAll(officeID) retrieves all visitors from MongoDB for a given office ID.
-    getAll(officeID) {
+    // getAllByOfficeID retrieves all visitors from MongoDB for a given office ID.
+    getAllByOfficeID(officeID) {
+        console.log(officeID);
         return this.collection.find({ officeID: officeID }).toArray();
     }
 
