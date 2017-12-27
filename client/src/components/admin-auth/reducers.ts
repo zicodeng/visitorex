@@ -2,7 +2,7 @@ import {
     SIGN_IN_FULFILLED,
     SIGN_UP_FULFILLED,
     FETCH_ADMIN_FULFILLED,
-} from 'components/admin/actions';
+} from 'components/admin-auth/actions';
 
 const initState = {
     user: null,

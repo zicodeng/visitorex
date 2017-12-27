@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import * as dashboardActions from 'components/dashboard/actions';
+import { fetchDashboard } from 'components/dashboard/actions';
 
 import 'components/dashboard/style';
 
@@ -38,7 +38,7 @@ class Dashboard extends React.Component<any, any> {
     }
 
     public componentWillMount(): void {
-        this.props.dispatch(dashboardActions.fetchDashboard());
+        this.props.dispatch(fetchDashboard());
     }
 }
 

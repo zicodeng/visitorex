@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import * as adminActions from 'components/admin/actions';
+import { signIn, signUp } from 'components/admin-auth/actions';
 import MaterialForm, {
     FORM_TYPES,
     Input,
@@ -9,7 +9,7 @@ import MaterialForm, {
     createBgForm,
 } from 'components/material-form';
 
-import 'components/admin/style';
+import 'components/admin-auth/style';
 
 export interface NewAdmin {
     userName: string;
@@ -30,7 +30,7 @@ export interface AdminCredentials {
         admin: store.admin,
     };
 })
-class Admin extends React.Component<any, {}> {
+class AdminAuth extends React.Component<any, {}> {
     constructor(props, context) {
         super(props, context);
     }
@@ -135,12 +135,12 @@ class Admin extends React.Component<any, {}> {
     };
 
     private submitSigninForm = formData => {
-        this.props.dispatch(adminActions.signIn(formData, FORM_TYPES.BASIC));
+        this.props.dispatch(signIn(formData, FORM_TYPES.BASIC));
     };
 
     private submitSignupForm = formData => {
-        this.props.dispatch(adminActions.signUp(formData, FORM_TYPES.ALT));
+        this.props.dispatch(signUp(formData, FORM_TYPES.ALT));
     };
 }
 
-export default Admin;
+export default AdminAuth;

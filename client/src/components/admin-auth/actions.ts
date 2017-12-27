@@ -5,9 +5,9 @@ import {
     getSessionToken,
     storeSessionToken,
 } from 'components/utils';
-import { NewAdmin, AdminCredentials } from 'components/admin';
+import { NewAdmin, AdminCredentials } from 'components/admin-auth';
 import { FormError } from 'components/material-form';
-import * as materialFormActions from 'components/material-form/actions';
+import { hideError, showError } from 'components/material-form/actions';
 
 export const SIGN_IN = 'SIGN_IN';
 export const SIGN_IN_PENDING = 'SIGN_IN_PENDING';
@@ -25,7 +25,7 @@ export const signIn = (credentials: AdminCredentials, formType: string) => {
         })
             .then(res => {
                 // Hide error if this asyc call is successful.
-                dispatch(materialFormActions.hideError());
+                dispatch(hideError());
                 const sessionToken = res.value.headers.authorization;
                 storeSessionToken(sessionToken);
             })
@@ -36,7 +36,7 @@ export const signIn = (credentials: AdminCredentials, formType: string) => {
                     message: error.response.data,
                     type: formType,
                 };
-                dispatch(materialFormActions.showError(formError));
+                dispatch(showError(formError));
             });
 };
 
@@ -55,7 +55,7 @@ export const signUp = (newAdmin: NewAdmin, formType: string) => {
             ),
         })
             .then(res => {
-                dispatch(materialFormActions.hideError());
+                dispatch(hideError());
                 const sessionToken = res.value.headers.authorization;
                 storeSessionToken(sessionToken);
             })
@@ -64,7 +64,7 @@ export const signUp = (newAdmin: NewAdmin, formType: string) => {
                     message: error.response.data,
                     type: formType,
                 };
-                dispatch(materialFormActions.showError(formError));
+                dispatch(showError(formError));
             });
 };
 

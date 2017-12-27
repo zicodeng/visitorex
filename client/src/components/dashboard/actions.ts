@@ -1,7 +1,7 @@
 import axios, { AxiosPromise } from 'axios';
 
 import { getCurrentHost, getSessionToken } from 'components/utils';
-import { fetchAdmin } from 'components/admin/actions';
+import { fetchAdmin } from 'components/admin-auth/actions';
 
 export const FETCH_OFFICES = 'FETCH_OFFICES';
 export const FETCH_OFFICES_PENDING = 'FETCH_OFFICES_PENDING';
