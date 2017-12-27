@@ -2,7 +2,6 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 
 import * as adminActions from 'components/admin/actions';
-import * as materialFormActions from 'components/material-form/actions';
 import MaterialForm, {
     FORM_TYPES,
     Input,
