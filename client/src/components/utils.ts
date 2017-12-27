@@ -21,4 +21,5 @@ export const getSessionToken = (): String | null => {
 // Store session token to local storage.
 export const storeSessionToken = (sessionToken: string): void => {
     localStorage.setItem(SESSION_TOKEN_STORAGE_KEY, sessionToken);
+    window.location.replace('dashboard');
 };
