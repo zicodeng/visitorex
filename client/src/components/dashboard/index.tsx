@@ -38,7 +38,7 @@ class Dashboard extends React.Component<any, any> {
     }
 
     public componentWillMount(): void {
-        this.props.dispatch(dashboardActions.fetchOffices());
+        this.props.dispatch(dashboardActions.fetchDashboard());
     }
 }
 

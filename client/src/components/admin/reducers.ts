@@ -1,4 +1,8 @@
-import { SIGN_IN_FULFILLED, SIGN_UP_FULFILLED } from 'components/admin/actions';
+import {
+    SIGN_IN_FULFILLED,
+    SIGN_UP_FULFILLED,
+    FETCH_ADMIN_FULFILLED,
+} from 'components/admin/actions';
 
 const initState = {
     user: null,
@@ -19,6 +23,12 @@ const adminReducers = (state = initState, action) => {
                 user: action.payload.data,
             };
             break;
+
+        case FETCH_ADMIN_FULFILLED:
+            state = {
+                ...state,
+                user: action.payload.data,
+            };
 
         default:
             break;

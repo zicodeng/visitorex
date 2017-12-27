@@ -1,6 +1,10 @@
 import axios from 'axios';
 
-import { getCurrentHost, storeSessionToken } from 'components/utils';
+import {
+    getCurrentHost,
+    getSessionToken,
+    storeSessionToken,
+} from 'components/utils';
 import { NewAdmin, AdminCredentials } from 'components/admin';
 import { FormError } from 'components/material-form';
 import * as materialFormActions from 'components/material-form/actions';
@@ -65,3 +69,20 @@ export const signUp = (newAdmin: NewAdmin, formType: string) => {
 };
 
 export const SIGN_OUT = 'SIGN_OUT';
+
+export const FETCH_ADMIN = 'FETCH_ADMIN';
+export const FETCH_ADMIN_PENDING = 'FETCH_ADMIN_PENDING';
+export const FETCH_ADMIN_FULFILLED = 'FETCH_ADMIN_FULFILLED';
+export const FETCH_ADMIN_REJECTED = 'FETCH_ADMIN_REJECTED';
+
+export const fetchAdmin = () => {
+    return dispatch =>
+        dispatch({
+            type: FETCH_ADMIN,
+            payload: axios.get(`https://${getCurrentHost()}/v1/admins/me`, {
+                headers: {
+                    Authorization: getSessionToken(),
+                },
+            }),
+        });
+};

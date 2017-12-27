@@ -1,5 +1,7 @@
 import axios, { AxiosPromise } from 'axios';
+
 import { getCurrentHost, getSessionToken } from 'components/utils';
+import { fetchAdmin } from 'components/admin/actions';
 
 export const FETCH_VISITORS = 'FETCH_VISITORS';
 export const FETCH_VISITORS_PENDING = 'FETCH_VISITORS_PENDING';
@@ -11,8 +13,6 @@ const fetchVisitors = (promises: AxiosPromise[]) => {
         dispatch({
             type: FETCH_VISITORS,
             payload: axios.all(promises),
-        }).catch(error => {
-            console.log(error);
         });
     };
 };
@@ -23,7 +23,7 @@ export const FETCH_OFFICES_FULFILLED = 'FETCH_OFFICES_FULFILLED';
 export const FETCH_OFFICES_REJECTED = 'FETCH_OFFICES_REJECTED';
 
 // Fetch a list of offices.
-export const fetchOffices = () => {
+const fetchOffices = () => {
     return dispatch =>
         dispatch({
             type: FETCH_OFFICES,
@@ -32,7 +32,15 @@ export const fetchOffices = () => {
                     Authorization: getSessionToken(),
                 },
             }),
-        })
+        });
+};
+
+export const fetchDashboard = () => {
+    return dispatch => {
+        dispatch(fetchAdmin())
+            .then(() => {
+                dispatch(fetchOffices());
+            })
             .then(res => {
                 const offices = res.value.data;
                 const fetchVisitorsPromises: AxiosPromise[] = [];
@@ -52,4 +60,5 @@ export const fetchOffices = () => {
             .catch(error => {
                 console.log(error);
             });
+    };
 };
