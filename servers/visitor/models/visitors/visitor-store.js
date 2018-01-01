@@ -8,36 +8,35 @@ class VisitorStore {
         this.collection = db.collection(colName);
     }
 
-    // insert() creates a new visitor in MongoDB.
+    // Creates a new visitor in MongoDB.
     insert(visitor) {
         visitor._id = new mongodb.ObjectID();
         return this.collection.insertOne(visitor).then(() => visitor);
     }
 
-    // get() retrieves one visitor from MongoDB for a given visitor ID.
+    // Retrieves one visitor from MongoDB for a given visitor ID.
     get(id) {
         id = new mongodb.ObjectID(id);
         return this.collection.findOne({ _id: id });
     }
 
     // Retrieves one visitor from MongoDB for a given visitor ID and office ID.
-    getByOfficeID(visitorID, officeID) {
+    getOneByOfficeID(visitorID, officeID) {
         visitorID = new mongodb.ObjectID(visitorID);
         return this.collection.findOne({ _id: visitorID, officeID: officeID });
     }
 
-    // getAllByOfficeID retrieves all visitors from MongoDB for a given office ID.
+    // Retrieves all visitors from MongoDB for a given office ID.
     getAllByOfficeID(officeID) {
-        console.log(officeID);
         return this.collection.find({ officeID: officeID }).toArray();
     }
 
-    // getAll retrieves all visitors from MongoDB.
+    // Retrieves all visitors from MongoDB.
     getAll() {
         return this.collection.find({}).toArray();
     }
 
-    // update() updates a visitor for a given visitor ID.
+    // Updates a visitor for a given visitor ID.
     // It returns the updated visitor.
     update(id, updates) {
         id = new mongodb.ObjectID(id);
@@ -51,13 +50,13 @@ class VisitorStore {
             });
     }
 
-    // delete() deletes a visitor for a given visitor ID.
+    // Deletes a visitor for a given visitor ID.
     delete(id) {
         id = new mongodb.ObjectID(id);
         return this.collection.deleteOne({ _id: id });
     }
 
-    // deleteAll() deletes all visitors for a given office ID.
+    // Deletes all visitors for a given office ID.
     deleteAll(officeID) {
         officeID = new mongodb.ObjectID(officeID);
         return this.collection.deleteMany({ officeID: officeID });
@@ -81,7 +80,7 @@ class VisitorStore {
     async convertToVisitors(visitorIDs, officeID) {
         const results = [];
         for (let visitorID of visitorIDs) {
-            const visitor = await this.getByOfficeID(visitorID, officeID);
+            const visitor = await this.getOneByOfficeID(visitorID, officeID);
             if (visitor) {
                 results.push(visitor);
             }
