@@ -2,15 +2,15 @@
 
 set -e
 
-export SERVER_ADDR=localhost:443
+export SERVER_ADDR=localhost:3000
 
 export TLS_CERT="$(pwd)/tls/fullchain.pem"
 export TLS_KEY="$(pwd)/tls/privkey.pem"
 export SESSION_KEY="hello world"
 
-export REDIS_ADDR=192.168.99.100:6379
-export MONGO_ADDR=192.168.99.100:27017
-export MQ_ADDR=192.168.99.100:5672
+export REDIS_ADDR=localhost:6379
+export MONGO_ADDR=localhost:27017
+export MQ_ADDR=localhost:5672
 export DB_NAME="app"
 
 export REDIS_CONTAINER=redis-server

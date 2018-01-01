@@ -2,7 +2,7 @@ export const getCurrentHost = (): string => {
     if (window.location.hostname === 'visitorex.zicodeng.me') {
         return 'visitorex-api.zicodeng.me';
     }
-    return 'localhost';
+    return 'localhost:3000';
 };
 
 const SESSION_TOKEN_STORAGE_KEY = 'session-token';
