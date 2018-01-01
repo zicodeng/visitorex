@@ -11,7 +11,7 @@ export const fetchOffices = () => {
         type: officeTypes.fetchOffices,
         payload: axios.get(`https://${getCurrentHost()}/v1/offices`, {
             headers: {
-                // Authorization: getSessionToken(),
+                Authorization: getSessionToken(),
             },
         }),
     };

@@ -84,5 +84,8 @@ export const fetchAdmin = () => {
                     Authorization: getSessionToken(),
                 },
             }),
+        }).catch(error => {
+            console.log(error);
+            window.location.pathname = 'admin-auth';
         });
 };
