@@ -1,0 +1,21 @@
+@import 'utils';
+
+.dashboard {
+    display: flex;
+    flex-direction: row;
+    padding: 20px 0;
+    @include respond-to($bp-md) {
+        flex-direction: column;
+    }
+
+    .main-panel {
+        flex-grow: 1;
+        padding: 0 50px;
+    }
+}
+
+.dashboard-title {
+    font-family: $base-font;
+    color: $grey-light;
+    font-weight: 100;
+}

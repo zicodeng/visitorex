@@ -12,6 +12,7 @@ module.exports = {
     output: {
         filename: '[name]-bundle.min.js',
         path: path.resolve(__dirname, 'dist'),
+        publicPath: '/',
     },
 
     context: __dirname, // to automatically find tsconfig.json

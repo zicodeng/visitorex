@@ -5,6 +5,9 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import store from 'components/store';
 
+// Shared style
+import 'stylesheets/shared';
+
 // Routes
 import AdminAuth from 'components/admin-auth';
 import CheckIn from 'components/check-in';
@@ -18,7 +21,7 @@ class App extends React.Component<any, any> {
                 <Switch>
                     <Route exact path="/" component={CheckIn} />
                     <Route exact path="/admin-auth" component={AdminAuth} />
-                    <Route exact path="/dashboard" component={Dashboard} />
+                    <Route path="/dashboard" component={Dashboard} />
                     <Route component={NotFound} />
                 </Switch>
             </BrowserRouter>

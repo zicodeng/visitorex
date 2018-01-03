@@ -10,7 +10,7 @@
 
 // Responsive media query
 @mixin respond-to($breakpoint) {
-    @media screen and (min-width: $breakpoint) {
+    @media screen and (max-width: $breakpoint) {
         @content;
     }
 }

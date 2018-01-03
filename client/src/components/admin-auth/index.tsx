@@ -36,7 +36,7 @@ class AdminAuth extends React.Component<any, {}> {
     }
 
     public render() {
-        return <main>{this.renderAdminAuthForm()}</main>;
+        return <main className="admin-auth">{this.renderAdminAuthForm()}</main>;
     }
 
     private renderAdminAuthForm = () => {

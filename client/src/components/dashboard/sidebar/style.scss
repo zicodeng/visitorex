@@ -1,0 +1,121 @@
+@import 'utils';
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 320px;
+    align-items: center;
+}
+
+.logo {
+    color: $color-brand;
+    font-weight: bold;
+
+    span {
+        color: $green;
+    }
+}
+
+.admin-profile {
+    margin: 20px 0;
+    text-align: center;
+
+    .photo {
+        $size: 130px;
+        width: $size;
+        height: $size;
+        background-size: cover;
+        background-repeat: no-repeat;
+        margin: 0 auto;
+        @include border-radius($size);
+    }
+
+    .name {
+        text-transform: none;
+        margin-bottom: 0;
+    }
+
+    .email {
+        color: $grey-light;
+    }
+}
+
+.menu {
+    align-self: flex-start;
+    width: 100%;
+
+    .menu-options {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+
+        .menu-option {
+            cursor: pointer;
+            font-size: $font-size-lg;
+
+            .menu-option-content {
+                margin: 0;
+                position: relative;
+                border-left: 5px solid $black;
+                padding: 20px 0 20px 30px;
+                position: relative;
+                display: block;
+                color: $grey-light;
+
+                &:hover,
+                &.active {
+                    color: $white;
+                    border-left-color: $green;
+
+                    &.sign-out {
+                        border-left-color: $color-fail;
+                    }
+                }
+
+                &.arrow {
+                    &::after {
+                        content: '\f054';
+                        font-family: FontAwesome;
+                        font-style: normal;
+                        font-weight: normal;
+                        text-decoration: inherit;
+                        font-size: $font-size-sm;
+                        transform-origin: top;
+                        position: absolute;
+                        right: 20px;
+                        top: 50%;
+                        @include transform(translateY(-50%));
+                    }
+
+                    &.active {
+                        &::after {
+                            @include rotate(90deg);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .office-options {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+
+        .office-option {
+            .office-option-content {
+                margin: 0;
+                padding: 20px 0 20px 30px;
+                border-left: 5px solid $black;
+                display: block;
+                color: $grey-light;
+
+                &:hover,
+                &.active {
+                    border-left-color: $color-brand;
+                    color: $white;
+                }
+            }
+        }
+    }
+}

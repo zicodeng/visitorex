@@ -20,7 +20,7 @@ class CheckIn extends React.Component<any, any> {
     }
 
     public render() {
-        return <main>{this.renderCheckinForm()}</main>;
+        return <main className="check-in">{this.renderCheckinForm()}</main>;
     }
 
     public componentWillMount() {

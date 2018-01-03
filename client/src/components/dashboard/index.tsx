@@ -1,8 +1,11 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { Switch, Route, Redirect } from 'react-router-dom';
 
 import { fetchDashboard } from 'components/dashboard/actions';
 import Sidebar from 'components/dashboard/sidebar';
+import Overview from 'components/dashboard/main-panel/overview';
+import Offices from 'components/dashboard/main-panel/offices';
 
 import 'components/dashboard/style';
 
@@ -41,9 +44,31 @@ class Dashboard extends React.Component<any, any> {
         if (!this.props.admin.user) {
             return null;
         }
+        const match = this.props.match;
         return (
-            <div>
+            <div className="dashboard">
                 <Sidebar />
+                <Switch>
+                    <Route
+                        exact
+                        path={`${match.url}/overview`}
+                        component={Overview}
+                    />
+                    <Route
+                        exact
+                        path={`${match.url}/offices/:id`}
+                        component={Offices}
+                    />
+                    {/* If no matching route is found, always render Overview as default main panel */}
+                    <Redirect
+                        from={`${match.url}`}
+                        to={`${match.url}/overview`}
+                    />
+                    <Redirect
+                        from={`${match.url}/:default`}
+                        to={`${match.url}/overview`}
+                    />
+                </Switch>
             </div>
         );
     }

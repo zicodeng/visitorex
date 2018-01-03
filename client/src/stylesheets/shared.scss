@@ -1,11 +1,11 @@
 @import 'vendor/normalize';
 
-@import 'helpers/variables';
-@import 'helpers/mixins';
+@import 'utils';
 
 @import 'base/box-sizing';
 @import 'base/button';
 @import 'base/headings';
+@import 'base/link';
 
 @import 'layout/body';
 @import 'layout/main';

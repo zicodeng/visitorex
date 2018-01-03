@@ -45,7 +45,6 @@ export const fetchDashboard = () => {
                 const offices = res.value.data;
                 const fetchVisitorsPromises: AxiosPromise[] = [];
                 offices.forEach(office => {
-                    console.log(office.id);
                     const promise = axios.get(
                         `https://${getCurrentHost()}/v1/offices/${office.id}`,
                         {
