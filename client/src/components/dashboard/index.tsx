@@ -37,7 +37,7 @@ class Dashboard extends React.Component<any, any> {
                     />
                     <Route
                         exact
-                        path={`${match.url}/offices/:id`}
+                        path={`${match.url}/offices/:name`}
                         component={Office}
                     />
                     {/* If no matching route is found, always render Overview as default main panel */}
