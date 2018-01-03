@@ -4,8 +4,8 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 
 import { fetchDashboard } from 'components/dashboard/actions';
 import Sidebar from 'components/dashboard/sidebar';
-import Overview from 'components/dashboard/main-panel/overview';
-import Office from 'components/dashboard/main-panel/office';
+import OverviewPanel from 'components/dashboard/main-panel/overview-panel';
+import OfficePanel from 'components/dashboard/main-panel/office-panel';
 
 import 'components/dashboard/style';
 
@@ -33,14 +33,14 @@ class Dashboard extends React.Component<any, any> {
                     <Route
                         exact
                         path={`${match.url}/overview`}
-                        component={Overview}
+                        component={OverviewPanel}
                     />
                     <Route
                         exact
                         path={`${match.url}/offices/:name`}
-                        component={Office}
+                        component={OfficePanel}
                     />
-                    {/* If no matching route is found, always render Overview as default main panel */}
+                    {/* If no matching route is found, always render Overview Panel as default main panel */}
                     <Redirect
                         from={`${match.url}`}
                         to={`${match.url}/overview`}

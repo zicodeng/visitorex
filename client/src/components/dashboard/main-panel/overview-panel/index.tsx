@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import TileWidget from 'components/widgets/tile-widget';
 
-import 'components/dashboard/main-panel/overview/style';
+import 'components/dashboard/main-panel/overview-panel/style';
 
 @connect(store => {
     return {
@@ -11,7 +11,7 @@ import 'components/dashboard/main-panel/overview/style';
         dashboard: store.dashboard,
     };
 })
-class Overview extends React.Component<any, any> {
+class OverviewPanel extends React.Component<any, any> {
     constructor(props, context) {
         super(props, context);
     }
@@ -66,4 +66,4 @@ class Overview extends React.Component<any, any> {
     };
 }
 
-export default Overview;
+export default OverviewPanel;
