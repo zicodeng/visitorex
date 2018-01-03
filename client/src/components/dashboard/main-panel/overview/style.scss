@@ -1,0 +1,12 @@
+.total-reports {
+    display: flex;
+    margin-bottom: 30px;
+
+    .tile-widget {
+        margin-right: 30px;
+
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+}
