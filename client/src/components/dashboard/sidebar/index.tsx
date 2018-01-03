@@ -141,6 +141,7 @@ class Sidebar extends React.Component<any, any> {
     private renderOfficeOptions = (): JSX.Element => {
         const offices = this.props.dashboard.offices;
         let hasMatchingOffice = false;
+
         const officeOptions = offices.map((office, i) => {
             const resourcePath = window.location.pathname.split('/')[3];
             if (resourcePath === convertToURLFormat(office.name)) {
@@ -163,6 +164,16 @@ class Sidebar extends React.Component<any, any> {
                 </li>
             );
         });
+
+        const newOffice = (
+            <li key={officeOptions.length} className="office-option">
+                <a id="new-office" className="office-option-content">
+                    New Office
+                </a>
+            </li>
+        );
+
+        officeOptions.push(newOffice);
 
         // If there is no matching office in resource path,
         // redirect the user to the first office found in the list.
@@ -197,6 +208,15 @@ class Sidebar extends React.Component<any, any> {
             option.classList.remove('active');
         });
         e.target.classList.add('active');
+
+        // If "New Office" option is clicked...
+        if (e.target.id === 'new-office') {
+            this.handleClickNewOffice();
+        }
+    };
+
+    private handleClickNewOffice = (): void => {
+        console.log('new office...');
     };
 }
 
