@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
         dashboard: store.dashboard,
     };
 })
-class Offices extends React.Component<any, any> {
+class Office extends React.Component<any, any> {
     constructor(props, context) {
         super(props, context);
     }
@@ -17,4 +17,4 @@ class Offices extends React.Component<any, any> {
     }
 }
 
-export default Offices;
+export default Office;

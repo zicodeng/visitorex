@@ -5,28 +5,9 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import { fetchDashboard } from 'components/dashboard/actions';
 import Sidebar from 'components/dashboard/sidebar';
 import Overview from 'components/dashboard/main-panel/overview';
-import Offices from 'components/dashboard/main-panel/offices';
+import Office from 'components/dashboard/main-panel/office';
 
 import 'components/dashboard/style';
-
-export interface Visitor {
-    id: string;
-    officeID: string;
-    firstName: string;
-    lastName: string;
-    company: string;
-    toSee: string;
-    date: string;
-    timeIn: string;
-}
-
-export interface Office {
-    id: string;
-    name: string;
-    addr: string;
-    creator: any;
-    visitors: Visitor[];
-}
 
 @connect(store => {
     return {
@@ -57,7 +38,7 @@ class Dashboard extends React.Component<any, any> {
                     <Route
                         exact
                         path={`${match.url}/offices/:id`}
-                        component={Offices}
+                        component={Office}
                     />
                     {/* If no matching route is found, always render Overview as default main panel */}
                     <Redirect

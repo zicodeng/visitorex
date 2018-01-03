@@ -2,8 +2,6 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import { Office } from 'components/dashboard';
-
 import 'components/dashboard/sidebar/style';
 
 const MENU_OPTION_OVERVIEW = 'Overview';
