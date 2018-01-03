@@ -10,7 +10,7 @@
 
     .main-panel {
         flex-grow: 1;
-        padding: 0 50px;
+        padding: 0 60px;
         flex-direction: column;
     }
 }
@@ -19,4 +19,5 @@
     font-family: $base-font;
     color: $grey-light;
     font-weight: 100;
+    margin-bottom: 40px;
 }

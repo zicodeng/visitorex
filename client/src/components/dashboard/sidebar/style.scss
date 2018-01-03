@@ -3,7 +3,7 @@
 .sidebar {
     display: flex;
     flex-direction: column;
-    flex-basis: 320px;
+    flex-basis: 340px;
     align-items: center;
 }
 
@@ -57,7 +57,7 @@
                 margin: 0;
                 position: relative;
                 border-left: 5px solid $black;
-                padding: 20px 0 20px 30px;
+                padding: 20px 0 20px 40px;
                 position: relative;
                 display: block;
                 color: $grey-light;
@@ -105,7 +105,7 @@
         .office-option {
             .office-option-content {
                 margin: 0;
-                padding: 20px 0 20px 30px;
+                padding: 20px 0 20px 40px;
                 border-left: 5px solid $black;
                 display: block;
                 color: $grey-light;

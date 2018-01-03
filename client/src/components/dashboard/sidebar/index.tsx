@@ -2,6 +2,8 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
+import { convertToURLFormat } from 'components/dashboard/sidebar/utils';
+
 import 'components/dashboard/sidebar/style';
 
 const MENU_OPTION_OVERVIEW = 'Overview';
@@ -50,13 +52,11 @@ class Sidebar extends React.Component<any, any> {
                             <Link
                                 className={
                                     resourcePath ===
-                                    this.convertToURLFormat(
-                                        MENU_OPTION_OVERVIEW,
-                                    )
+                                    convertToURLFormat(MENU_OPTION_OVERVIEW)
                                         ? 'menu-option-content active'
                                         : 'menu-option-content'
                                 }
-                                to={`/dashboard/${this.convertToURLFormat(
+                                to={`/dashboard/${convertToURLFormat(
                                     MENU_OPTION_OVERVIEW,
                                 )}`}
                             >
@@ -67,7 +67,7 @@ class Sidebar extends React.Component<any, any> {
                             <a
                                 className={
                                     resourcePath ===
-                                    this.convertToURLFormat(MENU_OPTION_OFFICES)
+                                    convertToURLFormat(MENU_OPTION_OFFICES)
                                         ? 'menu-option-content arrow active'
                                         : 'menu-option-content arrow'
                                 }
@@ -91,7 +91,7 @@ class Sidebar extends React.Component<any, any> {
 
     public componentWillMount() {
         const resourcePath = window.location.pathname.split('/')[2];
-        if (resourcePath === this.convertToURLFormat(MENU_OPTION_OFFICES)) {
+        if (resourcePath === convertToURLFormat(MENU_OPTION_OFFICES)) {
             this.setState({
                 isOfficesClicked: true,
             });
@@ -143,19 +143,18 @@ class Sidebar extends React.Component<any, any> {
         let hasMatchingOffice = false;
         const officeOptions = offices.map((office, i) => {
             const resourcePath = window.location.pathname.split('/')[3];
-            if (resourcePath === this.convertToURLFormat(office.name)) {
+            if (resourcePath === convertToURLFormat(office.name)) {
                 hasMatchingOffice = true;
             }
             return (
                 <li key={i} className="office-option">
                     <Link
                         className={
-                            resourcePath ===
-                            this.convertToURLFormat(office.name)
+                            resourcePath === convertToURLFormat(office.name)
                                 ? 'office-option-content active'
                                 : 'office-option-content'
                         }
-                        to={`/dashboard/offices/${this.convertToURLFormat(
+                        to={`/dashboard/offices/${convertToURLFormat(
                             office.name,
                         )}`}
                     >
@@ -173,9 +172,7 @@ class Sidebar extends React.Component<any, any> {
             offices[0]
         ) {
             window.location.replace(
-                `/dashboard/offices/${this.convertToURLFormat(
-                    offices[0].name,
-                )}`,
+                `/dashboard/offices/${convertToURLFormat(offices[0].name)}`,
             );
         }
 
@@ -200,12 +197,6 @@ class Sidebar extends React.Component<any, any> {
             option.classList.remove('active');
         });
         e.target.classList.add('active');
-    };
-
-    private convertToURLFormat = (str: string): string => {
-        str = str.toLowerCase().trim();
-        str = str.replace(/\s+/g, '-');
-        return str;
     };
 }
 
