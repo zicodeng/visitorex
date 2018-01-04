@@ -2,7 +2,15 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
+import Modal from 'components/modal';
+import { openModal } from 'components/modal/actions';
 import { convertToURLFormat } from 'components/dashboard/sidebar/utils';
+import MaterialForm, {
+    Form,
+    FORM_TYPES,
+    Input,
+} from 'components/material-form';
+import { newOffice } from 'components/dashboard/actions';
 
 import 'components/dashboard/sidebar/style';
 
@@ -14,6 +22,7 @@ const MENU_OPTION_SIGN_OUT = 'Sign Out';
     return {
         admin: store.admin,
         dashboard: store.dashboard,
+        modal: store.modal,
     };
 })
 class Sidebar extends React.Component<any, any> {
@@ -30,6 +39,9 @@ class Sidebar extends React.Component<any, any> {
         const resourcePath = window.location.pathname.split('/')[2];
         return (
             <aside className="sidebar">
+                <div className="new-office-modal">
+                    <Modal content={this.newOfficeForm()} />
+                </div>
                 <h1 className="logo">
                     VISITOR<span>EX</span>
                 </h1>
@@ -147,14 +159,14 @@ class Sidebar extends React.Component<any, any> {
             if (resourcePath === convertToURLFormat(office.name)) {
                 hasMatchingOffice = true;
             }
+            let officeOptionClasses = 'office-option-content';
+            if (resourcePath === convertToURLFormat(office.name)) {
+                officeOptionClasses += ' active';
+            }
             return (
                 <li key={i} className="office-option">
                     <Link
-                        className={
-                            resourcePath === convertToURLFormat(office.name)
-                                ? 'office-option-content active'
-                                : 'office-option-content'
-                        }
+                        className={officeOptionClasses}
                         to={`/dashboard/offices/${convertToURLFormat(
                             office.name,
                         )}`}
@@ -165,9 +177,13 @@ class Sidebar extends React.Component<any, any> {
             );
         });
 
+        let newOfficeClasses = 'office-option-content new-office';
+        if (this.props.modal.show) {
+            newOfficeClasses += ' active';
+        }
         const newOffice = (
             <li key={officeOptions.length} className="office-option">
-                <a id="new-office" className="office-option-content">
+                <a id="new-office" className={newOfficeClasses}>
                     New Office
                 </a>
             </li>
@@ -201,13 +217,6 @@ class Sidebar extends React.Component<any, any> {
         this.setState({
             isOfficesClicked: true,
         });
-        const officeOptions = document.getElementsByClassName(
-            'office-option-content',
-        );
-        Array.from(officeOptions).forEach(option => {
-            option.classList.remove('active');
-        });
-        e.target.classList.add('active');
 
         // If "New Office" option is clicked...
         if (e.target.id === 'new-office') {
@@ -216,7 +225,45 @@ class Sidebar extends React.Component<any, any> {
     };
 
     private handleClickNewOffice = (): void => {
-        console.log('new office...');
+        this.props.dispatch(openModal());
+    };
+
+    private newOfficeForm = (): JSX.Element => {
+        const newOfficeInputs: Input[] = [
+            {
+                type: 'text',
+                ref: 'name',
+                isRequired: true,
+                label: 'Name',
+            },
+            {
+                type: 'text',
+                ref: 'addr',
+                isRequired: true,
+                label: 'Address',
+            },
+        ];
+
+        const newOfficeForm: Form = {
+            type: FORM_TYPES.BASIC,
+            submitAction: formData => this.submitNewOfficeForm(formData),
+            title: 'NEW OFFICE',
+            inputs: newOfficeInputs,
+            btn: 'CREATE',
+        };
+
+        const forms: Form[] = [newOfficeForm];
+
+        return (
+            <div className="new-office-form">
+                <MaterialForm forms={forms} />
+            </div>
+        );
+    };
+
+    private submitNewOfficeForm = formData => {
+        this.props.dispatch(newOffice(formData, FORM_TYPES.BASIC));
+        console.log(history);
     };
 }
 

@@ -2,6 +2,10 @@ import axios, { AxiosPromise } from 'axios';
 
 import { getCurrentHost, getSessionToken } from 'components/utils';
 import { fetchAdmin } from 'components/admin-auth/actions';
+import { Office } from 'components/dashboard/interfaces';
+import { FormError } from 'components/material-form';
+import { hideError, showError } from 'components/material-form/actions';
+import { openModal, closeModal } from 'components/modal/actions';
 
 export const FETCH_OFFICES = 'FETCH_OFFICES';
 export const FETCH_OFFICES_PENDING = 'FETCH_OFFICES_PENDING';
@@ -59,6 +63,44 @@ export const fetchDashboard = () => {
             })
             .catch(error => {
                 console.log(error);
+            });
+    };
+};
+
+export const NEW_OFFICE = 'NEW_OFFICE';
+export const NEW_OFFICE_PENDING = 'NEW_OFFICE_PENDING';
+export const NEW_OFFICE_FULFILLED = 'NEW_OFFICE_FULFILLED';
+export const NEW_OFFICE_REJECTED = 'NEW_OFFICE_REJECTED';
+
+export const newOffice = (newOffice: Office, formType: string) => {
+    return dispatch => {
+        dispatch({
+            type: NEW_OFFICE,
+            payload: axios.post(
+                `https://${getCurrentHost()}/v1/offices`,
+                newOffice,
+                {
+                    headers: {
+                        Authorization: getSessionToken(),
+                    },
+                },
+            ),
+        })
+            .then(() => {
+                // We don't need to take care of responded data here,
+                // because we are not handling application state change here.
+                // We will take care of that in reducers.
+
+                // Close Modal and hide error if this API request is successful.
+                dispatch(closeModal());
+                dispatch(hideError());
+            })
+            .catch(error => {
+                const formError: FormError = {
+                    message: error.response.data,
+                    type: formType,
+                };
+                dispatch(showError(formError));
             });
     };
 };

@@ -115,6 +115,13 @@
                     border-left-color: $color-brand;
                     color: $white;
                 }
+
+                &.new-office {
+                    &:hover,
+                    &.active {
+                        border-left-color: $color-pass;
+                    }
+                }
             }
         }
     }
