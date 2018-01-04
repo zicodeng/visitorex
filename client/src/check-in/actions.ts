@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getCurrentHost, getSessionToken } from 'components/utils';
+import { getCurrentHost, getSessionToken } from 'utils';
 
 export const officeTypes = {
     fetchOffices: 'FETCH_OFFICES',

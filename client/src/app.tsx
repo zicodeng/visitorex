@@ -3,16 +3,16 @@ import * as ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
-import store from 'components/store';
+import store from 'store';
 
 // Shared style
 import 'stylesheets/shared';
 
 // Routes
-import AdminAuth from 'components/admin-auth';
-import CheckIn from 'components/check-in';
-import Dashboard from 'components/dashboard';
-import NotFound from 'components/not-found';
+import AdminAuth from 'admin-auth';
+import CheckIn from 'check-in';
+import Dashboard from 'dashboard';
+import NotFound from 'not-found';
 
 class App extends React.Component<any, any> {
     public render() {

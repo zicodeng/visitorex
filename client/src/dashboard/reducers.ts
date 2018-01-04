@@ -2,9 +2,9 @@ import {
     FETCH_OFFICES_FULFILLED,
     FETCH_VISITORS_FULFILLED,
     NEW_OFFICE_FULFILLED,
-} from 'components/dashboard/actions';
-import { Visitor, Office } from 'components/dashboard/interfaces';
-import { convertToURLFormat } from 'components/dashboard/sidebar/utils';
+} from 'dashboard/actions';
+import { Visitor, Office } from 'dashboard/interfaces';
+import { convertToURLFormat } from 'dashboard/sidebar/utils';
 
 const offices: Office[] = [];
 const initState = {

@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 
-import adminReducers from 'components/admin-auth/reducers';
-import dashboardReducers from 'components/dashboard/reducers';
+import adminReducers from 'admin-auth/reducers';
+import dashboardReducers from 'dashboard/reducers';
 import materialFormReducers from 'components/material-form/reducers';
 import modalReducers from 'components/modal/reducers';
 

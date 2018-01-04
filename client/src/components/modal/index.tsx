@@ -2,7 +2,6 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 
-import Dashboard from 'components/dashboard';
 import { closeModal } from 'components/modal/actions';
 
 import 'components/modal/style';

@@ -1,11 +1,7 @@
 import axios from 'axios';
 
-import {
-    getCurrentHost,
-    getSessionToken,
-    storeSessionToken,
-} from 'components/utils';
-import { NewAdmin, AdminCredentials } from 'components/admin-auth';
+import { getCurrentHost, getSessionToken, storeSessionToken } from 'utils';
+import { NewAdmin, AdminCredentials } from 'admin-auth';
 import { FormError } from 'components/material-form';
 import { hideError, showError } from 'components/material-form/actions';
 

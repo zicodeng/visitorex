@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import { signIn, signUp } from 'components/admin-auth/actions';
+import { signIn, signUp } from 'admin-auth/actions';
 import MaterialForm, {
     FORM_TYPES,
     Input,
@@ -9,7 +9,7 @@ import MaterialForm, {
     createBgForm,
 } from 'components/material-form';
 
-import 'components/admin-auth/style';
+import 'admin-auth/style';
 
 export interface NewAdmin {
     userName: string;

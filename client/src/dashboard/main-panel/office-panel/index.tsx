@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import { Office } from 'components/dashboard/interfaces';
-import { convertToURLFormat } from 'components/dashboard/sidebar/utils';
+import { Office } from 'dashboard/interfaces';
+import { convertToURLFormat } from 'dashboard/sidebar/utils';
 import TileWidget from 'components/widgets/tile-widget';
 
 @connect(store => {

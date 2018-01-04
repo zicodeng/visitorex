@@ -3,7 +3,7 @@ import {
     SIGN_UP_FULFILLED,
     FETCH_ADMIN_FULFILLED,
     FETCH_ADMIN_REJECTED,
-} from 'components/admin-auth/actions';
+} from 'admin-auth/actions';
 
 const initState = {
     user: null,

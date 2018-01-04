@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import TileWidget from 'components/widgets/tile-widget';
 
-import 'components/dashboard/main-panel/overview-panel/style';
+import 'dashboard/main-panel/overview-panel/style';
 
 @connect(store => {
     return {

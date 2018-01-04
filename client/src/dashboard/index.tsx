@@ -2,12 +2,12 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
-import { fetchDashboard } from 'components/dashboard/actions';
-import Sidebar from 'components/dashboard/sidebar';
-import OverviewPanel from 'components/dashboard/main-panel/overview-panel';
-import OfficePanel from 'components/dashboard/main-panel/office-panel';
+import { fetchDashboard } from 'dashboard/actions';
+import Sidebar from 'dashboard/sidebar';
+import OverviewPanel from 'dashboard/main-panel/overview-panel';
+import OfficePanel from 'dashboard/main-panel/office-panel';
 
-import 'components/dashboard/style';
+import 'dashboard/style';
 
 @connect(store => {
     return {

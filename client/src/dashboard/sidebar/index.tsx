@@ -4,15 +4,15 @@ import { Link } from 'react-router-dom';
 
 import Modal from 'components/modal';
 import { openModal } from 'components/modal/actions';
-import { convertToURLFormat } from 'components/dashboard/sidebar/utils';
+import { convertToURLFormat } from 'dashboard/sidebar/utils';
 import MaterialForm, {
     Form,
     FORM_TYPES,
     Input,
 } from 'components/material-form';
-import { newOffice } from 'components/dashboard/actions';
+import { newOffice } from 'dashboard/actions';
 
-import 'components/dashboard/sidebar/style';
+import 'dashboard/sidebar/style';
 
 const MENU_OPTION_OVERVIEW = 'Overview';
 const MENU_OPTION_OFFICES = 'Offices';

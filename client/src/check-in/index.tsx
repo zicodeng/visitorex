@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { fetchOffices } from 'components/check-in/actions';
+import { fetchOffices } from 'check-in/actions';
 import MaterialForm, {
     FORM_TYPES,
     Input,
@@ -8,7 +8,7 @@ import MaterialForm, {
     createBgForm,
 } from 'components/material-form';
 
-import 'components/check-in/style';
+import 'check-in/style';
 
 class CheckIn extends React.Component<any, any> {
     constructor(props, context) {
