@@ -54,6 +54,7 @@ class MaterialForm extends React.Component<any, any> {
 
         this.state = {
             showDropdown: false,
+            hasFormSubmitted: false,
             isAlt: false,
         };
     }
@@ -75,10 +76,13 @@ class MaterialForm extends React.Component<any, any> {
     }
 
     public componentDidUpdate(): void {
-        // If there is no error,
+        // If there is no error and the form has been submitted
         // it implies that this form submission is successful,
         // clear the form.
-        if (!this.props.materialForm.error.message) {
+        if (
+            !this.props.materialForm.error.message &&
+            this.state.hasFormSubmitted
+        ) {
             this.clearForm();
         }
     }
@@ -232,7 +236,7 @@ class MaterialForm extends React.Component<any, any> {
             this.setState({
                 showDropdown: false,
             });
-        }, 125);
+        }, 150);
     };
 
     private renderOptions = (options: string[], ref: string): JSX.Element => {
@@ -275,6 +279,10 @@ class MaterialForm extends React.Component<any, any> {
         });
 
         submitAction(formData);
+
+        this.setState({
+            hasFormSubmitted: true,
+        });
     };
 
     private clearForm = (): void => {
