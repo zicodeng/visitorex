@@ -69,7 +69,17 @@ const OfficeHandler = (officeStore, visitorStore, visitorTrie) => {
         const office = new Office(name, addr, user);
 
         officeStore
-            .insert(office)
+            .getByName(name)
+            .then(existingOffice => {
+                if (existingOffice && existingOffice.name === office.name) {
+                    res
+                        .set('Content-Type', 'text/plain')
+                        .status(400)
+                        .send('Office with the same name already exists');
+                    throw breakSignal;
+                }
+                return officeStore.insert(office);
+            })
             .then(office => {
                 office = Utils.convertToID(office);
                 res.json(office);

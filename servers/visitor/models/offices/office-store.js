@@ -19,6 +19,10 @@ class OfficeStore {
         return this.collection.findOne({ _id: id });
     }
 
+    getByName(name) {
+        return this.collection.findOne({ name: name });
+    }
+
     // getAll() retrieves all offices from MongoDB.
     getAll() {
         return this.collection.find({}).toArray();
