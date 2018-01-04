@@ -2,7 +2,7 @@ import axios, { AxiosPromise } from 'axios';
 
 import { getCurrentHost, getSessionToken } from 'utils';
 import { fetchAdmin } from 'admin-auth/actions';
-import { Office } from 'dashboard/interfaces';
+import { Office, Visitor } from 'dashboard/interfaces';
 import { FormError } from 'components/material-form';
 import { hideError, showError } from 'components/material-form/actions';
 import { openModal, closeModal } from 'components/modal/actions';
@@ -13,7 +13,7 @@ export const FETCH_OFFICES_FULFILLED = 'FETCH_OFFICES_FULFILLED';
 export const FETCH_OFFICES_REJECTED = 'FETCH_OFFICES_REJECTED';
 
 // Fetch a list of offices.
-const fetchOffices = () => {
+export const fetchOffices = () => {
     return dispatch =>
         dispatch({
             type: FETCH_OFFICES,
@@ -93,6 +93,42 @@ export const newOffice = (newOffice: Office, formType: string) => {
 
                 // Close Modal and hide error if this API request is successful.
                 dispatch(closeModal());
+                dispatch(hideError());
+            })
+            .catch(error => {
+                const formError: FormError = {
+                    message: error.response.data,
+                    type: formType,
+                };
+                dispatch(showError(formError));
+            });
+    };
+};
+
+export const NEW_VISITOR = 'NEW_VISITOR';
+export const NEW_VISITOR_PENDING = 'NEW_VISITOR_PENDING';
+export const NEW_VISITOR_FULFILLED = 'NEW_VISITOR_FULFILLED';
+export const NEW_VISITOR_REJECTED = 'NEW_VISITOR_REJECTED';
+
+export const newVisitor = (
+    newVisitor: Visitor,
+    officeID: string,
+    formType: string,
+) => {
+    return dispatch => {
+        dispatch({
+            type: NEW_VISITOR,
+            payload: axios.post(
+                `https://${getCurrentHost()}/v1/offices/${officeID}`,
+                newVisitor,
+                {
+                    headers: {
+                        Authorization: getSessionToken(),
+                    },
+                },
+            ),
+        })
+            .then(() => {
                 dispatch(hideError());
             })
             .catch(error => {

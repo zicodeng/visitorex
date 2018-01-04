@@ -2,6 +2,8 @@ import {
     FETCH_OFFICES_FULFILLED,
     FETCH_VISITORS_FULFILLED,
     NEW_OFFICE_FULFILLED,
+    NEW_VISITOR,
+    NEW_VISITOR_FULFILLED,
 } from 'dashboard/actions';
 import { Visitor, Office } from 'dashboard/interfaces';
 import { convertToURLFormat } from 'dashboard/sidebar/utils';
@@ -47,6 +49,22 @@ const dashboardReducers = (state = initState, action) => {
             window.location.replace(
                 `/dashboard/offices/${convertToURLFormat(newOffice.name)}`,
             );
+            break;
+
+        case NEW_VISITOR_FULFILLED || NEW_VISITOR:
+            const visitor = action.payload.data;
+            offices.forEach(office => {
+                if (office.id === visitor.officeID) {
+                    if (!office.visitors) {
+                        office.visitors = [];
+                    }
+                    office.visitors.push(visitor);
+                }
+            });
+            state = {
+                ...state,
+                offices: offices,
+            };
             break;
 
         default:

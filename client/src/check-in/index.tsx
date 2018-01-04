@@ -1,6 +1,8 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 
-import { fetchOffices } from 'check-in/actions';
+import { fetchOfficeOptions } from 'check-in/actions';
+import { newVisitor } from 'dashboard/actions';
 import MaterialForm, {
     FORM_TYPES,
     Input,
@@ -10,6 +12,12 @@ import MaterialForm, {
 
 import 'check-in/style';
 
+@connect(store => {
+    return {
+        admin: store.admin,
+        offices: store.dashboard.offices,
+    };
+})
 class CheckIn extends React.Component<any, any> {
     constructor(props, context) {
         super(props, context);
@@ -24,7 +32,7 @@ class CheckIn extends React.Component<any, any> {
     }
 
     public componentWillMount() {
-        fetchOffices();
+        this.props.dispatch(fetchOfficeOptions());
     }
 
     private renderCheckinForm = () => {
@@ -37,7 +45,9 @@ class CheckIn extends React.Component<any, any> {
     };
 
     private createCheckinForm = () => {
-        const offices = ['Global Headquarters (Seattle)', 'EMEA Headquarters'];
+        const offices = this.props.offices.map(office => {
+            return office.name;
+        });
         const checkinInputs: Input[] = [
             {
                 type: 'text',
@@ -74,7 +84,7 @@ class CheckIn extends React.Component<any, any> {
 
         const checkinForm: Form = {
             type: FORM_TYPES.BASIC,
-            submitAction: inputRefVals => this.submitCheckinForm(inputRefVals),
+            submitAction: formData => this.submitCheckinForm(formData),
             title: 'EXTRAHOP VISITOR',
             inputs: checkinInputs,
             btn: 'CHECK IN',
@@ -83,10 +93,18 @@ class CheckIn extends React.Component<any, any> {
         return checkinForm;
     };
 
-    private submitCheckinForm = (formData): boolean => {
-        console.log('Check-in submit');
-        console.log(formData);
-        return false;
+    private submitCheckinForm = formData => {
+        const officeID = this.getSelectedOfficeID(formData.office);
+        this.props.dispatch(newVisitor(formData, officeID, FORM_TYPES.BASIC));
+    };
+
+    private getSelectedOfficeID = (officeName: string): string => {
+        for (let office of this.props.offices) {
+            if (office.name === officeName) {
+                return office.id;
+            }
+        }
+        return '';
     };
 }
 

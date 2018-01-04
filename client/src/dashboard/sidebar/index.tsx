@@ -263,7 +263,6 @@ class Sidebar extends React.Component<any, any> {
 
     private submitNewOfficeForm = formData => {
         this.props.dispatch(newOffice(formData, FORM_TYPES.BASIC));
-        console.log(history);
     };
 }
 

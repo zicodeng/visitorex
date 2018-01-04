@@ -1,18 +1,16 @@
 import axios from 'axios';
+
 import { getCurrentHost, getSessionToken } from 'utils';
+import { fetchAdmin } from 'admin-auth/actions';
+import { fetchOffices, newOffice } from 'dashboard/actions';
+import { Visitor } from 'dashboard/interfaces';
+import { FormError } from 'components/material-form';
 
-export const officeTypes = {
-    fetchOffices: 'FETCH_OFFICES',
-};
+import { hideError, showError } from 'components/material-form/actions';
 
-// Fetch a list of offices.
-export const fetchOffices = () => {
-    return {
-        type: officeTypes.fetchOffices,
-        payload: axios.get(`https://${getCurrentHost()}/v1/offices`, {
-            headers: {
-                Authorization: getSessionToken(),
-            },
-        }),
-    };
+export const fetchOfficeOptions = () => {
+    return dispatch =>
+        dispatch(fetchAdmin()).then(() => {
+            dispatch(fetchOffices());
+        });
 };
