@@ -13,6 +13,7 @@ import MaterialForm, {
 import { newOffice } from 'dashboard/actions';
 
 import 'dashboard/sidebar/style';
+import { signOut } from 'admin-auth/actions';
 
 const MENU_OPTION_OVERVIEW = 'Overview';
 const MENU_OPTION_OFFICES = 'Offices';
@@ -139,6 +140,10 @@ class Sidebar extends React.Component<any, any> {
             this.setState({
                 activeOfficeOption: '',
             });
+        }
+
+        if (option === MENU_OPTION_SIGN_OUT) {
+            this.props.dispatch(signOut());
         }
     };
 

@@ -65,6 +65,25 @@ export const signUp = (newAdmin: NewAdmin, formType: string) => {
 };
 
 export const SIGN_OUT = 'SIGN_OUT';
+export const SIGN_OUT_PENDING = 'SIGN_OUT_PENDING';
+export const SIGN_OUT_FULFILLED = 'SIGN_OUT_FULFILLED';
+export const SIGN_OUT_REJECTED = 'SIGN_OUT_REJECTED';
+
+export const signOut = () => {
+    return dispatch =>
+        dispatch({
+            type: SIGN_OUT,
+            payload: axios
+                .get(`https://${getCurrentHost()}/v1/sessions/mine`, {
+                    headers: {
+                        Authorization: getSessionToken(),
+                    },
+                })
+                .catch(error => {
+                    console.log(error);
+                }),
+        });
+};
 
 export const FETCH_ADMIN = 'FETCH_ADMIN';
 export const FETCH_ADMIN_PENDING = 'FETCH_ADMIN_PENDING';
