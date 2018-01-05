@@ -1,0 +1,21 @@
+@import 'utils';
+
+.fab {
+    $size: 50px;
+    width: $size;
+    height: $size;
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background-color: $color-brand;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    @include border-radius($size);
+
+    > i {
+        color: $white;
+        font-size: $font-size-lg;
+    }
+}
