@@ -1,0 +1,31 @@
+@import 'utils';
+
+.thank-you {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: $color-brand;
+
+    > .title {
+        text-transform: uppercase;
+        font-size: 60px;
+        margin-top: -20px;
+    }
+
+    > .back-btn {
+        padding: 20px 140px;
+        color: $white;
+        background-color: $color-brand;
+        border: 1px solid $white;
+        transition: all 0.2s ease-in-out;
+        cursor: pointer;
+
+        &:hover {
+            color: $color-brand;
+            background-color: $white;
+        }
+    }
+}

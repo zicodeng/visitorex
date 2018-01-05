@@ -12,6 +12,7 @@ import 'stylesheets/shared';
 import AdminAuth from 'admin-auth';
 import CheckIn from 'check-in';
 import Dashboard from 'dashboard';
+import ThankYou from 'thank-you';
 import NotFound from 'not-found';
 
 class App extends React.Component<any, any> {
@@ -21,6 +22,7 @@ class App extends React.Component<any, any> {
                 <Switch>
                     <Route exact path="/" component={CheckIn} />
                     <Route exact path="/admin-auth" component={AdminAuth} />
+                    <Route exact path="/thank-you" component={ThankYou} />
                     <Route path="/dashboard" component={Dashboard} />
                     <Route component={NotFound} />
                 </Switch>
