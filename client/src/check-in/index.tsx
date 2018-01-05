@@ -2,6 +2,8 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 
 import { fetchOfficeOptions } from 'check-in/actions';
+import { FormError } from 'components/material-form';
+import { showError } from 'components/material-form/actions';
 import { newVisitor } from 'dashboard/actions';
 import MaterialForm, {
     FORM_TYPES,
@@ -94,8 +96,20 @@ class CheckIn extends React.Component<any, any> {
     };
 
     private submitCheckinForm = formData => {
+        const dispatch = this.props.dispatch;
+
         const officeID = this.getSelectedOfficeID(formData.office);
-        this.props.dispatch(newVisitor(formData, officeID, FORM_TYPES.BASIC));
+        // Report error if no such office found.
+        if (!officeID) {
+            const formError: FormError = {
+                message: 'No such office found',
+                type: FORM_TYPES.BASIC,
+            };
+            dispatch(showError(formError));
+            return;
+        }
+
+        dispatch(newVisitor(formData, officeID, FORM_TYPES.BASIC));
     };
 
     private getSelectedOfficeID = (officeName: string): string => {
