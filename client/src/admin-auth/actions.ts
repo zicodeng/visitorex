@@ -82,6 +82,6 @@ export const fetchAdmin = () => {
             }),
         }).catch(error => {
             console.log(error);
-            window.location.pathname = 'admin-auth';
+            window.location.replace('/admin-auth');
         });
 };
