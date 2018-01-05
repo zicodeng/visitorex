@@ -115,6 +115,7 @@ export const NEW_VISITOR = 'NEW_VISITOR';
 export const NEW_VISITOR_PENDING = 'NEW_VISITOR_PENDING';
 export const NEW_VISITOR_FULFILLED = 'NEW_VISITOR_FULFILLED';
 export const NEW_VISITOR_REJECTED = 'NEW_VISITOR_REJECTED';
+export const NEW_VISITOR_NOTIFICATION = 'NEW_VISITOR_NOTIFICATION';
 
 export const newVisitor = (
     newVisitor: Visitor,
