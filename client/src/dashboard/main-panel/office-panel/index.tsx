@@ -18,16 +18,14 @@ class OfficePanel extends React.Component<any, any> {
 
     public render(): JSX.Element | null {
         const office = this.getCurrentOffice();
-        if (!office || !office.visitors) {
+        if (!office) {
             return null;
         }
+        const totalVisitor = office.visitors ? office.visitors.length : 0;
         return (
             <main className="main-panel office">
                 <h2 className="dashboard-title">{office.name}</h2>
-                <TileWidget
-                    title={'Total Visitor'}
-                    value={office.visitors.length}
-                />
+                <TileWidget title={'Total Visitor'} value={totalVisitor} />
             </main>
         );
     }

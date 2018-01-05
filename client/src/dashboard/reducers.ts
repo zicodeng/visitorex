@@ -44,11 +44,6 @@ const dashboardReducers = (state = initState, action) => {
                 ...state,
                 offices: offices,
             };
-
-            // Redirect to new office panel.
-            window.location.replace(
-                `/dashboard/offices/${convertToURLFormat(newOffice.name)}`,
-            );
             break;
 
         case NEW_VISITOR_FULFILLED || NEW_VISITOR:

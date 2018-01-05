@@ -28,7 +28,7 @@ class Dashboard extends React.Component<any, any> {
         const match = this.props.match;
         return (
             <div className="dashboard">
-                <Sidebar />
+                <Route component={Sidebar} />
                 <Switch>
                     <Route
                         exact

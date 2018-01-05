@@ -6,6 +6,7 @@ import { Office, Visitor } from 'dashboard/interfaces';
 import { FormError } from 'components/material-form';
 import { hideError, showError } from 'components/material-form/actions';
 import { openModal, closeModal } from 'components/modal/actions';
+import { convertToURLFormat } from 'dashboard/sidebar/utils';
 
 export const FETCH_OFFICES = 'FETCH_OFFICES';
 export const FETCH_OFFICES_PENDING = 'FETCH_OFFICES_PENDING';
@@ -72,7 +73,7 @@ export const NEW_OFFICE_PENDING = 'NEW_OFFICE_PENDING';
 export const NEW_OFFICE_FULFILLED = 'NEW_OFFICE_FULFILLED';
 export const NEW_OFFICE_REJECTED = 'NEW_OFFICE_REJECTED';
 
-export const newOffice = (newOffice: Office, formType: string) => {
+export const newOffice = (newOffice: Office, formType: string, history) => {
     return dispatch => {
         dispatch({
             type: NEW_OFFICE,
@@ -94,6 +95,11 @@ export const newOffice = (newOffice: Office, formType: string) => {
                 // Close Modal and hide error if this API request is successful.
                 dispatch(closeModal());
                 dispatch(hideError());
+
+                const redirectLocation = `/dashboard/offices/${convertToURLFormat(
+                    newOffice.name,
+                )}`;
+                history.push(redirectLocation);
             })
             .catch(error => {
                 const formError: FormError = {
