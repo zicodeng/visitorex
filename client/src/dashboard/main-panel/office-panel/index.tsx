@@ -54,7 +54,7 @@ class OfficePanel extends React.Component<any, any> {
     private renderFAB = () => {
         const icon = <i className="fa fa-user-plus" aria-hidden="true" />;
         const action = (): void => {
-            this.props.history.push('/');
+            window.location.replace('/');
         };
 
         return <FloatingActionButton icon={icon} action={action} />;
