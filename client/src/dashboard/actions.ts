@@ -122,6 +122,7 @@ export const newVisitor = (
     newVisitor: Visitor,
     officeID: string,
     formType: string,
+    history,
 ) => {
     return dispatch => {
         dispatch({
@@ -138,6 +139,7 @@ export const newVisitor = (
         })
             .then(() => {
                 dispatch(hideError());
+                history.push('/thank-you');
             })
             .catch(error => {
                 const formError: FormError = {

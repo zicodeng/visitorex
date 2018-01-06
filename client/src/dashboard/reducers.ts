@@ -2,7 +2,6 @@ import {
     FETCH_OFFICES_FULFILLED,
     FETCH_VISITORS_FULFILLED,
     NEW_OFFICE_NOTIFICATION,
-    NEW_VISITOR_FULFILLED,
     NEW_VISITOR_NOTIFICATION,
 } from 'dashboard/actions';
 import { Visitor, Office } from 'dashboard/interfaces';
@@ -48,7 +47,7 @@ const dashboardReducers = (state = initState, action) => {
 
         // Triggered by websocket.
         case NEW_VISITOR_NOTIFICATION:
-            const visitor = action.payload.data;
+            const visitor = action.payload;
             offices.forEach(office => {
                 if (office.id === visitor.officeID) {
                     if (!office.visitors) {
@@ -61,11 +60,6 @@ const dashboardReducers = (state = initState, action) => {
                 ...state,
                 offices: offices,
             };
-            break;
-
-        // Triggered by check-in form submission.
-        case NEW_VISITOR_FULFILLED:
-            window.location.assign('/thank-you');
             break;
 
         default:

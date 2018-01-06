@@ -111,7 +111,14 @@ class CheckIn extends React.Component<any, any> {
             return;
         }
 
-        dispatch(newVisitor(formData, officeID, FORM_TYPES.BASIC));
+        dispatch(
+            newVisitor(
+                formData,
+                officeID,
+                FORM_TYPES.BASIC,
+                this.props.history,
+            ),
+        );
     };
 
     private getSelectedOfficeID = (officeName: string): string => {
