@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import 'thank-you/style';
 
-class ThankYou extends React.Component<{}, {}> {
+class ThankYou extends React.Component<any, {}> {
     constructor(props, context) {
         super(props, context);
     }
@@ -22,7 +22,7 @@ class ThankYou extends React.Component<{}, {}> {
     }
 
     private handleClickBackBtn = (): void => {
-        window.location.replace('/');
+        this.props.history.replace('/');
     };
 }
 
