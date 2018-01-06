@@ -211,7 +211,7 @@ const OfficeHandler = (officeStore, visitorStore, visitorTrie) => {
                 res.json(newVisitor);
                 const message = {
                     type: messageType.newVisitor,
-                    visitor: newVisitor
+                    payload: newVisitor
                 };
                 MQ.sendToVisitorQueue(req, message);
             })
@@ -293,7 +293,7 @@ const OfficeHandler = (officeStore, visitorStore, visitorTrie) => {
                 res.json(updatedOffice);
                 const message = {
                     type: messageType.updateOffice,
-                    office: updatedOffice
+                    payload: updatedOffice
                 };
                 MQ.sendToVisitorQueue(req, message);
             })
@@ -349,7 +349,7 @@ const OfficeHandler = (officeStore, visitorStore, visitorTrie) => {
                 res.set('Content-Type', 'text/plain').send('Office deleted');
                 const message = {
                     type: messageType.deleteOffice,
-                    officeID: officeID
+                    payload: officeID
                 };
                 MQ.sendToVisitorQueue(req, message);
             })
