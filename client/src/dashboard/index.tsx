@@ -8,6 +8,7 @@ import OverviewPanel from 'dashboard/main-panel/overview-panel';
 import OfficePanel from 'dashboard/main-panel/office-panel';
 
 import 'dashboard/style';
+import { getCurrentHost, getSessionToken } from 'utils';
 
 @connect(store => {
     return {
@@ -56,7 +57,28 @@ class Dashboard extends React.Component<any, any> {
 
     public componentWillMount(): void {
         this.props.dispatch(fetchDashboard());
+        this.establishWebsocket();
     }
+
+    private establishWebsocket = (): WebSocket => {
+        const websocket = new WebSocket(
+            `wss://${getCurrentHost()}/v1/ws?auth=${getSessionToken()}`,
+        );
+        websocket.addEventListener('error', function(error) {
+            console.log(error);
+        });
+        websocket.addEventListener('open', function() {
+            console.log('Websocket connection established');
+        });
+        websocket.addEventListener('close', function() {
+            console.log('Websocket connection closed');
+        });
+        websocket.addEventListener('message', event => {
+            const notification = JSON.parse(event.data);
+            this.props.dispatch(notification);
+        });
+        return websocket;
+    };
 }
 
 export default Dashboard;

@@ -1,9 +1,9 @@
 import {
     FETCH_OFFICES_FULFILLED,
     FETCH_VISITORS_FULFILLED,
-    NEW_OFFICE_FULFILLED,
-    NEW_VISITOR_NOTIFICATION,
+    NEW_OFFICE_NOTIFICATION,
     NEW_VISITOR_FULFILLED,
+    NEW_VISITOR_NOTIFICATION,
 } from 'dashboard/actions';
 import { Visitor, Office } from 'dashboard/interfaces';
 import { convertToURLFormat } from 'dashboard/sidebar/utils';
@@ -37,8 +37,8 @@ const dashboardReducers = (state = initState, action) => {
             };
             break;
 
-        case NEW_OFFICE_FULFILLED:
-            const newOffice = action.payload.data;
+        case NEW_OFFICE_NOTIFICATION:
+            const newOffice = action.payload;
             offices.push(newOffice);
             state = {
                 ...state,

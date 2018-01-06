@@ -19,10 +19,10 @@ const OfficeHandler = (officeStore, visitorStore, visitorTrie) => {
     const breakSignal = Utils.breakSignal;
 
     const messageType = {
-        newOffice: 'NEW_OFFICE',
-        updateOffice: 'UPDATE_OFFICE',
-        deleteOffice: 'DELETE_OFFICE',
-        newVisitor: 'NEW_VISITOR'
+        newOffice: 'NEW_OFFICE_NOTIFICATION',
+        updateOffice: 'UPDATE_OFFICE_NOTIFICATION',
+        deleteOffice: 'DELETE_OFFICE_NOTIFICATION',
+        newVisitor: 'NEW_VISITOR_NOTIFICATION'
     };
 
     const router = express.Router();

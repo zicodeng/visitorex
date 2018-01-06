@@ -72,6 +72,7 @@ export const NEW_OFFICE = 'NEW_OFFICE';
 export const NEW_OFFICE_PENDING = 'NEW_OFFICE_PENDING';
 export const NEW_OFFICE_FULFILLED = 'NEW_OFFICE_FULFILLED';
 export const NEW_OFFICE_REJECTED = 'NEW_OFFICE_REJECTED';
+export const NEW_OFFICE_NOTIFICATION = 'NEW_OFFICE_NOTIFICATION';
 
 export const newOffice = (newOffice: Office, formType: string, history) => {
     return dispatch => {
