@@ -86,8 +86,8 @@ const OfficeHandler = require('./handlers/office');
         const qConf = await MQChannel.assertQueue(visitorQueue, {
             durable: false
         });
-        app.set('MQChannel', MQChannel);
-        app.set('visitorQueue', visitorQueue);
+        app.set('mq-channel', MQChannel);
+        app.set('visitor-queue', visitorQueue);
 
         // Initialize Mongo store.
         const collections = {

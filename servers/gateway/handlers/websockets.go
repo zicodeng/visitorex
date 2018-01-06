@@ -70,7 +70,9 @@ func NewNotifier() *Notifier {
 	// a new goroutine to start the
 	// event notification loop.
 	notifier := &Notifier{
-		eventQ: make(chan []byte),
+		eventQ:        make(chan []byte),
+		addClientQ:    make(chan *websocket.Conn),
+		removeClientQ: make(chan *websocket.Conn),
 	}
 	go notifier.start()
 	return notifier
