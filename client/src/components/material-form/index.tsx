@@ -24,6 +24,7 @@ export interface Input {
     isRequired: boolean;
     label: string;
     options?: string[];
+    value?: string;
 }
 
 export interface Form {
@@ -167,6 +168,8 @@ class MaterialForm extends React.Component<any, any> {
             const isRequired = input.isRequired;
             const label = input.label;
             const options = input.options;
+            const value = input.value;
+
             return (
                 <div
                     key={i}
@@ -182,9 +185,12 @@ class MaterialForm extends React.Component<any, any> {
                     }
                 >
                     <input
+                        className={value ? 'read-only' : undefined}
                         type={type}
                         ref={ref}
                         required={isRequired}
+                        value={value ? value : undefined}
+                        readOnly={value ? true : false}
                         onFocus={
                             options ? e => this.handleFocusInput() : undefined
                         }

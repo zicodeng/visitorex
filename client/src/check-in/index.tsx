@@ -37,10 +37,9 @@ class CheckIn extends React.Component<any, any> {
         // For the purpose of authenticating admin
         // and preventing non-admin from jumping to this page directly.
         this.props.dispatch(fetchAdmin());
-        if (!this.props.officeOption) {
+        if (!this.props.officeOption || !this.props.officeOption) {
             this.props.history.replace('/dashboard/overview');
         }
-        console.log(this.props.officeOption);
     }
 
     private renderCheckinForm = () => {
@@ -53,16 +52,13 @@ class CheckIn extends React.Component<any, any> {
     };
 
     private createCheckinForm = () => {
-        const offices = this.props.offices.map(office => {
-            return office.name;
-        });
         const checkinInputs: Input[] = [
             {
                 type: 'text',
                 ref: 'office',
                 isRequired: true,
                 label: 'Office',
-                options: offices,
+                value: this.props.officeOption,
             },
             {
                 type: 'text',

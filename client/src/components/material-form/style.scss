@@ -95,11 +95,16 @@
                     }
                 }
             }
-            &:valid {
+            &:valid,
+            &.read-only {
                 ~ label {
                     color: #9d9d9d;
                     transform: translate(-12%, -50%) scale(0.75);
                 }
+            }
+
+            &.read-only {
+                cursor: not-allowed !important;
             }
         }
         label {
