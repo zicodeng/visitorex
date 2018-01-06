@@ -1,11 +1,11 @@
 import axios from 'axios';
 
-import { fetchAdmin } from 'admin-auth/actions';
-import { fetchOffices } from 'dashboard/actions';
+export const UPDATE_OFFICE_OPTION = 'UPDATE_OFFICE_OPTION';
 
-export const fetchOfficeOptions = () => {
+export const updateOfficeOption = (office: string) => {
     return dispatch =>
-        dispatch(fetchAdmin()).then(() => {
-            dispatch(fetchOffices());
+        dispatch({
+            type: UPDATE_OFFICE_OPTION,
+            payload: office,
         });
 };

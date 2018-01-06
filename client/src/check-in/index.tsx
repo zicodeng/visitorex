@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import { fetchOfficeOptions } from 'check-in/actions';
+import { fetchAdmin } from 'admin-auth/actions';
 import { FormError } from 'components/material-form';
 import { showError } from 'components/material-form/actions';
 import { newVisitor } from 'dashboard/actions';
@@ -16,8 +16,8 @@ import 'check-in/style';
 
 @connect(store => {
     return {
-        admin: store.admin,
         offices: store.dashboard.offices,
+        officeOption: store.checkin.officeOption,
     };
 })
 class CheckIn extends React.Component<any, any> {
@@ -34,7 +34,13 @@ class CheckIn extends React.Component<any, any> {
     }
 
     public componentWillMount() {
-        this.props.dispatch(fetchOfficeOptions());
+        // For the purpose of authenticating admin
+        // and preventing non-admin from jumping to this page directly.
+        this.props.dispatch(fetchAdmin());
+        if (!this.props.officeOption) {
+            this.props.history.replace('/dashboard/overview');
+        }
+        console.log(this.props.officeOption);
     }
 
     private renderCheckinForm = () => {

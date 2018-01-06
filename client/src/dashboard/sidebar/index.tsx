@@ -31,8 +31,10 @@ class Sidebar extends React.Component<any, any> {
         super(props, context);
 
         this.state = {
-            activeMenuOption: convertToURLFormat(MENU_OPTION_OVERVIEW), // Default to Overview menu option.
+            // Default to Overview menu option.
+            activeMenuOption: convertToURLFormat(MENU_OPTION_OVERVIEW),
             activeOfficeOption: '',
+            isNewOfficeFormSubmitted: false,
         };
     }
 
@@ -105,12 +107,59 @@ class Sidebar extends React.Component<any, any> {
         );
     }
 
-    public componentWillReceiveProps(prevProp, nextProp) {
-        this.syncSidebarOptionsToCurrentLocation();
+    public componentWillReceiveProps(prevProp, nextProp): void {
+        this.syncSidebarToResourcePath();
+        this.redirectInvalidOfficePath();
     }
 
-    // As the window location pathname changes, sync active menu option and office option.
-    private syncSidebarOptionsToCurrentLocation = (): void => {
+    private redirectInvalidOfficePath = (): void => {
+        // Enforce current resource path is valid.
+        const resourcePath = window.location.pathname.split('/');
+        const dashboardPath = resourcePath[1];
+        const menuPath = resourcePath[2];
+        const firstOffice = this.props.dashboard.offices[0];
+
+        // If set to true, disable validateOfficePath(). Let normal redirect take place.
+        const isNewOfficeFormSubmitted = this.state.isNewOfficeFormSubmitted;
+        if (isNewOfficeFormSubmitted) {
+            return;
+        }
+
+        // If there is no matching office in resource path,
+        // (possibly the user types a bad URL)
+        // Redirect the user to the first office found in the list.
+        if (
+            !isNewOfficeFormSubmitted &&
+            !this.isOfficePathValid() &&
+            dashboardPath === 'dashboard' &&
+            menuPath === convertToURLFormat(MENU_OPTION_OFFICES) &&
+            firstOffice
+        ) {
+            const redirectLocation = `/dashboard/offices/${convertToURLFormat(
+                firstOffice.name,
+            )}`;
+            this.props.history.replace(redirectLocation);
+        }
+    };
+
+    // Check if current office path has matching office in dashboard offices list.
+    private isOfficePathValid(): boolean {
+        const resourcePath = window.location.pathname.split('/');
+        const officePath = resourcePath[resourcePath.length - 1];
+        const offices = this.props.dashboard.offices;
+
+        for (let office of offices) {
+            if (convertToURLFormat(office.name) === officePath) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // As the current resource path (window.location.pathname) changes,
+    // sync active menu option and office option.
+    private syncSidebarToResourcePath = (): void => {
         const resourcePath = window.location.pathname.split('/');
         const menuPath = resourcePath[2];
 
@@ -134,6 +183,7 @@ class Sidebar extends React.Component<any, any> {
 
         this.setState({
             activeMenuOption: convertToURLFormat(option),
+            isNewOfficeFormSubmitted: false,
         });
 
         if (option !== MENU_OPTION_OFFICES) {
@@ -149,15 +199,8 @@ class Sidebar extends React.Component<any, any> {
 
     private renderOfficeOptions = (): JSX.Element => {
         const offices = this.props.dashboard.offices;
-        let hasMatchingOffice = false;
-        const currentOffice = window.location.pathname.split('/')[3];
 
         const officeOptions = offices.map((office, i) => {
-            // Make sure current office in resource path has a matching office in offices list.
-            if (currentOffice === convertToURLFormat(office.name)) {
-                hasMatchingOffice = true;
-            }
-
             let officeOptionClasses = 'office-option-content';
             if (
                 this.state.activeOfficeOption ===
@@ -188,22 +231,7 @@ class Sidebar extends React.Component<any, any> {
                 </a>
             </li>
         );
-
         officeOptions.push(newOffice);
-
-        // If there is no matching office in resource path,
-        // (possibly the user types a bad URL)
-        // Redirect the user to the first office found in the list.
-        if (
-            !hasMatchingOffice &&
-            window.location.pathname.split('/').length > 3 &&
-            offices[0]
-        ) {
-            const redirectLocation = `/dashboard/offices/${convertToURLFormat(
-                offices[0].name,
-            )}`;
-            window.location.replace(redirectLocation);
-        }
 
         return (
             <ul
@@ -218,6 +246,10 @@ class Sidebar extends React.Component<any, any> {
     private handleClickOfficeOption = (e): void => {
         const activeOfficeOption = convertToURLFormat(e.target.innerText);
 
+        this.setState({
+            isNewOfficeFormSubmitted: false,
+        });
+
         // If "New Office" option is clicked...
         if (e.target.id === 'new-office') {
             this.handleClickNewOffice();
@@ -226,9 +258,6 @@ class Sidebar extends React.Component<any, any> {
 
         // Render a new dashboard for this office by pushing a new location to history,
         // which will cause window.location.pathname to change.
-        this.setState({
-            activeOfficeOption: activeOfficeOption,
-        });
         const location = `/dashboard/offices/${activeOfficeOption}`;
         this.props.history.push(location);
     };
@@ -274,6 +303,9 @@ class Sidebar extends React.Component<any, any> {
         this.props.dispatch(
             newOffice(formData, FORM_TYPES.BASIC, this.props.history),
         );
+        this.setState({
+            isNewOfficeFormSubmitted: true,
+        });
     };
 }
 

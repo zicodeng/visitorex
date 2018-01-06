@@ -5,6 +5,7 @@ import { Office } from 'dashboard/interfaces';
 import { convertToURLFormat } from 'dashboard/sidebar/utils';
 import TileWidget from 'components/widgets/tile-widget';
 import FloatingActionButton from 'components/floating-action-button';
+import { updateOfficeOption } from 'check-in/actions';
 
 @connect(store => {
     return {
@@ -15,10 +16,14 @@ import FloatingActionButton from 'components/floating-action-button';
 class OfficePanel extends React.Component<any, any> {
     constructor(props, context) {
         super(props, context);
+
+        this.state = {
+            currentOffice: null,
+        };
     }
 
     public render(): JSX.Element | null {
-        const office = this.getCurrentOffice();
+        const office = this.state.currentOffice;
         if (!office) {
             return null;
         }
@@ -30,6 +35,18 @@ class OfficePanel extends React.Component<any, any> {
                 {this.renderFAB()}
             </main>
         );
+    }
+
+    public componentWillMount(): void {
+        this.setState({
+            currentOffice: this.getCurrentOffice(),
+        });
+    }
+
+    public componentWillReceiveProps(): void {
+        this.setState({
+            currentOffice: this.getCurrentOffice(),
+        });
     }
 
     // Get current office based on resource path.
@@ -54,7 +71,10 @@ class OfficePanel extends React.Component<any, any> {
     private renderFAB = () => {
         const icon = <i className="fa fa-user-plus" aria-hidden="true" />;
         const action = (): void => {
-            window.location.replace('/');
+            this.props.history.push('/');
+            this.props.dispatch(
+                updateOfficeOption(this.state.currentOffice.name),
+            );
         };
 
         return <FloatingActionButton icon={icon} action={action} />;
