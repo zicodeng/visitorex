@@ -79,13 +79,16 @@ class Notification extends React.Component<NotificationProps, any> {
                     <p>
                         <span className="highlight highlight--level-1">
                             {item.firstName}
-                        </span>&nbsp;
+                        </span>
+                        &nbsp;
                         <span className="highlight highlight--level-1">
                             {item.lastName}
-                        </span>&nbsp; checked in at&nbsp;
+                        </span>
+                        &nbsp;checked in at&nbsp;
                         <span className="highlight highlight--level-2">
                             {item.timeIn}
-                        </span>&nbsp;
+                        </span>
+                        &nbsp;
                         <span className="highlight highlight--level-2">
                             {item.date}
                         </span>
@@ -94,8 +97,8 @@ class Notification extends React.Component<NotificationProps, any> {
                         He/she is from company&nbsp;
                         <span className="highlight highlight--level-2">
                             {item.company}
-                        </span>{' '}
-                        and here to see&nbsp;
+                        </span>
+                        &nbsp;and here to see&nbsp;
                         <span className="highlight highlight--level-1">
                             {item.toSee}
                         </span>
