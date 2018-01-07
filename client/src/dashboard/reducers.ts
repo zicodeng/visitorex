@@ -9,9 +9,10 @@ import { Visitor, Office } from 'dashboard/interfaces';
 import { convertToURLFormat } from 'dashboard/sidebar/utils';
 
 const initState = {
-    officeMap: new Map(),
-    visitorMap: new Map(),
-    newVisitorMap: new Map(), // Used for sending notification.
+    officeMap: new Map<string, Office>(),
+    visitorMap: new Map<string, Visitor[]>(),
+    newVisitorMap: new Map<string, Visitor[]>(), // Used for sending notification.
+    officeNameToIDMap: new Map<string, string>(),
 };
 
 const dashboardReducers = (state = initState, action) => {
@@ -64,25 +65,26 @@ const dashboardReducers = (state = initState, action) => {
         // Triggered by websocket.
         case NEW_VISITOR_NOTIFICATION:
             const newVisitor = action.payload;
+            if (!newVisitor) {
+                return;
+            }
 
             // Add this new visitor to visitorMap map.
-            if (!visitorMap.has(newVisitor.officeID)) {
-                const visitors: Visitor[] = [];
+            let visitors = visitorMap.get(newVisitor.officeID);
+            if (!visitors) {
+                visitors = [];
                 visitorMap.set(newVisitor.officeID, visitors);
             }
-            const updatedVisitors = visitorMap
-                .get(newVisitor.officeID)
-                .concat(newVisitor);
+            const updatedVisitors = visitors.concat(newVisitor);
             visitorMap.set(newVisitor.officeID, updatedVisitors);
 
             // Add this new visitor to newVisitorMap map for notification.
-            if (!newVisitorMap.has(newVisitor.officeID)) {
-                const newVisitors: Visitor[] = [];
+            let newVisitors = newVisitorMap.get(newVisitor.officeID);
+            if (!newVisitors) {
+                newVisitors = [];
                 newVisitorMap.set(newVisitor.officeID, newVisitors);
             }
-            const updatedNewVisitors = newVisitorMap
-                .get(newVisitor.officeID)
-                .concat(newVisitor);
+            const updatedNewVisitors = newVisitors.concat(newVisitor);
             newVisitorMap.set(newVisitor.officeID, updatedNewVisitors);
 
             state = {
