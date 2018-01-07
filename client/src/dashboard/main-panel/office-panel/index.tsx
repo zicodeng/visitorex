@@ -48,13 +48,10 @@ class OfficePanel extends React.Component<any, any> {
     private getCurrentOffice = (): Office | null => {
         const resourcePath = window.location.pathname.split('/');
         const officePath = resourcePath[OFFICE_PATH_INDEX];
+        const officeID = this.props.dashboard.officeNameToIDMap.get(officePath);
 
         const officeMap = this.props.dashboard.officeMap;
-        if (!officeMap.has(officePath)) {
-            return null;
-        }
-
-        return officeMap.get(officePath);
+        return officeMap.get(officeID) ? officeMap.get(officeID) : null;
     };
 
     // FAB redirects admin to visitor check-in screen.

@@ -43,7 +43,7 @@ class Sidebar extends React.Component<any, any> {
             // Default to Overview menu option.
             activeMenuOption: MENU_PATH_OVERVIEW,
 
-            // Represents an office ID.
+            // Represents an office name converted to URL format.
             activeOfficeOption: '',
 
             isNewOfficeFormSubmitted: false,
@@ -132,7 +132,6 @@ class Sidebar extends React.Component<any, any> {
 
         // If we are on "Offices" menu, accessing a specific office resource...
         if (menuPath === MENU_PATH_OFFICES) {
-            // Office path represents an office ID.
             const officePath = resourcePath[OFFICE_PATH_INDEX];
             this.setState({
                 activeOfficeOption: officePath,
@@ -155,8 +154,15 @@ class Sidebar extends React.Component<any, any> {
         const menuPath = resourcePath[MENU_PATH_INDEX];
         const officePath = resourcePath[OFFICE_PATH_INDEX];
 
+        const officeNameToIDMap = this.props.dashboard.officeNameToIDMap;
         const officeMap = this.props.dashboard.officeMap;
-        const firstOfficeId = officeMap.keys().next().value;
+
+        // Find the first valid office name in the list.
+        let firstOfficeName = officeMap.values().next().value;
+        if (!firstOfficeName) {
+            return;
+        }
+        firstOfficeName = firstOfficeName.name;
 
         // If set to true, disable redirectInvalidOfficePath(). Let normal redirect take place.
         const isNewOfficeFormSubmitted = this.state.isNewOfficeFormSubmitted;
@@ -169,12 +175,12 @@ class Sidebar extends React.Component<any, any> {
         // Redirect the user to the first office found in the list.
         if (
             !isNewOfficeFormSubmitted &&
-            !officeMap.has(officePath) &&
+            !officeNameToIDMap.has(officePath) &&
             dashboardPath === 'dashboard' &&
             menuPath === MENU_PATH_OFFICES &&
-            firstOfficeId
+            firstOfficeName
         ) {
-            const redirectLocation = `/dashboard/offices/${firstOfficeId}`;
+            const redirectLocation = `/dashboard/offices/${firstOfficeName}`;
             this.props.history.replace(redirectLocation);
         }
     };
@@ -207,18 +213,16 @@ class Sidebar extends React.Component<any, any> {
             let officeOptionClasses = 'office-option-content';
 
             // Mark active office option with a active class.
-            if (this.state.activeOfficeOption === office.id) {
+            if (
+                this.state.activeOfficeOption ===
+                convertToURLFormat(office.name)
+            ) {
                 officeOptionClasses += ' active';
             }
 
             officeOptions.push(
                 <li key={office.key} className="office-option">
-                    <a
-                        className={officeOptionClasses}
-                        data-office-id={office.id}
-                    >
-                        {office.name}
-                    </a>
+                    <a className={officeOptionClasses}>{office.name}</a>
                 </li>,
             );
         }
@@ -258,15 +262,15 @@ class Sidebar extends React.Component<any, any> {
             return;
         }
 
-        const activeOfficeOption = e.target.dataset.officeId;
+        const clickedOfficeName = convertToURLFormat(e.target.innerText);
         this.setState({
-            activeMenuOption: activeOfficeOption,
+            activeMenuOption: clickedOfficeName,
         });
 
         // Render a new dashboard for this office by pushing a new location to history,
         // which will cause window.location.pathname to change.
-        const location = `/dashboard/offices/${activeOfficeOption}`;
-        this.props.history.push(location);
+        const newOfficePath = `/dashboard/offices/${clickedOfficeName}`;
+        this.props.history.push(newOfficePath);
     };
 
     private handleClickNewOffice = (): void => {

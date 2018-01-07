@@ -12,7 +12,7 @@ const initState = {
     officeMap: new Map<string, Office>(),
     visitorMap: new Map<string, Visitor[]>(),
     newVisitorMap: new Map<string, Visitor[]>(), // Used for sending notification.
-    officeNameToIDMap: new Map<string, string>(),
+    officeNameToIDMap: new Map<string, string>(), // Used for mapping office path to office ID.
 };
 
 const dashboardReducers = (state = initState, action) => {
@@ -20,6 +20,7 @@ const dashboardReducers = (state = initState, action) => {
     const officeMap = new Map(state.officeMap);
     const visitorMap = new Map(state.visitorMap);
     const newVisitorMap = new Map(state.newVisitorMap);
+    const officeNameToIDMap = new Map(state.officeNameToIDMap);
 
     switch (action.type) {
         case FETCH_OFFICES_FULFILLED:
@@ -28,11 +29,16 @@ const dashboardReducers = (state = initState, action) => {
                 // For React list key prop.
                 office.key = i;
                 officeMap.set(office.id, office);
+                officeNameToIDMap.set(
+                    convertToURLFormat(office.name),
+                    office.id,
+                );
             });
 
             state = {
                 ...state,
                 officeMap: officeMap,
+                officeNameToIDMap: officeNameToIDMap,
             };
             break;
 
@@ -55,10 +61,15 @@ const dashboardReducers = (state = initState, action) => {
             const newOffice = action.payload;
             newOffice.key = officeMap.size;
             officeMap.set(newOffice.id, newOffice);
+            officeNameToIDMap.set(
+                convertToURLFormat(newOffice.name),
+                newOffice.id,
+            );
 
             state = {
                 ...state,
                 officeMap: officeMap,
+                officeNameToIDMap: officeNameToIDMap,
             };
             break;
 

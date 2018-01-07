@@ -88,13 +88,12 @@ export const newOffice = (newOffice: Office, formType: string, history) => {
                 },
             ),
         })
-            .then(res => {
+            .then(() => {
                 // Close Modal and hide error if this API request is successful.
                 dispatch(closeModal());
                 dispatch(hideError());
 
-                const newOfficeID = res.value.data.id;
-                const redirectLocation = `/dashboard/offices/${newOfficeID}`;
+                const redirectLocation = `/dashboard/offices/${newOffice.name}`;
                 history.push(redirectLocation);
             })
             .catch(error => {
