@@ -82,7 +82,7 @@ class Search extends React.Component<SearchProps, any> {
                         &nbsp;
                         {this.highlightQuery(result.lastName)}
                         &nbsp;checked in at&nbsp;
-                        {this.highlightQuery(result.timeIn)}
+                        {result.timeIn}
                         &nbsp;
                         {this.highlightQuery(result.date)}
                     </p>
@@ -105,7 +105,7 @@ class Search extends React.Component<SearchProps, any> {
                 <li>@all: search all visitors in this office.</li>
                 <li>
                     You can also search by visitor's first name, last name,
-                    company, to see, date, and/or time in.
+                    company, to see, and/or date.
                 </li>
             </ul>
         );
