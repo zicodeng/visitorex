@@ -7,15 +7,17 @@ class Trie {
 
     // Inserts a new key/value pair entry into the trie,
     // where the key is the word to be inserted and value is user ID.
-    insert(key, userID) {
+    insert(key, id) {
         key = key.toLowerCase();
-        this.root.insert(key, userID);
+        this.root.insert(key, id);
     }
 
     // Retrieves a limited number of values that match any token from the trie.
+    // It may return a Set or Array.
+    // Use for...of to loop through them so that both data structures can be iterated.
     search(limit, tokens) {
-        // results is a set that only contains unique user IDs.
-        const results = new Set();
+        // A list of results containing search results for all tokens.
+        const resultsList = [];
 
         tokens = tokens.toLowerCase().trim();
         if (!tokens) {
@@ -29,6 +31,8 @@ class Trie {
         // Search each prefix in the list and populate results.
         prefixes.forEach(prefix => {
             let curNode = this.root;
+            // results is a Set that only contains unique user IDs.
+            const results = new Set();
 
             for (let char of prefix) {
                 // If there is no child associated with that character,
@@ -44,9 +48,18 @@ class Trie {
             // Recurse down the branch,
             // gathering the keys and values, and return them.
             curNode.search(limit, results);
+
+            resultsList.push(results);
         });
 
-        return results;
+        // If results list only contains one result,
+        // it implies that this is a single token search,
+        // simply return the results Set in the list.
+        if (resultsList.length === 1) {
+            return resultsList[0];
+        }
+
+        return this.findIntersected(resultsList);
     }
 
     // Removes a key/value pair entry from the trie,
@@ -54,6 +67,47 @@ class Trie {
     remove(key, value) {
         key = key.toLowerCase().trim();
         this.root.remove(key, value);
+    }
+
+    // Find intersected results in results list.
+    findIntersected(resultsList) {
+        let intersectedResults = new Set();
+
+        for (let i = 0; i < resultsList.length - 1; i++) {
+            if (i === 0) {
+                intersectedResults = this.findCommon(
+                    resultsList[0],
+                    resultsList[1]
+                );
+                i++;
+            }
+            intersectedResults = this.findCommon(
+                intersectedResults,
+                resultsList[i]
+            );
+        }
+
+        return intersectedResults;
+    }
+
+    // Find common items between two lists.
+    // list1 and list2 are Set.
+    findCommon(list1, list2) {
+        const common = new Set();
+        let shorterList = list1;
+        let longerList = list2;
+        if (list1.size > list2.size) {
+            shorterList = list2;
+            longerList = list1;
+        }
+
+        for (let item of shorterList) {
+            if (longerList.has(item)) {
+                common.add(item);
+            }
+        }
+
+        return common;
     }
 }
 
@@ -66,7 +120,7 @@ class Node {
         this.parent = null; // Node
     }
 
-    insert(key, userID) {
+    insert(key, id) {
         let curNode = this;
         // Loop through each character in the key.
         for (let char of key) {
@@ -86,7 +140,7 @@ class Node {
         }
 
         // Add this user ID as value to current node.
-        curNode.values.add(userID);
+        curNode.values.add(id);
     }
 
     search(limit, results) {
@@ -94,13 +148,12 @@ class Node {
 
         // Add values to results.
         if (curNode.values.size) {
-            for (let userID of curNode.values) {
+            for (let id of curNode.values) {
                 if (results.size === limit) {
                     return;
                 }
-                if (!results.has(userID)) {
-                    results.add(userID);
-                }
+                // Add this ID to results Set.
+                results.add(id);
             }
         }
 
