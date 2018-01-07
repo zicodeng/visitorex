@@ -382,6 +382,7 @@ const OfficeHandler = (officeStore, visitorStore, visitorTrie) => {
 
         const limit = 25;
         const visitorIDs = visitorTrie.search(limit, q);
+
         visitorStore.convertToVisitors(visitorIDs, officeID).then(visitors => {
             res.json(visitors);
         });

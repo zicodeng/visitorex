@@ -29,16 +29,16 @@ class Trie {
         const prefixes = tokens.split(/\s+/);
 
         // Search each prefix in the list and populate results.
-        prefixes.forEach(prefix => {
+        for (let prefix of prefixes) {
             let curNode = this.root;
             // results is a Set that only contains unique user IDs.
             const results = new Set();
 
             for (let char of prefix) {
                 // If there is no child associated with that character,
-                // no keys start with the prefix, so return an empty set.
+                // no keys start with the prefix, so return an empty array.
                 if (!curNode.children.has(char)) {
-                    return results;
+                    return [];
                 }
                 curNode = curNode.children.get(char);
             }
@@ -50,7 +50,7 @@ class Trie {
             curNode.search(limit, results);
 
             resultsList.push(results);
-        });
+        }
 
         // If results list only contains one result,
         // it implies that this is a single token search,
@@ -62,25 +62,22 @@ class Trie {
         return this.findIntersected(resultsList);
     }
 
-    // Removes a key/value pair entry from the trie,
-    // where key is a word and value is user ID.
-    remove(key, value) {
-        key = key.toLowerCase().trim();
-        this.root.remove(key, value);
-    }
-
     // Find intersected results in results list.
     findIntersected(resultsList) {
         let intersectedResults = new Set();
 
-        for (let i = 0; i < resultsList.length - 1; i++) {
+        for (let i = 0; i < resultsList.length; i++) {
             if (i === 0) {
                 intersectedResults = this.findCommon(
                     resultsList[0],
                     resultsList[1]
                 );
                 i++;
+                continue;
             }
+
+            // Keep looking for intersected items
+            // between updated intersected results and the next results in results list.
             intersectedResults = this.findCommon(
                 intersectedResults,
                 resultsList[i]
@@ -108,6 +105,13 @@ class Trie {
         }
 
         return common;
+    }
+
+    // Removes a key/value pair entry from the trie,
+    // where key is a word and value is user ID.
+    remove(key, value) {
+        key = key.toLowerCase().trim();
+        this.root.remove(key, value);
     }
 }
 
