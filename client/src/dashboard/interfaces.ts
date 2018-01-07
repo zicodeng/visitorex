@@ -15,4 +15,5 @@ export interface Office {
     addr: string;
     creator: any;
     visitors: Visitor[];
+    newVisitors?: Visitor[]; // New visitors will not notified in push notification.
 }

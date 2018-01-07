@@ -1,0 +1,9 @@
+.highlight {
+    &--level-1 {
+        color: $color-fail;
+    }
+
+    &--level-2 {
+        color: $color-brand;
+    }
+}

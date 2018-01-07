@@ -1,7 +1,7 @@
 import { UPDATE_OFFICE_OPTION } from 'check-in/actions';
 
 const initState = {
-    officeOption: '',
+    office: '',
 };
 
 const checkinReducers = (state = initState, action) => {
@@ -9,7 +9,7 @@ const checkinReducers = (state = initState, action) => {
         case UPDATE_OFFICE_OPTION:
             state = {
                 ...state,
-                officeOption: action.payload,
+                office: action.payload,
             };
             break;
 

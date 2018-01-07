@@ -88,18 +88,13 @@ export const newOffice = (newOffice: Office, formType: string, history) => {
                 },
             ),
         })
-            .then(() => {
-                // We don't need to take care of responded data here,
-                // because we are not handling application state change here.
-                // We will take care of that in reducers.
-
+            .then(res => {
                 // Close Modal and hide error if this API request is successful.
                 dispatch(closeModal());
                 dispatch(hideError());
 
-                const redirectLocation = `/dashboard/offices/${convertToURLFormat(
-                    newOffice.name,
-                )}`;
+                const newOfficeID = res.value.data.id;
+                const redirectLocation = `/dashboard/offices/${newOfficeID}`;
                 history.push(redirectLocation);
             })
             .catch(error => {
@@ -148,5 +143,16 @@ export const newVisitor = (
                 };
                 dispatch(showError(formError));
             });
+    };
+};
+
+export const CLEAR_NEW_VISITORS = 'CLEAR_NEW_VISITORS';
+
+export const clearNewVisitors = (officeID: string) => {
+    return dispatch => {
+        dispatch({
+            type: CLEAR_NEW_VISITORS,
+            payload: officeID,
+        });
     };
 };

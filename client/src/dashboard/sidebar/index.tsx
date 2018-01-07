@@ -19,6 +19,15 @@ const MENU_OPTION_OVERVIEW = 'Overview';
 const MENU_OPTION_OFFICES = 'Offices';
 const MENU_OPTION_SIGN_OUT = 'Sign Out';
 
+const MENU_PATH_OVERVIEW = convertToURLFormat(MENU_OPTION_OVERVIEW);
+const MENU_PATH_OFFICES = convertToURLFormat(MENU_OPTION_OFFICES);
+const MENU_PATH_SIGN_OUT = convertToURLFormat(MENU_OPTION_SIGN_OUT);
+
+// Expected resource path: /dashboard/<menu-path>/<office-path>
+export const DASHBOARD_PATH_INDEX = 1;
+export const MENU_PATH_INDEX = 2;
+export const OFFICE_PATH_INDEX = 3;
+
 @connect(store => {
     return {
         admin: store.admin,
@@ -32,8 +41,11 @@ class Sidebar extends React.Component<any, any> {
 
         this.state = {
             // Default to Overview menu option.
-            activeMenuOption: convertToURLFormat(MENU_OPTION_OVERVIEW),
+            activeMenuOption: MENU_PATH_OVERVIEW,
+
+            // Represents an office ID.
             activeOfficeOption: '',
+
             isNewOfficeFormSubmitted: false,
         };
     }
@@ -62,15 +74,14 @@ class Sidebar extends React.Component<any, any> {
                     <ul className="menu-options">
                         <li className="menu-option">
                             <Link
+                                id={MENU_PATH_OVERVIEW}
                                 className={
                                     this.state.activeMenuOption ===
-                                    convertToURLFormat(MENU_OPTION_OVERVIEW)
+                                    MENU_PATH_OVERVIEW
                                         ? 'menu-option-content active'
                                         : 'menu-option-content'
                                 }
-                                to={`/dashboard/${convertToURLFormat(
-                                    MENU_OPTION_OVERVIEW,
-                                )}`}
+                                to={`/dashboard/${MENU_PATH_OVERVIEW}`}
                                 onClick={e => this.handleClickMenuOption(e)}
                             >
                                 {MENU_OPTION_OVERVIEW}
@@ -78,9 +89,10 @@ class Sidebar extends React.Component<any, any> {
                         </li>
                         <li className="menu-option">
                             <a
+                                id={MENU_PATH_OFFICES}
                                 className={
                                     this.state.activeMenuOption ===
-                                    convertToURLFormat(MENU_OPTION_OFFICES)
+                                    MENU_PATH_OFFICES
                                         ? 'menu-option-content arrow active'
                                         : 'menu-option-content arrow'
                                 }
@@ -88,13 +100,13 @@ class Sidebar extends React.Component<any, any> {
                             >
                                 {MENU_OPTION_OFFICES}
                             </a>
-                            {this.state.activeMenuOption ===
-                            convertToURLFormat(MENU_OPTION_OFFICES)
+                            {this.state.activeMenuOption === MENU_PATH_OFFICES
                                 ? this.renderOfficeOptions()
                                 : null}
                         </li>
                         <li className="menu-option">
                             <a
+                                id={MENU_PATH_SIGN_OUT}
                                 className="menu-option-content sign-out"
                                 onClick={e => this.handleClickMenuOption(e)}
                             >
@@ -112,14 +124,41 @@ class Sidebar extends React.Component<any, any> {
         this.redirectInvalidOfficePath();
     }
 
-    private redirectInvalidOfficePath = (): void => {
-        // Enforce current resource path is valid.
+    // As the current resource path (window.location.pathname) changes,
+    // sync active menu option and office option.
+    private syncSidebarToResourcePath = (): void => {
         const resourcePath = window.location.pathname.split('/');
-        const dashboardPath = resourcePath[1];
-        const menuPath = resourcePath[2];
-        const firstOffice = this.props.dashboard.offices[0];
+        const menuPath = resourcePath[MENU_PATH_INDEX];
 
-        // If set to true, disable validateOfficePath(). Let normal redirect take place.
+        // If we are on "Offices" menu, accessing a specific office resource...
+        if (menuPath === MENU_PATH_OFFICES) {
+            // Office path represents an office ID.
+            const officePath = resourcePath[OFFICE_PATH_INDEX];
+            this.setState({
+                activeOfficeOption: officePath,
+                activeMenuOption: menuPath,
+            });
+            return;
+        }
+
+        // If not on "Offices" menu...
+        this.setState({
+            activeOfficeOption: '',
+            activeMenuOption: menuPath,
+        });
+    };
+
+    // Enforce current resource path is valid.
+    private redirectInvalidOfficePath = (): void => {
+        const resourcePath = window.location.pathname.split('/');
+        const dashboardPath = resourcePath[DASHBOARD_PATH_INDEX];
+        const menuPath = resourcePath[MENU_PATH_INDEX];
+        const officePath = resourcePath[OFFICE_PATH_INDEX];
+
+        const offices = this.props.dashboard.offices;
+        const firstOfficeId = offices.keys().next().value;
+
+        // If set to true, disable redirectInvalidOfficePath(). Let normal redirect take place.
         const isNewOfficeFormSubmitted = this.state.isNewOfficeFormSubmitted;
         if (isNewOfficeFormSubmitted) {
             return;
@@ -130,102 +169,67 @@ class Sidebar extends React.Component<any, any> {
         // Redirect the user to the first office found in the list.
         if (
             !isNewOfficeFormSubmitted &&
-            !this.isOfficePathValid() &&
+            !offices.has(officePath) &&
             dashboardPath === 'dashboard' &&
-            menuPath === convertToURLFormat(MENU_OPTION_OFFICES) &&
-            firstOffice
+            menuPath === MENU_PATH_OFFICES &&
+            firstOfficeId
         ) {
-            const redirectLocation = `/dashboard/offices/${convertToURLFormat(
-                firstOffice.name,
-            )}`;
+            const redirectLocation = `/dashboard/offices/${firstOfficeId}`;
             this.props.history.replace(redirectLocation);
         }
     };
 
-    // Check if current office path has matching office in dashboard offices list.
-    private isOfficePathValid(): boolean {
-        const resourcePath = window.location.pathname.split('/');
-        const officePath = resourcePath[resourcePath.length - 1];
-        const offices = this.props.dashboard.offices;
-
-        for (let office of offices) {
-            if (convertToURLFormat(office.name) === officePath) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    // As the current resource path (window.location.pathname) changes,
-    // sync active menu option and office option.
-    private syncSidebarToResourcePath = (): void => {
-        const resourcePath = window.location.pathname.split('/');
-        const menuPath = resourcePath[2];
-
-        if (menuPath === convertToURLFormat(MENU_OPTION_OFFICES)) {
-            const currentOffice = resourcePath[3];
-            this.setState({
-                activeOfficeOption: currentOffice,
-                activeMenuOption: menuPath,
-            });
-            return;
-        }
-
-        this.setState({
-            activeOfficeOption: '',
-            activeMenuOption: menuPath,
-        });
-    };
-
     private handleClickMenuOption = (e): void => {
-        const option = e.target.innerText;
-
+        const clickedMenuOption = e.target.id;
         this.setState({
-            activeMenuOption: convertToURLFormat(option),
+            activeMenuOption: clickedMenuOption,
             isNewOfficeFormSubmitted: false,
         });
 
-        if (option !== MENU_OPTION_OFFICES) {
+        // If not on "Offices" menu option, no office option should be marked as active.
+        if (clickedMenuOption !== MENU_PATH_OFFICES) {
             this.setState({
                 activeOfficeOption: '',
             });
         }
 
-        if (option === MENU_OPTION_SIGN_OUT) {
+        // If "Sign Out" menu option is clicked...
+        if (clickedMenuOption === MENU_PATH_SIGN_OUT) {
             this.props.dispatch(signOut());
         }
     };
 
     private renderOfficeOptions = (): JSX.Element => {
         const offices = this.props.dashboard.offices;
+        const officeOptions: JSX.Element[] = [];
 
-        const officeOptions = offices.map((office, i) => {
+        for (let office of offices.values()) {
             let officeOptionClasses = 'office-option-content';
-            if (
-                this.state.activeOfficeOption ===
-                convertToURLFormat(office.name)
-            ) {
+
+            // Mark active office option with a active class.
+            if (this.state.activeOfficeOption === office.id) {
                 officeOptionClasses += ' active';
             }
 
-            const location = `/dashboard/offices/${convertToURLFormat(
-                office.name,
-            )}`;
-
-            return (
-                <li key={i} className="office-option">
-                    <a className={officeOptionClasses}>{office.name}</a>
-                </li>
+            officeOptions.push(
+                <li key={office.key} className="office-option">
+                    <a
+                        className={officeOptionClasses}
+                        data-office-id={office.id}
+                    >
+                        {office.name}
+                    </a>
+                </li>,
             );
-        });
+        }
 
+        // Render "New Office" option.
         let newOfficeClasses = 'office-option-content new-office';
         if (this.props.modal.show) {
             newOfficeClasses += ' active';
         }
         const newOffice = (
-            <li key={officeOptions.length} className="office-option">
+            <li key={officeOptions.length + 1} className="office-option">
                 <a id="new-office" className={newOfficeClasses}>
                     New Office
                 </a>
@@ -244,8 +248,6 @@ class Sidebar extends React.Component<any, any> {
     };
 
     private handleClickOfficeOption = (e): void => {
-        const activeOfficeOption = convertToURLFormat(e.target.innerText);
-
         this.setState({
             isNewOfficeFormSubmitted: false,
         });
@@ -255,6 +257,11 @@ class Sidebar extends React.Component<any, any> {
             this.handleClickNewOffice();
             return;
         }
+
+        const activeOfficeOption = e.target.dataset.officeId;
+        this.setState({
+            activeMenuOption: activeOfficeOption,
+        });
 
         // Render a new dashboard for this office by pushing a new location to history,
         // which will cause window.location.pathname to change.

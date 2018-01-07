@@ -16,8 +16,7 @@ import 'check-in/style';
 
 @connect(store => {
     return {
-        offices: store.dashboard.offices,
-        officeOption: store.checkin.officeOption,
+        office: store.checkin.office,
     };
 })
 class CheckIn extends React.Component<any, any> {
@@ -37,7 +36,7 @@ class CheckIn extends React.Component<any, any> {
         // For the purpose of authenticating admin
         // and preventing non-admin from jumping to this page directly.
         this.props.dispatch(fetchAdmin());
-        if (!this.props.officeOption || !this.props.officeOption) {
+        if (!this.props.office) {
             this.props.history.replace('/dashboard/overview');
         }
     }
@@ -52,13 +51,14 @@ class CheckIn extends React.Component<any, any> {
     };
 
     private createCheckinForm = () => {
+        const office = this.props.office;
         const checkinInputs: Input[] = [
             {
                 type: 'text',
                 ref: 'office',
                 isRequired: true,
                 label: 'Office',
-                value: this.props.officeOption,
+                value: office.name,
             },
             {
                 type: 'text',
@@ -98,36 +98,16 @@ class CheckIn extends React.Component<any, any> {
     };
 
     private submitCheckinForm = formData => {
-        const dispatch = this.props.dispatch;
-
-        const officeID = this.getSelectedOfficeID(formData.office);
-        // Report error if no such office found.
-        if (!officeID) {
-            const formError: FormError = {
-                message: 'No such office found',
-                type: FORM_TYPES.BASIC,
-            };
-            dispatch(showError(formError));
-            return;
-        }
+        const { dispatch, office } = this.props;
 
         dispatch(
             newVisitor(
                 formData,
-                officeID,
+                office.id,
                 FORM_TYPES.BASIC,
                 this.props.history,
             ),
         );
-    };
-
-    private getSelectedOfficeID = (officeName: string): string => {
-        for (let office of this.props.offices) {
-            if (office.name === officeName) {
-                return office.id;
-            }
-        }
-        return '';
     };
 }
 
