@@ -155,8 +155,8 @@ class Sidebar extends React.Component<any, any> {
         const menuPath = resourcePath[MENU_PATH_INDEX];
         const officePath = resourcePath[OFFICE_PATH_INDEX];
 
-        const offices = this.props.dashboard.offices;
-        const firstOfficeId = offices.keys().next().value;
+        const officeMap = this.props.dashboard.officeMap;
+        const firstOfficeId = officeMap.keys().next().value;
 
         // If set to true, disable redirectInvalidOfficePath(). Let normal redirect take place.
         const isNewOfficeFormSubmitted = this.state.isNewOfficeFormSubmitted;
@@ -169,7 +169,7 @@ class Sidebar extends React.Component<any, any> {
         // Redirect the user to the first office found in the list.
         if (
             !isNewOfficeFormSubmitted &&
-            !offices.has(officePath) &&
+            !officeMap.has(officePath) &&
             dashboardPath === 'dashboard' &&
             menuPath === MENU_PATH_OFFICES &&
             firstOfficeId
@@ -200,10 +200,10 @@ class Sidebar extends React.Component<any, any> {
     };
 
     private renderOfficeOptions = (): JSX.Element => {
-        const offices = this.props.dashboard.offices;
+        const officeMap = this.props.dashboard.officeMap;
         const officeOptions: JSX.Element[] = [];
 
-        for (let office of offices.values()) {
+        for (let office of officeMap.values()) {
             let officeOptionClasses = 'office-option-content';
 
             // Mark active office option with a active class.

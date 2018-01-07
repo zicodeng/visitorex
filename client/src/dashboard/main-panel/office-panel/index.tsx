@@ -31,7 +31,7 @@ class OfficePanel extends React.Component<any, any> {
         if (!office) {
             return null;
         }
-        const visitors = dashboard.visitors.get(office.id);
+        const visitors = dashboard.visitorMap.get(office.id);
         const totalVisitor = visitors ? visitors.length : 0;
 
         return (
@@ -49,12 +49,12 @@ class OfficePanel extends React.Component<any, any> {
         const resourcePath = window.location.pathname.split('/');
         const officePath = resourcePath[OFFICE_PATH_INDEX];
 
-        const officesMap = this.props.dashboard.offices;
-        if (!officesMap.has(officePath)) {
+        const officeMap = this.props.dashboard.officeMap;
+        if (!officeMap.has(officePath)) {
             return null;
         }
 
-        return officesMap.get(officePath);
+        return officeMap.get(officePath);
     };
 
     // FAB redirects admin to visitor check-in screen.
@@ -69,13 +69,13 @@ class OfficePanel extends React.Component<any, any> {
     };
 
     private renderNotification = (office: Office): JSX.Element | null => {
-        const newVisitorsMap = this.props.dashboard.newVisitors;
-        if (!newVisitorsMap) {
+        const newVisitorMap = this.props.dashboard.newVisitorMap;
+        if (!newVisitorMap) {
             return null;
         }
 
         // Teaches Notification component what to render.
-        const newVisitors = newVisitorsMap.get(office.id);
+        const newVisitors = newVisitorMap.get(office.id);
         // Clears all notifications.
         const clearAction = (): void => {
             console.log(office.id);

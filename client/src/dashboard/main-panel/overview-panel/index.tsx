@@ -26,21 +26,21 @@ class OverviewPanel extends React.Component<any, any> {
     }
 
     private renderTotalReports = (): JSX.Element | null => {
-        const offices = this.props.dashboard.offices;
-        const visitors = this.props.dashboard.visitors;
+        const officeMap = this.props.dashboard.officeMap;
+        const visitorMap = this.props.dashboard.visitorMap;
 
-        if (!offices || !visitors) {
+        if (!officeMap || !visitorMap) {
             return null;
         }
 
         const tileWidgets = [
             {
                 title: 'Total Office',
-                value: offices.size,
+                value: officeMap.size,
             },
             {
                 title: 'Total Visitor',
-                value: visitors.size,
+                value: visitorMap.size,
             },
         ];
 

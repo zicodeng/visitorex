@@ -9,16 +9,16 @@ import { Visitor, Office } from 'dashboard/interfaces';
 import { convertToURLFormat } from 'dashboard/sidebar/utils';
 
 const initState = {
-    offices: new Map(),
-    visitors: new Map(),
-    newVisitors: new Map(), // Used for sending notification.
+    officeMap: new Map(),
+    visitorMap: new Map(),
+    newVisitorMap: new Map(), // Used for sending notification.
 };
 
 const dashboardReducers = (state = initState, action) => {
     // Always create new maps by copying values from existing maps.
-    const offices = new Map(state.offices);
-    const visitors = new Map(state.visitors);
-    const newVisitors = new Map(state.newVisitors);
+    const officeMap = new Map(state.officeMap);
+    const visitorMap = new Map(state.visitorMap);
+    const newVisitorMap = new Map(state.newVisitorMap);
 
     switch (action.type) {
         case FETCH_OFFICES_FULFILLED:
@@ -26,12 +26,12 @@ const dashboardReducers = (state = initState, action) => {
             fetchedOffices.forEach((office, i) => {
                 // For React list key prop.
                 office.key = i;
-                offices.set(office.id, office);
+                officeMap.set(office.id, office);
             });
 
             state = {
                 ...state,
-                offices: offices,
+                officeMap: officeMap,
             };
             break;
 
@@ -40,24 +40,24 @@ const dashboardReducers = (state = initState, action) => {
                 const fetchedVisitors = item.data;
                 if (fetchedVisitors.length) {
                     const officeID = fetchedVisitors[0].officeID;
-                    visitors.set(officeID, fetchedVisitors);
+                    visitorMap.set(officeID, fetchedVisitors);
                 }
             });
 
             state = {
                 ...state,
-                visitors: visitors,
+                visitorMap: visitorMap,
             };
             break;
 
         case NEW_OFFICE_NOTIFICATION:
             const newOffice = action.payload;
-            newOffice.key = offices.size;
-            offices.set(newOffice.id, newOffice);
+            newOffice.key = officeMap.size;
+            officeMap.set(newOffice.id, newOffice);
 
             state = {
                 ...state,
-                offices: offices,
+                officeMap: officeMap,
             };
             break;
 
@@ -65,42 +65,42 @@ const dashboardReducers = (state = initState, action) => {
         case NEW_VISITOR_NOTIFICATION:
             const newVisitor = action.payload;
 
-            // Add this new visitor to visitors map.
-            if (!visitors.has(newVisitor.officeID)) {
-                const visitorList: Visitor[] = [];
-                visitors.set(newVisitor.officeID, visitorList);
+            // Add this new visitor to visitorMap map.
+            if (!visitorMap.has(newVisitor.officeID)) {
+                const visitors: Visitor[] = [];
+                visitorMap.set(newVisitor.officeID, visitors);
             }
-            const updatedVisitors = visitors
+            const updatedVisitors = visitorMap
                 .get(newVisitor.officeID)
                 .concat(newVisitor);
-            visitors.set(newVisitor.officeID, updatedVisitors);
+            visitorMap.set(newVisitor.officeID, updatedVisitors);
 
-            // Add this new visitor to newVisitors map for notification.
-            if (!newVisitors.has(newVisitor.officeID)) {
-                const newVisitorList: Visitor[] = [];
-                newVisitors.set(newVisitor.officeID, newVisitorList);
+            // Add this new visitor to newVisitorMap map for notification.
+            if (!newVisitorMap.has(newVisitor.officeID)) {
+                const newVisitors: Visitor[] = [];
+                newVisitorMap.set(newVisitor.officeID, newVisitors);
             }
-            const updatedNewVisitors = newVisitors
+            const updatedNewVisitors = newVisitorMap
                 .get(newVisitor.officeID)
                 .concat(newVisitor);
-            newVisitors.set(newVisitor.officeID, updatedNewVisitors);
+            newVisitorMap.set(newVisitor.officeID, updatedNewVisitors);
 
             state = {
                 ...state,
-                visitors,
-                newVisitors,
+                visitorMap,
+                newVisitorMap,
             };
             break;
 
         case CLEAR_NEW_VISITORS:
             const officeID = action.payload;
-            let clearedNewVisitors = newVisitors.get(officeID);
-            clearedNewVisitors = [];
-            newVisitors.set(officeID, clearedNewVisitors);
+            let emptyNewVisitors = newVisitorMap.get(officeID);
+            emptyNewVisitors = [];
+            newVisitorMap.set(officeID, emptyNewVisitors);
 
             state = {
                 ...state,
-                newVisitors,
+                newVisitorMap,
             };
             break;
 
