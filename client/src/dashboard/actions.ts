@@ -93,7 +93,9 @@ export const newOffice = (newOffice: Office, formType: string, history) => {
                 dispatch(closeModal());
                 dispatch(hideError());
 
-                const redirectLocation = `/dashboard/offices/${newOffice.name}`;
+                const redirectLocation = `/dashboard/offices/${convertToURLFormat(
+                    newOffice.name,
+                )}`;
                 history.push(redirectLocation);
             })
             .catch(error => {
