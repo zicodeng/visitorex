@@ -7,9 +7,14 @@ import { Office, Visitor } from 'dashboard/interfaces';
 import { convertToURLFormat } from 'dashboard/sidebar/utils';
 import Notification from 'components/notification';
 import TileWidget from 'components/widgets/tile-widget';
-import { clearNewVisitors, searchVisitors } from 'dashboard/actions';
+import {
+    clearNewVisitors,
+    searchVisitors,
+    searchAllVisitors,
+} from 'dashboard/actions';
 import { OFFICE_PATH_INDEX } from 'dashboard/sidebar';
 import Search from 'components/search';
+import { renderSearchResults } from 'components/search/actions';
 
 import 'dashboard/main-panel/office-panel/style';
 
@@ -68,18 +73,23 @@ class OfficePanel extends React.Component<any, {}> {
             return;
         }
 
-        // Special searching commands.
+        const dispatch = this.props.dispatch;
+
+        // Special search commands.
         if (query.startsWith('@')) {
             // Search all visitors in this office.
             if (query.startsWith('@all')) {
-                console.log('get all visitors...');
+                dispatch(searchAllVisitors(office.id));
             }
 
+            // If no special search command is matched,
+            // clear search results.
+            this.props.dispatch(renderSearchResults([]));
             return;
         }
 
         // Normal search.
-        this.props.dispatch(searchVisitors(office.id, query));
+        dispatch(searchVisitors(office.id, query));
     };
 
     // FAB redirects admin to visitor check-in screen.

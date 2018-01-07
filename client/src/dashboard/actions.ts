@@ -32,6 +32,7 @@ export const FETCH_VISITORS_PENDING = 'FETCH_VISITORS_PENDING';
 export const FETCH_VISITORS_FULFILLED = 'FETCH_VISITORS_FULFILLED';
 export const FETCH_VISITORS_REJECTED = 'FETCH_VISITORS_REJECTED';
 
+// Fetch all visitors for each office.
 const fetchVisitors = (promises: AxiosPromise[]) => {
     return dispatch => {
         dispatch({
@@ -164,6 +165,7 @@ export const SEARCH_VISITORS_PENDING = 'SEARCH_VISITORS_PENDING';
 export const SEARCH_VISITORS_FULFILLED = 'SEARCH_VISITORS_FULFILLED';
 export const SEARCH_VISITORS_REJECTED = 'SEARCH_VISITORS_REJECTED';
 
+// Search visitors by query in a given office.
 export const searchVisitors = (officeID: string, query: string) => {
     const searchURL = `https://${getCurrentHost()}/v1/offices/${officeID}/search?q=${query}`;
     return dispatch => {
@@ -174,6 +176,34 @@ export const searchVisitors = (officeID: string, query: string) => {
                     Authorization: getSessionToken(),
                 },
             }),
+        })
+            .then(res => {
+                const visitors = res.value.data;
+                dispatch(renderSearchResults(visitors));
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    };
+};
+
+export const SEARCH_ALL_VISITORS = 'SEARCH_ALL_VISITORS';
+export const SEARCH_ALL_VISITORS_PENDING = 'SEARCH_ALL_VISITORS_PENDING';
+export const SEARCH_ALL_VISITORS_FULFILLED = 'SEARCH_ALL_VISITORS_FULFILLED';
+export const SEARCH_ALL_VISITORS_REJECTED = 'SEARCH_ALL_VISITORS_REJECTED';
+
+export const searchAllVisitors = (officeID: string) => {
+    return dispatch => {
+        dispatch({
+            type: SEARCH_ALL_VISITORS,
+            payload: axios.get(
+                `https://${getCurrentHost()}/v1/offices/${officeID}`,
+                {
+                    headers: {
+                        Authorization: getSessionToken(),
+                    },
+                },
+            ),
         })
             .then(res => {
                 const visitors = res.value.data;

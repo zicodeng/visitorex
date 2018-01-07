@@ -49,12 +49,13 @@ class Search extends React.Component<SearchProps, any> {
         const currentResourcePath = this.props.history.location.pathname;
 
         // If the user navigates away,
-        // clear input box and query.
+        // clear input box, query, and results.
         if (currentResourcePath !== historyResourcePath) {
             this.refs.query['value'] = '';
             this.setState({
                 query: '',
             });
+            this.props.dispatch(renderSearchResults([]));
         }
 
         this.setState({
