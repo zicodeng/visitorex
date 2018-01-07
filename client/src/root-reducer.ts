@@ -5,6 +5,7 @@ import checkinReducers from 'check-in/reducers';
 import dashboardReducers from 'dashboard/reducers';
 import materialFormReducers from 'components/material-form/reducers';
 import modalReducers from 'components/modal/reducers';
+import searchReducers from 'components/search/reducers';
 
 export default combineReducers({
     admin: adminReducers,
@@ -12,4 +13,5 @@ export default combineReducers({
     materialForm: materialFormReducers,
     dashboard: dashboardReducers,
     modal: modalReducers,
+    search: searchReducers,
 });

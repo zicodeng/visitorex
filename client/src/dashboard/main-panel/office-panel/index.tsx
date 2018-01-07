@@ -3,12 +3,15 @@ import { connect } from 'react-redux';
 
 import { updateOfficeOption } from 'check-in/actions';
 import FloatingActionButton from 'components/floating-action-button';
-import { Office } from 'dashboard/interfaces';
+import { Office, Visitor } from 'dashboard/interfaces';
 import { convertToURLFormat } from 'dashboard/sidebar/utils';
 import Notification from 'components/notification';
 import TileWidget from 'components/widgets/tile-widget';
-import { clearNewVisitors } from 'dashboard/actions';
+import { clearNewVisitors, searchVisitors } from 'dashboard/actions';
 import { OFFICE_PATH_INDEX } from 'dashboard/sidebar';
+import Search from 'components/search';
+
+import 'dashboard/main-panel/office-panel/style';
 
 @connect(store => {
     return {
@@ -16,13 +19,9 @@ import { OFFICE_PATH_INDEX } from 'dashboard/sidebar';
         dashboard: store.dashboard,
     };
 })
-class OfficePanel extends React.Component<any, any> {
+class OfficePanel extends React.Component<any, {}> {
     constructor(props, context) {
         super(props, context);
-
-        this.state = {
-            currentOffice: null,
-        };
     }
 
     public render(): JSX.Element | null {
@@ -37,6 +36,13 @@ class OfficePanel extends React.Component<any, any> {
         return (
             <main className="main-panel office">
                 <h2 className="dashboard-title">{office.name}</h2>
+                <div className="search-container">
+                    <Search
+                        inputChangeAction={query =>
+                            this.getSearchResults(query)
+                        }
+                    />
+                </div>
                 <TileWidget title={'Total Visitor'} value={totalVisitor} />
                 {this.renderFAB(office)}
                 {this.renderNotification(office)}
@@ -52,6 +58,27 @@ class OfficePanel extends React.Component<any, any> {
 
         const officeMap = this.props.dashboard.officeMap;
         return officeMap.get(officeID) ? officeMap.get(officeID) : null;
+    };
+
+    private getSearchResults = (query: string): void => {
+        let visitors: Visitor[] = [];
+        const office = this.getCurrentOffice();
+        if (!office) {
+            return;
+        }
+
+        // Special searching commands.
+        if (query.startsWith('@')) {
+            // Search all visitors in this office.
+            if (query.startsWith('@all')) {
+                console.log('get all visitors...');
+            }
+
+            return;
+        }
+
+        // Normal search.
+        this.props.dispatch(searchVisitors(office.id, query));
     };
 
     // FAB redirects admin to visitor check-in screen.
@@ -75,7 +102,6 @@ class OfficePanel extends React.Component<any, any> {
         const newVisitors = newVisitorMap.get(office.id);
         // Clears all notifications.
         const clearAction = (): void => {
-            console.log(office.id);
             this.props.dispatch(clearNewVisitors(office.id));
         };
 

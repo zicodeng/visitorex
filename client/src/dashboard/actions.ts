@@ -7,6 +7,7 @@ import { FormError } from 'components/material-form';
 import { hideError, showError } from 'components/material-form/actions';
 import { openModal, closeModal } from 'components/modal/actions';
 import { convertToURLFormat } from 'dashboard/sidebar/utils';
+import { renderSearchResults } from 'components/search/actions';
 
 export const FETCH_OFFICES = 'FETCH_OFFICES';
 export const FETCH_OFFICES_PENDING = 'FETCH_OFFICES_PENDING';
@@ -155,5 +156,31 @@ export const clearNewVisitors = (officeID: string) => {
             type: CLEAR_NEW_VISITORS,
             payload: officeID,
         });
+    };
+};
+
+export const SEARCH_VISITORS = 'SEARCH_VISITORS';
+export const SEARCH_VISITORS_PENDING = 'SEARCH_VISITORS_PENDING';
+export const SEARCH_VISITORS_FULFILLED = 'SEARCH_VISITORS_FULFILLED';
+export const SEARCH_VISITORS_REJECTED = 'SEARCH_VISITORS_REJECTED';
+
+export const searchVisitors = (officeID: string, query: string) => {
+    const searchURL = `https://${getCurrentHost()}/v1/offices/${officeID}/search?q=${query}`;
+    return dispatch => {
+        dispatch({
+            type: SEARCH_VISITORS,
+            payload: axios.get(searchURL, {
+                headers: {
+                    Authorization: getSessionToken(),
+                },
+            }),
+        })
+            .then(res => {
+                const visitors = res.value.data;
+                dispatch(renderSearchResults(visitors));
+            })
+            .catch(error => {
+                console.log(error);
+            });
     };
 };
