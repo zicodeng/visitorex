@@ -2,7 +2,7 @@
 
 .notification {
     position: fixed;
-    top: 30px;
+    top: 15px;
     right: 60px;
     background-color: $white;
     color: $black;
@@ -51,6 +51,10 @@
         > li {
             padding: 10px 20px;
             border-bottom: 1px solid $grey;
+
+            &:hover {
+                background-color: $color-warn;
+            }
 
             > p {
                 margin: 5px 0;

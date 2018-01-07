@@ -28,7 +28,10 @@ class VisitorStore {
 
     // Retrieves all visitors from MongoDB for a given office ID.
     getAllByOfficeID(officeID) {
-        return this.collection.find({ officeID: officeID }).toArray();
+        return this.collection
+            .find({ officeID: officeID })
+            .sort({ date: -1, timeIn: -1 })
+            .toArray();
     }
 
     // Retrieves all visitors from MongoDB.

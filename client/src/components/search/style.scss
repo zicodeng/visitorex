@@ -24,7 +24,7 @@
             right: 0;
             height: 100%;
             width: 100px;
-            background-color: $green;
+            background-color: $color-brand;
             font-family: $title-font;
             display: flex;
             justify-content: center;
@@ -41,7 +41,6 @@
         margin: 0;
         color: $black;
         background-color: $white-dark;
-        cursor: default;
         position: absolute;
 
         li {
