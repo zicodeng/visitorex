@@ -10,6 +10,7 @@ interface SearchProps {
     inputChangeAction: (query: string) => void;
     results?: Visitor[];
     dispatch?: any;
+    history?: any;
 }
 
 @connect(store => {
@@ -23,6 +24,7 @@ class Search extends React.Component<SearchProps, any> {
 
         this.state = {
             query: '',
+            historyResourcePath: '',
         };
     }
 
@@ -40,6 +42,24 @@ class Search extends React.Component<SearchProps, any> {
                 {this.renderResults()}
             </div>
         );
+    }
+
+    public componentWillReceiveProps(): void {
+        const historyResourcePath = this.state.historyResourcePath;
+        const currentResourcePath = this.props.history.location.pathname;
+
+        // If the user navigates away,
+        // clear input box and query.
+        if (currentResourcePath !== historyResourcePath) {
+            this.refs.query['value'] = '';
+            this.setState({
+                query: '',
+            });
+        }
+
+        this.setState({
+            historyResourcePath: currentResourcePath,
+        });
     }
 
     private handleChangeInput = (): void => {
@@ -60,7 +80,7 @@ class Search extends React.Component<SearchProps, any> {
 
     private renderResults = (): JSX.Element | null => {
         const query = this.state.query;
-        if (!query) {
+        if (!query || !query.length) {
             return null;
         }
 

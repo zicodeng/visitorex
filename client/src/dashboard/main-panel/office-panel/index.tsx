@@ -41,6 +41,7 @@ class OfficePanel extends React.Component<any, {}> {
                         inputChangeAction={query =>
                             this.getSearchResults(query)
                         }
+                        history={this.props.history}
                     />
                 </div>
                 <TileWidget title={'Total Visitor'} value={totalVisitor} />
