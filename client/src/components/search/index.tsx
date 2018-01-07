@@ -123,10 +123,10 @@ class Search extends React.Component<SearchProps, any> {
     private renderTips = (): JSX.Element => {
         return (
             <ul className="results tips">
-                <li>@all: search all visitors in this office.</li>
+                <li>@all: search all visitors in this office</li>
                 <li>
                     You can also search by visitor's first name, last name,
-                    company, to see, and/or date.
+                    company, to see, and/or date
                 </li>
             </ul>
         );
