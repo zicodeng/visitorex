@@ -6,6 +6,7 @@ import { fetchDashboard } from 'dashboard/actions';
 import Sidebar from 'dashboard/sidebar';
 import OverviewPanel from 'dashboard/main-panel/overview-panel';
 import OfficePanel from 'dashboard/main-panel/office-panel';
+import Footer from 'components/footer';
 
 import 'dashboard/style';
 import { getCurrentHost, getSessionToken } from 'utils';
@@ -28,29 +29,32 @@ class Dashboard extends React.Component<any, any> {
         }
         const match = this.props.match;
         return (
-            <div className="dashboard">
-                <Route component={Sidebar} />
-                <Switch>
-                    <Route
-                        exact
-                        path={`${match.url}/overview`}
-                        component={OverviewPanel}
-                    />
-                    <Route
-                        exact
-                        path={`${match.url}/offices/:name`}
-                        component={OfficePanel}
-                    />
-                    {/* If no matching route is found, always render Overview Panel as default main panel */}
-                    <Redirect
-                        from={`${match.url}`}
-                        to={`${match.url}/overview`}
-                    />
-                    <Redirect
-                        from={`${match.url}/:default`}
-                        to={`${match.url}/overview`}
-                    />
-                </Switch>
+            <div className="dashboard-wrapper">
+                <div className="dashboard">
+                    <Route component={Sidebar} />
+                    <Switch>
+                        <Route
+                            exact
+                            path={`${match.url}/overview`}
+                            component={OverviewPanel}
+                        />
+                        <Route
+                            exact
+                            path={`${match.url}/offices/:name`}
+                            component={OfficePanel}
+                        />
+                        {/* If no matching route is found, always render Overview Panel as default main panel */}
+                        <Redirect
+                            from={`${match.url}`}
+                            to={`${match.url}/overview`}
+                        />
+                        <Redirect
+                            from={`${match.url}/:default`}
+                            to={`${match.url}/overview`}
+                        />
+                    </Switch>
+                </div>
+                <Footer />
             </div>
         );
     }

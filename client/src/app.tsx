@@ -14,7 +14,6 @@ import CheckIn from 'check-in';
 import Dashboard from 'dashboard';
 import ThankYou from 'thank-you';
 import NotFound from 'not-found';
-import { getCurrentHost, getSessionToken } from 'utils';
 
 class App extends React.Component<any, any> {
     public render() {

@@ -11,6 +11,7 @@ import MaterialForm, {
     Form,
     createBgForm,
 } from 'components/material-form';
+import Footer from 'components/footer';
 
 import 'check-in/style';
 
@@ -29,7 +30,11 @@ class CheckIn extends React.Component<any, any> {
     }
 
     public render() {
-        return <main className="check-in">{this.renderCheckinForm()}</main>;
+        return (
+            <main className="check-in">
+                {this.renderCheckinForm()} <Footer />
+            </main>
+        );
     }
 
     public componentWillMount() {
