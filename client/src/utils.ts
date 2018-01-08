@@ -13,7 +13,7 @@ export const getSessionToken = (): String | null => {
     if (!sessionToken) {
         // If no session token found in local storage,
         // redirect the user back to sign-in/sign-up page.
-        window.location.replace('/admin-auth');
+        window.location.replace('/');
     }
     return sessionToken;
 };
@@ -27,5 +27,5 @@ export const storeSessionToken = (sessionToken: string): void => {
 // Remove session token in local storage.
 export const removeSessionToken = (): void => {
     localStorage.removeItem(SESSION_TOKEN_STORAGE_KEY);
-    window.location.replace('/admin-auth');
+    window.location.replace('/');
 };

@@ -22,7 +22,7 @@ class ThankYou extends React.Component<any, {}> {
     }
 
     private handleClickBackBtn = (): void => {
-        this.props.history.replace('/');
+        this.props.history.replace('/check-in');
     };
 }
 

@@ -53,8 +53,9 @@ const adminReducers = (state = initState, action) => {
 
         case UPDATE_ADMIN:
             // Add session token to admin.
-            const updatedAdmin = Object.assign({}, state.user);
+            const updatedAdmin: any = Object.assign({}, state.user);
             updatedAdmin.sessionToken = action.payload;
+
             state = {
                 ...state,
                 user: updatedAdmin,

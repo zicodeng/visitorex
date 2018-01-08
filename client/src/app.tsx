@@ -20,8 +20,8 @@ class App extends React.Component<any, any> {
         return (
             <BrowserRouter>
                 <Switch>
-                    <Route exact path="/" component={CheckIn} />
-                    <Route exact path="/admin-auth" component={AdminAuth} />
+                    <Route exact path="/" component={AdminAuth} />
+                    <Route exact path="/check-in" component={CheckIn} />
                     <Route exact path="/thank-you" component={ThankYou} />
                     <Route path="/dashboard" component={Dashboard} />
                     <Route component={NotFound} />

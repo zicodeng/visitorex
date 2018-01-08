@@ -108,7 +108,7 @@ export const fetchAdmin = () => {
             })
             .catch(error => {
                 console.log(error);
-                window.location.replace('/admin-auth');
+                window.location.replace('/');
             });
 };
 
