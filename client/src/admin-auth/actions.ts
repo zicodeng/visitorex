@@ -28,6 +28,7 @@ export const signIn = (credentials: AdminCredentials, formType: string) => {
             .catch(error => {
                 // If there is an error with this async call,
                 // show this error on material form.
+                console.log(error);
                 const formError: FormError = {
                     message: error.response.data,
                     type: formType,
@@ -56,6 +57,7 @@ export const signUp = (newAdmin: NewAdmin, formType: string) => {
                 storeSessionToken(sessionToken);
             })
             .catch(error => {
+                console.log(error);
                 const formError: FormError = {
                     message: error.response.data,
                     type: formType,

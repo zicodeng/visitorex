@@ -101,7 +101,7 @@ class OfficePanel extends React.Component<any, {}> {
             // to prevent visitors accidentally clicking back button
             // and viewing dashboard.
             window.localStorage.removeItem(SESSION_TOKEN_STORAGE_KEY);
-            this.props.history.push('/');
+            this.props.history.push('/check-in');
             this.props.dispatch(updateOfficeOption(office));
         };
 
