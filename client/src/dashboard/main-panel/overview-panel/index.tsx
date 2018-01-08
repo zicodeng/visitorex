@@ -2,6 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 
 import TileWidget from 'components/widgets/tile-widget';
+import PieChart from 'components/widgets/pie-chart';
 
 import 'dashboard/main-panel/overview-panel/style';
 
@@ -21,6 +22,7 @@ class OverviewPanel extends React.Component<any, any> {
             <main className="main-panel overview">
                 <h2 className="dashboard-title">Overview</h2>
                 {this.renderTotalReports()}
+                {this.renderGraphReport()}
             </main>
         );
     }
@@ -57,12 +59,51 @@ class OverviewPanel extends React.Component<any, any> {
         return <div className="total-reports">{tileWidgetElements}</div>;
     };
 
+    // Calculate total visitors in all offices.
     private getTotalVisitors = (visitorMap): number => {
         let sum = 0;
         for (let visitors of visitorMap.values()) {
             sum += visitors.length;
         }
         return sum;
+    };
+
+    private renderGraphReport = (): JSX.Element | null => {
+        const officeMap = this.props.dashboard.officeMap;
+        const visitorMap = this.props.dashboard.visitorMap;
+
+        if (!officeMap || !visitorMap) {
+            return null;
+        }
+
+        const data: any[] = [];
+        for (let [officeID, visitors] of visitorMap.entries()) {
+            const officeName = officeMap.get(officeID).name;
+            const total = visitors.length;
+
+            // Don't display office with no visitor on pie chart.
+            if (!total) {
+                continue;
+            }
+
+            const item = {
+                x: officeName,
+                y: total,
+            };
+            data.push(item);
+        }
+        // If no available data, don't display pie chart.
+        if (!data.length) {
+            return null;
+        }
+
+        const title = 'TOTAL VISITORS IN EACH OFFICE';
+
+        return (
+            <div className="graph-report">
+                <PieChart data={data} title={title} />
+            </div>
+        );
     };
 }
 
