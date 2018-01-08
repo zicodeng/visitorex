@@ -40,7 +40,7 @@ class OverviewPanel extends React.Component<any, any> {
             },
             {
                 title: 'Total Visitor',
-                value: visitorMap.size,
+                value: this.getTotalVisitors(visitorMap),
             },
         ];
 
@@ -55,6 +55,14 @@ class OverviewPanel extends React.Component<any, any> {
         });
 
         return <div className="total-reports">{tileWidgetElements}</div>;
+    };
+
+    private getTotalVisitors = (visitorMap): number => {
+        let sum = 0;
+        for (let visitors of visitorMap.values()) {
+            sum += visitors.length;
+        }
+        return sum;
     };
 }
 
