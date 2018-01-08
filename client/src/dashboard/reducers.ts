@@ -33,12 +33,16 @@ const dashboardReducers = (state = initState, action) => {
                     convertToURLFormat(office.name),
                     office.id,
                 );
+
+                // Init visitorMap.
+                visitorMap.set(office.id, []);
             });
 
             state = {
                 ...state,
                 officeMap: officeMap,
                 officeNameToIDMap: officeNameToIDMap,
+                visitorMap: visitorMap,
             };
             break;
 
