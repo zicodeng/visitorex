@@ -17,6 +17,7 @@ import 'check-in/style';
 
 @connect(store => {
     return {
+        admin: store.admin.user,
         office: store.checkin.office,
     };
 })
@@ -40,7 +41,10 @@ class CheckIn extends React.Component<any, any> {
     public componentWillMount() {
         // For the purpose of authenticating admin
         // and preventing non-admin from jumping to this page directly.
-        this.props.dispatch(fetchAdmin());
+        if (!this.props.admin) {
+            this.props.dispatch(fetchAdmin());
+        }
+
         if (!this.props.office) {
             this.props.history.replace('/dashboard/overview');
         }
@@ -111,6 +115,7 @@ class CheckIn extends React.Component<any, any> {
                 office.id,
                 FORM_TYPES.BASIC,
                 this.props.history,
+                this.props.admin.sessionToken,
             ),
         );
     };

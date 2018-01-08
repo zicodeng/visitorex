@@ -4,6 +4,7 @@ import {
     SIGN_OUT_FULFILLED,
     FETCH_ADMIN_FULFILLED,
     FETCH_ADMIN_REJECTED,
+    UPDATE_ADMIN,
 } from 'admin-auth/actions';
 import { removeSessionToken } from 'utils';
 
@@ -47,6 +48,16 @@ const adminReducers = (state = initState, action) => {
             state = {
                 ...state,
                 user: null,
+            };
+            break;
+
+        case UPDATE_ADMIN:
+            // Add session token to admin.
+            const updatedAdmin = Object.assign({}, state.user);
+            updatedAdmin.sessionToken = action.payload;
+            state = {
+                ...state,
+                user: updatedAdmin,
             };
             break;
 

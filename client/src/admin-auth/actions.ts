@@ -99,8 +99,25 @@ export const fetchAdmin = () => {
                     Authorization: getSessionToken(),
                 },
             }),
-        }).catch(error => {
-            console.log(error);
-            window.location.replace('/admin-auth');
+        })
+            .then(() => {
+                dispatch({
+                    type: UPDATE_ADMIN,
+                    payload: getSessionToken(),
+                });
+            })
+            .catch(error => {
+                console.log(error);
+                window.location.replace('/admin-auth');
+            });
+};
+
+export const UPDATE_ADMIN = 'UPDATE_ADMIN';
+
+export const updateAdmin = () => {
+    return dispatch =>
+        dispatch({
+            type: UPDATE_ADMIN,
+            payload: getSessionToken(),
         });
 };

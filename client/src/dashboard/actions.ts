@@ -1,7 +1,7 @@
 import axios, { AxiosPromise } from 'axios';
 
 import { getCurrentHost, getSessionToken } from 'utils';
-import { fetchAdmin } from 'admin-auth/actions';
+import { fetchAdmin, updateAdmin } from 'admin-auth/actions';
 import { Office, Visitor } from 'dashboard/interfaces';
 import { FormError } from 'components/material-form';
 import { hideError, showError } from 'components/material-form/actions';
@@ -121,6 +121,7 @@ export const newVisitor = (
     officeID: string,
     formType: string,
     history,
+    sessionToken: string,
 ) => {
     return dispatch => {
         dispatch({
@@ -130,7 +131,7 @@ export const newVisitor = (
                 newVisitor,
                 {
                     headers: {
-                        Authorization: getSessionToken(),
+                        Authorization: sessionToken,
                     },
                 },
             ),

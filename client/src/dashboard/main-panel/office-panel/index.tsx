@@ -15,6 +15,7 @@ import {
 import { OFFICE_PATH_INDEX } from 'dashboard/sidebar';
 import Search from 'components/search';
 import { renderSearchResults } from 'components/search/actions';
+import { SESSION_TOKEN_STORAGE_KEY } from 'utils';
 
 import 'dashboard/main-panel/office-panel/style';
 
@@ -96,6 +97,10 @@ class OfficePanel extends React.Component<any, {}> {
     private renderFAB = (office: Office): JSX.Element => {
         const icon = <i className="fa fa-user-plus" aria-hidden="true" />;
         const action = (): void => {
+            // Remove session token in local storage
+            // to prevent visitors accidentally clicking back button
+            // and viewing dashboard.
+            window.localStorage.removeItem(SESSION_TOKEN_STORAGE_KEY);
             this.props.history.push('/');
             this.props.dispatch(updateOfficeOption(office));
         };

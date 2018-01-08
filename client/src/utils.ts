@@ -5,7 +5,7 @@ export const getCurrentHost = (): string => {
     return 'localhost:3000';
 };
 
-const SESSION_TOKEN_STORAGE_KEY = 'session-token';
+export const SESSION_TOKEN_STORAGE_KEY = 'session-token';
 
 // Get session token from local storage.
 export const getSessionToken = (): String | null => {

@@ -20,6 +20,16 @@ export interface NewAdmin {
     passwordConf: string;
 }
 
+export interface Admin {
+    id: string;
+    userName: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    photoURL: string;
+    sessionToken?: string;
+}
+
 export interface AdminCredentials {
     email: string;
     password: string;
