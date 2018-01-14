@@ -10,7 +10,11 @@ export const SIGN_IN_PENDING = 'SIGN_IN_PENDING';
 export const SIGN_IN_FULFILLED = 'SIGN_IN_FULFILLED';
 export const SIGN_IN_REJECTED = 'SIGN_IN_REJECTED';
 
-export const signIn = (credentials: AdminCredentials, formType: string) => {
+export const signIn = (
+    credentials: AdminCredentials,
+    formType: string,
+    history,
+) => {
     return dispatch =>
         dispatch({
             type: SIGN_IN,
@@ -23,7 +27,7 @@ export const signIn = (credentials: AdminCredentials, formType: string) => {
                 // Hide error if this asyc call is successful.
                 dispatch(hideError());
                 const sessionToken = res.value.headers.authorization;
-                storeSessionToken(sessionToken);
+                storeSessionToken(sessionToken, history);
             })
             .catch(error => {
                 // If there is an error with this async call,

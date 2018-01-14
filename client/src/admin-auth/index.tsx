@@ -145,7 +145,9 @@ class AdminAuth extends React.Component<any, {}> {
     };
 
     private submitSigninForm = formData => {
-        this.props.dispatch(signIn(formData, FORM_TYPES.BASIC));
+        this.props.dispatch(
+            signIn(formData, FORM_TYPES.BASIC, this.props.history),
+        );
     };
 
     private submitSignupForm = formData => {
