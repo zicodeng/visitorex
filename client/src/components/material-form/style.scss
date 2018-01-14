@@ -161,7 +161,24 @@
                 }
             }
         }
+
+        &__link {
+            font-size: $font-size-md;
+            .link-label {
+                color: #9d9d9d;
+            }
+
+            a {
+                color: $green;
+
+                &:hover {
+                    text-decoration: underline;
+                    color: $green-dark;
+                }
+            }
+        }
     }
+
     .btn-container {
         margin: 0 60px;
         text-align: center;

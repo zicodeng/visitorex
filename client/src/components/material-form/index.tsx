@@ -17,20 +17,18 @@ export interface FormError {
 export interface Input {
     // Needs to be valid HTML input type.
     type: string;
-    ref: string;
+    ref?: string;
     // The field name for this input in returned form data object.
     // If not specified, ref will be used by default.
     field?: string;
-    isRequired: boolean;
+    isRequired?: boolean;
     label: string;
     options?: string[];
     value?: string;
 }
 
 export interface Form {
-    type?: string;
-    // An action expects to return a boolean indicating
-    // whether this submit action is successful or failed.
+    type: string;
     submitAction?: (formData) => void;
     title?: string;
     inputs?: Input[];
@@ -170,6 +168,20 @@ class MaterialForm extends React.Component<any, any> {
             const options = input.options;
             const value = input.value;
 
+            if (type === 'link') {
+                return (
+                    <div
+                        key={i}
+                        className="input-container input-container__link"
+                    >
+                        <p className="link-label">{label}</p>
+                        <a href={value} target="_blank">
+                            {value}
+                        </a>
+                    </div>
+                );
+            }
+
             return (
                 <div
                     key={i}
@@ -200,7 +212,7 @@ class MaterialForm extends React.Component<any, any> {
                     />
                     <label>{label}</label>
                     <div className="bar" />
-                    {options && this.state.showDropdown
+                    {ref && options && this.state.showDropdown
                         ? this.renderOptions(options, ref)
                         : null}
                 </div>

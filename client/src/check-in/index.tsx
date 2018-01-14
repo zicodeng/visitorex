@@ -93,6 +93,12 @@ class CheckIn extends React.Component<any, any> {
                 isRequired: true,
                 label: 'Company',
             },
+            {
+                type: 'link',
+                label:
+                    'If you have not signed NDA form yet, please click the following link before you check in.',
+                value: 'https://tinyurl.com/ExtraHopNDA',
+            },
         ];
 
         const checkinForm: Form = {
