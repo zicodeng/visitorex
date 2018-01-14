@@ -54,13 +54,10 @@ class Search extends React.Component<SearchProps, any> {
             this.refs.query['value'] = '';
             this.setState({
                 query: '',
+                historyResourcePath: currentResourcePath,
             });
             this.props.dispatch(renderSearchResults([]));
         }
-
-        this.setState({
-            historyResourcePath: currentResourcePath,
-        });
     }
 
     private handleChangeInput = (): void => {
