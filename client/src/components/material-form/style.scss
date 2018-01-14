@@ -2,16 +2,19 @@
 
 .material-form-wrapper {
     position: relative;
+
     &.active {
         .material-form {
             &:first-child {
                 background: darken($white, 5%);
                 margin: 0 15px;
             }
+
             &:nth-child(2) {
                 background: darken($white, 2%);
                 margin: 0 10px;
             }
+
             &__alt {
                 top: 20px;
                 right: 0;
@@ -21,6 +24,7 @@
                 border-radius: 5px;
                 padding: 60px 0 40px;
                 overflow: hidden;
+
                 .toggle {
                     position: absolute;
                     top: 40px;
@@ -28,10 +32,12 @@
                     box-shadow: none;
                     @include transform(scale(20));
                     transition: transform 0.5s ease;
+
                     &:before {
                         content: '';
                     }
                 }
+
                 .title,
                 .input-container,
                 .btn-container {
@@ -40,6 +46,7 @@
                     visibility: visible;
                     transition: 0.3s ease;
                 }
+
                 .title {
                     transition-delay: 0.3s;
                 }
@@ -69,9 +76,11 @@
         text-transform: uppercase;
         text-align: center;
     }
+
     .input-container {
         position: relative;
         margin: 0 60px 50px;
+
         input {
             outline: none;
             z-index: 1;
@@ -83,11 +92,13 @@
             color: $black;
             font-size: 24px;
             font-weight: 400;
+
             &:focus {
                 ~ label {
                     color: #9d9d9d;
                     transform: translate(-12%, -50%) scale(0.75);
                 }
+
                 ~ .bar {
                     &:before,
                     &:after {
@@ -95,6 +106,7 @@
                     }
                 }
             }
+
             &:valid,
             &.read-only {
                 ~ label {
@@ -107,6 +119,7 @@
                 cursor: not-allowed !important;
             }
         }
+
         label {
             position: absolute;
             top: 0;
@@ -117,6 +130,7 @@
             line-height: 60px;
             @include transition(0.2s ease);
         }
+
         .bar {
             position: absolute;
             left: 0;
@@ -124,6 +138,7 @@
             background: #757575;
             width: 100%;
             height: 1px;
+
             &:before,
             &:after {
                 content: '';
@@ -133,9 +148,11 @@
                 height: 2px;
                 transition: 0.2s ease;
             }
+
             &:before {
                 left: 50%;
             }
+
             &:after {
                 right: 50%;
             }
@@ -153,8 +170,10 @@
                 cursor: pointer;
                 z-index: 2;
                 @include material-shadow(2);
+
                 li {
                     padding: 10px;
+
                     &:hover {
                         background-color: $grey-light;
                     }
@@ -164,6 +183,7 @@
 
         &__link {
             font-size: $font-size-md;
+
             .link-label {
                 color: #9d9d9d;
             }
@@ -182,6 +202,7 @@
     .btn-container {
         margin: 0 60px;
         text-align: center;
+
         button {
             outline: 0;
             cursor: pointer;
@@ -197,12 +218,14 @@
             text-transform: uppercase;
             overflow: hidden;
             transition: 0.3s ease;
+
             span {
                 position: relative;
                 z-index: 1;
                 color: #ddd;
                 transition: 0.3s ease;
             }
+
             &:before {
                 content: '';
                 position: absolute;
@@ -217,10 +240,12 @@
                 opacity: 0;
                 transition: 0.3s ease;
             }
+
             &:hover,
             &:active,
             &:focus {
                 border-color: $color-brand;
+
                 span {
                     color: $color-brand;
                 }
@@ -230,6 +255,7 @@
                 span {
                     color: $white;
                 }
+
                 &:before {
                     opacity: 1;
                     @include transform(scale(10));
@@ -280,6 +306,7 @@
             line-height: 140px;
             text-align: center;
             cursor: pointer;
+
             &:before {
                 content: '\f040';
                 display: inline-block;
@@ -290,6 +317,7 @@
                 -moz-osx-font-smoothing: grayscale;
                 transform: translate(0, 0);
             }
+
             &.active {
                 cursor: default;
             }
@@ -301,10 +329,12 @@
             opacity: 0;
             visibility: hidden;
         }
+
         .title {
             position: relative;
             border-color: $white;
             color: $white;
+
             .close {
                 cursor: pointer;
                 position: absolute;
@@ -319,13 +349,16 @@
                 }
             }
         }
+
         .input-container {
             input {
                 color: $white;
+
                 &:focus {
                     ~ label {
                         color: $white;
                     }
+
                     ~ .bar {
                         &:before,
                         &:after {
@@ -333,15 +366,18 @@
                         }
                     }
                 }
+
                 &:valid {
                     ~ label {
                         color: $white;
                     }
                 }
             }
+
             label {
                 color: rgba($white, 0.8);
             }
+
             .bar {
                 background: rgba($white, 0.8);
             }
@@ -351,13 +387,16 @@
                 width: 100%;
                 background: $white;
                 border-color: $white;
+
                 span {
                     color: $color-brand;
                 }
+
                 &:hover {
                     background: rgba($white, 0.9);
                     border-color: rgba($white, 0.9);
                 }
+
                 &:active,
                 &:focus {
                     &:before {
