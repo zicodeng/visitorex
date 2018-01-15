@@ -40,6 +40,7 @@ type NewAdmin struct {
 	UserName     string `json:"userName"`
 	FirstName    string `json:"firstName"`
 	LastName     string `json:"lastName"`
+	Key          string `json:"key"`
 }
 
 // Updates represents allowed updates to an admin profile.
@@ -50,7 +51,7 @@ type Updates struct {
 
 // Validate validates the new admin and returns an error if
 // any of the validation rules fail, or nil if its valid.
-func (newAdmin *NewAdmin) Validate() error {
+func (newAdmin *NewAdmin) Validate(signingKey string) error {
 
 	// Email field must be a valid email address.
 	_, err := mail.ParseAddress(newAdmin.Email)
@@ -81,6 +82,11 @@ func (newAdmin *NewAdmin) Validate() error {
 	// LastName must be non-zero length.
 	if len(newAdmin.LastName) == 0 {
 		return fmt.Errorf("Last name must be non-zero length")
+	}
+
+	// A valid key must be provided to prevent non-employees sign up.
+	if newAdmin.Key != signingKey {
+		return fmt.Errorf("Key is not valid")
 	}
 
 	return nil

@@ -14,7 +14,7 @@ export MQ_ADDR=$MQ_CONTAINER:5672
 
 export DB_NAME=app
 export APP_NETWORK=appnet
-export SESSION_KEY=visitorex
+export SESSION_KEY=seeitrun
 
 export TLS_CERT=/etc/letsencrypt/live/visitorex-api.zicodeng.me/fullchain.pem
 export TLS_KEY=/etc/letsencrypt/live/visitorex-api.zicodeng.me/privkey.pem

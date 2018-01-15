@@ -25,9 +25,9 @@ func (ctx *HandlerContext) AdminsHandler(w http.ResponseWriter, r *http.Request)
 		}
 
 		// Validate the NewAdmin.
-		err = newAdmin.Validate()
+		err = newAdmin.Validate(ctx.signingKey)
 		if err != nil {
-			http.Error(w, fmt.Sprintf("Error validating new admin: %v", err), http.StatusBadRequest)
+			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 

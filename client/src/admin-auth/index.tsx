@@ -131,6 +131,12 @@ class AdminAuth extends React.Component<any, {}> {
                 isRequired: true,
                 label: 'Confirm Your Password',
             },
+            {
+                type: 'password',
+                ref: 'key',
+                isRequired: true,
+                label: 'Key',
+            },
         ];
 
         const signupForm: Form = {

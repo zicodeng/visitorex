@@ -6,7 +6,7 @@ export SERVER_ADDR=localhost:3000
 
 export TLS_CERT="$(pwd)/tls/fullchain.pem"
 export TLS_KEY="$(pwd)/tls/privkey.pem"
-export SESSION_KEY="hello world"
+export SESSION_KEY=seeitrun
 
 export REDIS_ADDR=localhost:6379
 export MONGO_ADDR=localhost:27017
