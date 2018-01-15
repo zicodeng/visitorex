@@ -20,7 +20,9 @@ class OverviewPanel extends React.Component<any, any> {
     public render(): JSX.Element {
         return (
             <main className="main-panel overview">
-                <h2 className="dashboard-title">Overview</h2>
+                <header className="dashboard-header">
+                    <h2 className="dashboard-title">Overview</h2>
+                </header>
                 {this.renderTotalReports()}
                 {this.renderGraphReport()}
             </main>
