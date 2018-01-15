@@ -173,7 +173,7 @@ const OfficeHandler = (officeStore, visitorStore, visitorTrie) => {
         }
 
         // Automatically assigns current date when a new visitor checks in.
-        moment.locale('en-US');
+        moment.locale();
         const visitDate = moment().format('l');
         const visitTime = moment().format('LT');
 
