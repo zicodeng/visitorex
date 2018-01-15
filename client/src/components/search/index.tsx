@@ -44,6 +44,12 @@ class Search extends React.Component<SearchProps, any> {
         );
     }
 
+    public componentWillMount(): void {
+        this.setState({
+            historyResourcePath: this.props.history.location.pathname,
+        });
+    }
+
     public componentWillReceiveProps(): void {
         const historyResourcePath = this.state.historyResourcePath;
         const currentResourcePath = this.props.history.location.pathname;
