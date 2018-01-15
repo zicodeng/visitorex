@@ -105,7 +105,7 @@ class OfficePanel extends React.Component<any, State> {
 
         const searchResults: Visitor[] = this.props.searchResults;
         const table = this.buildSearchResultsTable(searchResults);
-        exportCSV(`Search Results for ${query} (VisitorEX)`, table);
+        exportCSV(`Search Results for ${query} (Visitorex)`, table);
     };
 
     private buildSearchResultsTable = (
