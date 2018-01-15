@@ -11,13 +11,13 @@
   "dependencies": {
     "amqplib": "^0.5.2",
     "express": "^4.16.2",
+    "moment": "^2.20.1",
     "mongodb": "^3.0.0-rc0",
     "morgan": "^1.9.0",
     "redis": "^2.8.0"
   },
   "devDependencies": {
     "jest": "^22.0.3",
-    "moment": "^2.20.1",
     "nodemon": "^1.12.7"
   }
 }
