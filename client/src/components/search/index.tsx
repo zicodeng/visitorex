@@ -126,10 +126,25 @@ class Search extends React.Component<SearchProps, any> {
     private renderTips = (): JSX.Element => {
         return (
             <ul className="results tips">
-                <li>@all: search all visitors in this office</li>
                 <li>
-                    You can also search by visitor's first name, last name,
-                    company, to see, and/or date
+                    <p>@all: search all visitors in this office</p>
+                </li>
+                <li>
+                    <p>
+                        @[start date]-[end date]: search all visitors between a
+                        given start date and end date in this office
+                    </p>
+                    <p>
+                        For exmaple: @1/10/2018-1/20/2018 will search for all
+                        visitors who checked in between 1/10/2018 and 1/20/2018
+                        in this office
+                    </p>
+                </li>
+                <li>
+                    <p>
+                        You can also search by visitor's first name, last name,
+                        company, to see, and/or date
+                    </p>
                 </li>
             </ul>
         );

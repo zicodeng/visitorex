@@ -44,7 +44,7 @@
         position: absolute;
 
         li {
-            padding: 10px 20px;
+            padding: 10px 16px;
             border-bottom: 1px solid $black-light;
 
             &:hover {
@@ -52,17 +52,14 @@
             }
 
             > p {
-                margin: 0;
-
-                &:first-child {
-                    margin-bottom: 10px;
-                }
+                margin: 5px;
             }
         }
 
         &.tips {
-            li {
-                padding: 20px;
+            p {
+                margin: 10px;
+                line-height: 20px;
             }
         }
     }
