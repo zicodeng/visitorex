@@ -22,9 +22,15 @@
     }
 }
 
-.dashboard-title {
-    font-family: $base-font;
-    color: $grey-light;
-    font-weight: 100;
-    margin-bottom: 40px;
+.dashboard-header {
+    margin: 20px 0 40px 0;
+    display: flex;
+
+    .dashboard-title {
+        font-family: $base-font;
+        color: $grey-light;
+        font-weight: 100;
+        margin: 0;
+        flex-grow: 1;
+    }
 }

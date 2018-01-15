@@ -29,3 +29,18 @@ export const removeSessionToken = (): void => {
     localStorage.removeItem(SESSION_TOKEN_STORAGE_KEY);
     window.location.replace('/');
 };
+
+export const exportCSV = (fileName: string, table: string[][]) => {
+    let CSVContent = '';
+    table.forEach(row => {
+        CSVContent += row.join(',') + '\r\n';
+    });
+    CSVContent = 'data:text/csv;charset=utf-8,' + CSVContent;
+    const encodedURI = encodeURI(CSVContent);
+
+    var link = document.createElement('a');
+    link.setAttribute('href', encodedURI);
+    link.setAttribute('download', fileName);
+    document.body.appendChild(link); // Required for FF.
+    link.click();
+};

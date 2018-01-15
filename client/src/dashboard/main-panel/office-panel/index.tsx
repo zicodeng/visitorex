@@ -16,19 +16,29 @@ import {
 import { OFFICE_PATH_INDEX } from 'dashboard/sidebar';
 import Search from 'components/search';
 import { renderSearchResults } from 'components/search/actions';
-import { SESSION_TOKEN_STORAGE_KEY } from 'utils';
+import { SESSION_TOKEN_STORAGE_KEY, exportCSV } from 'utils';
+import KebabMenu, { MenuOption } from 'components/kebab-menu';
 
 import 'dashboard/main-panel/office-panel/style';
+
+interface State {
+    query: string;
+}
 
 @connect(store => {
     return {
         admin: store.admin,
         dashboard: store.dashboard,
+        searchResults: store.search.results,
     };
 })
-class OfficePanel extends React.Component<any, {}> {
+class OfficePanel extends React.Component<any, State> {
     constructor(props, context) {
         super(props, context);
+
+        this.state = {
+            query: '',
+        };
     }
 
     public render(): JSX.Element | null {
@@ -42,7 +52,10 @@ class OfficePanel extends React.Component<any, {}> {
 
         return (
             <main className="main-panel office">
-                <h2 className="dashboard-title">{office.name}</h2>
+                <header className="dashboard-header">
+                    <h2 className="dashboard-title">{office.name}</h2>
+                    {this.renderKebabMenu()}
+                </header>
                 <div className="search-container">
                     <Search
                         inputChangeAction={query =>
@@ -68,12 +81,77 @@ class OfficePanel extends React.Component<any, {}> {
         return officeMap.get(officeID) ? officeMap.get(officeID) : null;
     };
 
+    private renderKebabMenu = (): JSX.Element => {
+        const menuOptions: MenuOption[] = [
+            {
+                label: 'Export CSV',
+                action: () => this.exportSearchResults(),
+            },
+            {
+                label: 'Delete Office',
+                action: () => this.deleteOffice(),
+                className: 'delete',
+            },
+        ];
+
+        return <KebabMenu menuOptions={menuOptions} />;
+    };
+
+    private exportSearchResults = (): void => {
+        const query = this.state.query;
+        if (!query) {
+            return;
+        }
+
+        const searchResults: Visitor[] = this.props.searchResults;
+        const table = this.buildSearchResultsTable(searchResults);
+        exportCSV(`Search Results for ${query} (VisitorEX)`, table);
+    };
+
+    private buildSearchResultsTable = (
+        searchResults: Visitor[],
+    ): string[][] => {
+        const table: string[][] = [];
+
+        const header = [
+            'First Name',
+            'Last Name',
+            'Company',
+            'To See',
+            'Date',
+            'Time In',
+        ];
+        table.push(header);
+
+        searchResults.forEach(visitor => {
+            const row = [
+                visitor.firstName,
+                visitor.lastName,
+                visitor.company,
+                visitor.toSee,
+                visitor.date,
+                visitor.timeIn,
+            ];
+            table.push(row);
+        });
+
+        return table;
+    };
+
+    private deleteOffice = (): void => {
+        console.log('Deleting action is not supported through UI for now');
+    };
+
     private getSearchResults = (query: string): void => {
         let visitors: Visitor[] = [];
         const office = this.getCurrentOffice();
         if (!office) {
             return;
         }
+
+        this.setState({
+            query: query,
+        });
 
         const dispatch = this.props.dispatch;
 
@@ -100,7 +178,7 @@ class OfficePanel extends React.Component<any, {}> {
 
             // If no special search command is matched,
             // clear search results.
-            this.props.dispatch(renderSearchResults([]));
+            dispatch(renderSearchResults([]));
             return;
         }
 
