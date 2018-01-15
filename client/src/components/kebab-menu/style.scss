@@ -1,0 +1,49 @@
+@import 'utils';
+
+.kebab-menu {
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+
+    .dot {
+        width: 5px;
+        height: 5px;
+        background-color: $white;
+        @include border-radius(5px);
+    }
+
+    .kebab-menu-options {
+        width: 130px;
+        position: absolute;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        background-color: $white;
+        color: $black;
+        top: 0;
+        right: 15px;
+        text-align: center;
+        z-index: 1;
+        display: none;
+
+        &.active {
+            display: block;
+        }
+
+        li {
+            padding: 10px;
+
+            &:hover {
+                background-color: $green;
+            }
+
+            &.delete {
+                &:hover {
+                    background-color: $color-fail;
+                }
+            }
+        }
+    }
+}
