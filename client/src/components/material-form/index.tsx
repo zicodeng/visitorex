@@ -283,13 +283,14 @@ class MaterialForm extends React.Component<any, any> {
         const currentType = this.state.isAlt
             ? FORM_TYPES.ALT
             : FORM_TYPES.BASIC;
-        this.props.forms.forEach(form => {
+        this.props.forms.forEach((form: Form) => {
             if (form.inputs && form.type === currentType) {
-                form.inputs.forEach(input => {
+                form.inputs.forEach((input: Input) => {
                     const ref = input.ref;
-                    const val = this.refs[ref]['value'];
-                    const field = input.field ? input.field : ref;
-                    if (val) {
+                    // The input could be a link that has no ref.
+                    if (ref) {
+                        const val = this.refs[ref]['value'];
+                        const field = input.field ? input.field : ref;
                         formData[field] = val;
                     }
                 });
@@ -304,10 +305,12 @@ class MaterialForm extends React.Component<any, any> {
     };
 
     private clearForm = (): void => {
-        this.props.forms.forEach(form => {
+        this.props.forms.forEach((form: Form) => {
             if (form.inputs) {
                 form.inputs.forEach(input => {
-                    this.refs[input.ref]['value'] = '';
+                    if (input.ref) {
+                        this.refs[input.ref]['value'] = '';
+                    }
                 });
             }
         });
