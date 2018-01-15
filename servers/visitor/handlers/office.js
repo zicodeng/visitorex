@@ -1,6 +1,7 @@
 // @ts-check
 'use strict';
 
+const moment = require('moment');
 const express = require('express');
 
 const Office = require('./../models/offices/office');
@@ -172,9 +173,9 @@ const OfficeHandler = (officeStore, visitorStore, visitorTrie) => {
         }
 
         // Automatically assigns current date when a new visitor checks in.
-        const date = new Date();
-        const visitDate = date.toLocaleDateString();
-        const visitTime = date.toLocaleTimeString();
+        moment.locale();
+        const visitDate = moment().format('l');
+        const visitTime = moment().format('LT');
 
         const visitor = new Visitor(
             officeID,

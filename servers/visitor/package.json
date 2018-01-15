@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "jest": "^22.0.3",
+    "moment": "^2.20.1",
     "nodemon": "^1.12.7"
   }
 }
