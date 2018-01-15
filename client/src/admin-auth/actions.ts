@@ -46,7 +46,7 @@ export const SIGN_UP_PENDING = 'SIGN_UP_PENDING';
 export const SIGN_UP_FULFILLED = 'SIGN_UP_FULFILLED';
 export const SIGN_UP_REJECTED = 'SIGN_UP_REJECTED';
 
-export const signUp = (newAdmin: NewAdmin, formType: string) => {
+export const signUp = (newAdmin: NewAdmin, formType: string, history) => {
     return dispatch =>
         dispatch({
             type: SIGN_UP,
@@ -58,7 +58,7 @@ export const signUp = (newAdmin: NewAdmin, formType: string) => {
             .then(res => {
                 dispatch(hideError());
                 const sessionToken = res.value.headers.authorization;
-                storeSessionToken(sessionToken);
+                storeSessionToken(sessionToken, history);
             })
             .catch(error => {
                 console.log(error);
