@@ -32,5 +32,9 @@
         font-weight: 100;
         margin: 0;
         flex-grow: 1;
+
+        @include respond-to($bp-md) {
+            text-align: center;
+        }
     }
 }

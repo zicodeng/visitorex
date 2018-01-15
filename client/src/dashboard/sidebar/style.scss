@@ -5,6 +5,10 @@
     flex-direction: column;
     flex-basis: 340px;
     align-items: center;
+
+    @include respond-to($bp-md) {
+        flex-basis: auto;
+    }
 }
 
 .logo {
