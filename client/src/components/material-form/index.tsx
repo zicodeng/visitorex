@@ -75,13 +75,11 @@ class MaterialForm extends React.Component<any, any> {
     }
 
     public componentDidUpdate(): void {
-        // If there is no error and the form has been submitted
+        // If there is no error message and the form has been submitted
         // it implies that this form submission is successful,
         // clear the form.
-        if (
-            !this.props.materialForm.error.message &&
-            this.state.hasFormSubmitted
-        ) {
+        const errorMsg = this.props.materialForm.error.message;
+        if (errorMsg && errorMsg.length === 0 && this.state.hasFormSubmitted) {
             this.clearForm();
         }
     }
