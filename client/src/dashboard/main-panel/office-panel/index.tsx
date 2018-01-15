@@ -11,6 +11,7 @@ import {
     clearNewVisitors,
     searchVisitors,
     searchAllVisitors,
+    searchVisitorsBetweenTwoDates,
 } from 'dashboard/actions';
 import { OFFICE_PATH_INDEX } from 'dashboard/sidebar';
 import Search from 'components/search';
@@ -81,6 +82,20 @@ class OfficePanel extends React.Component<any, {}> {
             // Search all visitors in this office.
             if (query.startsWith('@all')) {
                 dispatch(searchAllVisitors(office.id));
+            }
+
+            // Search all visitors between two dates.
+            const regexTwoDates = /^@\d{1,2}\/\d{1,2}\/\d{4}-\d{1,2}\/\d{1,2}\/\d{4}$/;
+            if (regexTwoDates.test(query)) {
+                const startDate = query.substring(1, query.indexOf('-'));
+                const endDate = query.substring(query.indexOf('-') + 1);
+                dispatch(
+                    searchVisitorsBetweenTwoDates(
+                        office.id,
+                        startDate,
+                        endDate,
+                    ),
+                );
             }
 
             // If no special search command is matched,

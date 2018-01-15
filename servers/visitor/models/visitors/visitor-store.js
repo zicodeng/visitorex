@@ -34,6 +34,20 @@ class VisitorStore {
             .toArray();
     }
 
+    // For a given office ID, retrieves all visitors between two dates (inclusive).
+    getBetweenDates(officeID, startDate, endDate) {
+        return this.collection
+            .find({
+                officeID: officeID,
+                date: { $gte: startDate, $lte: endDate }
+            })
+            .sort({
+                date: -1,
+                timeIn: -1
+            })
+            .toArray();
+    }
+
     // Retrieves all visitors from MongoDB.
     getAll() {
         return this.collection.find({}).toArray();

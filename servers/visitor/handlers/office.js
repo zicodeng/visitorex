@@ -373,20 +373,38 @@ const OfficeHandler = (officeStore, visitorStore, visitorTrie) => {
         }
 
         const q = req.query.q;
-        if (!q) {
+        const startDate = req.query.startDate;
+        const endDate = req.query.endDate;
+
+        if (q) {
+            searchVisitorsByQuery(q);
+        } else if (startDate && endDate) {
+            searchVisitorsBetweenTwoDates(startDate, endDate);
+        } else {
             res
                 .set('Content-Type', 'text/plain')
                 .status(400)
-                .send('No query string named q found in request');
-            return;
+                .send('No query string named q, date found in request');
         }
 
-        const limit = 25;
-        const visitorIDs = visitorTrie.search(limit, q);
+        function searchVisitorsByQuery(query) {
+            const limit = 25;
+            const visitorIDs = visitorTrie.search(limit, q);
 
-        visitorStore.convertToVisitors(visitorIDs, officeID).then(visitors => {
-            res.json(visitors);
-        });
+            visitorStore
+                .convertToVisitors(visitorIDs, officeID)
+                .then(visitors => {
+                    res.json(visitors);
+                });
+        }
+
+        function searchVisitorsBetweenTwoDates(startDate, endDate) {
+            visitorStore
+                .getBetweenDates(officeID, startDate, endDate)
+                .then(visitors => {
+                    res.json(visitors);
+                });
+        }
     });
 
     return router;

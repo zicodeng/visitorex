@@ -215,3 +215,37 @@ export const searchAllVisitors = (officeID: string) => {
             });
     };
 };
+
+export const SEARCH_VISITORS_BETWEEN_TWO_DATES =
+    'SEARCH_VISITORS_BETWEEN_TWO_DATES';
+export const SEARCH_VISITORS_BETWEEN_TWO_DATES_PENDING =
+    'SEARCH_VISITORS_BETWEEN_TWO_DATESPEN_PENDING';
+export const SEARCH_VISITORS_BETWEEN_TWO_DATES_FULFILLED =
+    'SEARCH_VISITORS_BETWEEN_TWO_DATES_FULFILLED';
+export const SEARCH_VISITORS_BETWEEN_TWO_DATES_REJECTED =
+    'SEARCH_VISITORS_BETWEEN_TWO_DATES_REJECTED';
+
+export const searchVisitorsBetweenTwoDates = (
+    officeID: string,
+    startDate: string,
+    endDate: string,
+) => {
+    const searchURL = `https://${getCurrentHost()}/v1/offices/${officeID}/search?startDate=${startDate}&endDate=${endDate}`;
+    return dispatch => {
+        dispatch({
+            type: SEARCH_VISITORS,
+            payload: axios.get(searchURL, {
+                headers: {
+                    Authorization: getSessionToken(),
+                },
+            }),
+        })
+            .then(res => {
+                const visitors = res.value.data;
+                dispatch(renderSearchResults(visitors));
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    };
+};
