@@ -30,9 +30,43 @@ As a front-desk staff, I want to...
 
 ## Features
 
-* Simple check-in
-* Graph report and in-depth analysis
-* Notification
+### Admin Authentication
+
+![Admin Sign In](https://raw.githubusercontent.com/zicodeng/visitorex/master/screenshots/admin-sign-in.png)
+
+![Admin Sign Up](https://raw.githubusercontent.com/zicodeng/visitorex/master/screenshots/admin-sign-up.png)
+
+### Simple Visitor Check-In
+
+![Visitor Check In](https://raw.githubusercontent.com/zicodeng/visitorex/master/screenshots/visitor-check-in.png)
+
+![Thank You](https://raw.githubusercontent.com/zicodeng/visitorex/master/screenshots/thank-you.png)
+
+### Graph Report and In-Depth Analysis
+
+![Graph Report](https://raw.githubusercontent.com/zicodeng/visitorex/master/screenshots/graph-report.png)
+
+### Notification
+
+![Notification Banner](https://raw.githubusercontent.com/zicodeng/visitorex/master/screenshots/notification-banner.png)
+
+![Notification Detail](https://raw.githubusercontent.com/zicodeng/visitorex/master/screenshots/notification-detail.png)
+
+### Multi-Token and In-Memory Searching
+
+![Search All](https://raw.githubusercontent.com/zicodeng/visitorex/master/screenshots/search-all.png)
+
+![Search Zico](https://raw.githubusercontent.com/zicodeng/visitorex/master/screenshots/search-zico.png)
+
+![Search Multi-Token](https://raw.githubusercontent.com/zicodeng/visitorex/master/screenshots/search-multi-token.png)
+
+### Export Your Search Results to CSV
+
+![Export CSV](https://raw.githubusercontent.com/zicodeng/visitorex/master/screenshots/export-csv.png)
+
+### Create and Manage Multiple Offices in a Single Dashboard
+
+![New Office](https://raw.githubusercontent.com/zicodeng/visitorex/master/screenshots/new-office.png)
 
 # Development
 
