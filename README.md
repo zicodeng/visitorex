@@ -74,4 +74,32 @@ As a front-desk staff, I want to...
 
 ## Client-Side
 
+Install all dependencies
+
+    npm install
+
+Start webpack-dev-server
+
+    npm run start
+
 ## Server-Side
+
+### Gateway
+
+Start gateway, Redis, MQ, and MongoDB Docker containers.
+
+    cd path/to/gateway
+
+    sh dev.sh
+
+### Visitor Microservice
+
+Install all dependencies
+
+    npm install
+
+Start visitor microservice
+
+    cd path/to/visitor
+
+    sh dev.sh
