@@ -2,7 +2,7 @@
 
 ## Overview
 
-Visitorex is a front-desk software that helps companies manage their visitors in a smarter way.
+Visitorex is a front-desk software that helps company manage visitors in a smarter way.
 
 ## User Stories
 
